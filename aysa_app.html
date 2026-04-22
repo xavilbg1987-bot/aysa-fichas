@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AySA - Fichas de Puntos de Muestreo</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --aysa-blue: #1a2f7a;
+    --aysa-blue-dark: #111f55;
+    --aysa-blue-light: #2a45a8;
+    --aysa-teal: #00a8b5;
+    --aysa-teal-light: #00c4d4;
+    --white: #ffffff;
+    --gray-50: #f7f9fc;
+    --gray-100: #eef1f7;
+    --gray-200: #d8dde8;
+    --gray-400: #8f9ab5;
+    --gray-600: #4a5578;
+    --gray-800: #1e2640;
+    --success: #00b87a;
+    --warning: #f5a623;
+    --danger: #e53935;
+    --shadow-sm: 0 2px 8px rgba(26,47,122,0.10);
+    --shadow-md: 0 4px 20px rgba(26,47,122,0.15);
+    --shadow-lg: 0 8px 40px rgba(26,47,122,0.20);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    min-height: 100vh;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ===== LOGIN SCREEN ===== */
+  #screen-login {
+    background: linear-gradient(160deg, var(--aysa-blue-dark) 0%, var(--aysa-blue) 50%, var(--aysa-blue-light) 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #screen-login::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,168,181,0.18) 0%, transparent 70%);
+    top: -150px; right: -150px;
+    pointer-events: none;
+  }
+  #screen-login::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,168,181,0.12) 0%, transparent 70%);
+    bottom: -80px; left: -80px;
+    pointer-events: none;
+  }
+
+  .login-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    z-index: 1;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .login-logo img {
+    width: 90px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .login-logo h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 14px;
+  }
+
+  .login-tabs {
+    display: flex;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+  .login-tab {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .login-tab.active {
+    background: var(--aysa-teal);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,168,181,0.4);
+  }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: white;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .form-group input::placeholder { color: rgba(255,255,255,0.3); }
+  .form-group input:focus {
+    border-color: var(--aysa-teal);
+    background: rgba(255,255,255,0.12);
+  }
+  .form-group select option { background: var(--aysa-blue-dark); color: white; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--aysa-teal);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(0,168,181,0.35);
+    letter-spacing: 0.5px;
+  }
+  .btn-primary:hover { background: var(--aysa-teal-light); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .login-error {
+    background: rgba(229,57,53,0.2);
+    border: 1px solid rgba(229,57,53,0.4);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #ff8a80;
+    font-size: 13px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  /* ===== TOP NAV ===== */
+  .topnav {
+    background: var(--aysa-blue);
+    padding: 0 20px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topnav-left { display: flex; align-items: center; gap: 12px; }
+  .topnav img { height: 34px; border-radius: 6px; }
+  .topnav-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+  }
+  .topnav-title span {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .topnav-right { display: flex; align-items: center; gap: 10px; }
+  .topnav-user {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    text-align: right;
+    line-height: 1.3;
+  }
+  .topnav-user strong { display: block; color: white; font-size: 13px; }
+  .btn-logout {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: white;
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,0.18); }
+
+  /* ===== BOTTOM NAV ===== */
+  .bottomnav {
+    background: white;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(26,47,122,0.08);
+  }
+  .bnav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    color: var(--gray-400);
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 4px;
+    letter-spacing: 0.3px;
+  }
+  .bnav-item svg { width: 22px; height: 22px; transition: all 0.2s; }
+  .bnav-item.active { color: var(--aysa-blue); }
+  .bnav-item.active svg { stroke: var(--aysa-blue); }
+  .bnav-badge {
+    position: absolute;
+    top: 6px;
+    background: var(--danger);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .content { flex: 1; padding: 20px 16px 90px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+  /* ===== SEARCH ===== */
+  .search-header {
+    margin-bottom: 20px;
+  }
+  .search-header h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--aysa-blue);
+    margin-bottom: 4px;
+  }
+  .search-header p { font-size: 13px; color: var(--gray-400); }
+
+  .search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .search-input-wrap {
+    flex: 1;
+    position: relative;
+  }
+  .search-input-wrap svg {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    stroke: var(--gray-400);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 13px 16px 13px 42px;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-800);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .search-input:focus { border-color: var(--aysa-teal); }
+  .search-input::placeholder { text-transform: none; letter-spacing: 0; font-weight: 400; }
+
+  .btn-search {
+    padding: 13px 20px;
+    background: var(--aysa-blue);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: white;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-search:hover { background: var(--aysa-blue-light); }
+
+  /* ===== FICHA ===== */
+  .ficha-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ficha-header {
+    background: linear-gradient(135deg, var(--aysa-blue-dark), var(--aysa-blue-light));
+    padding: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .ficha-header::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(0,168,181,0.2);
+  }
+  .ficha-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .ficha-codigo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .ficha-region {
+    background: var(--aysa-teal);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .ficha-dir {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    position: relative;
+    z-index: 1;
+  }
+  .ficha-localidad {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 2px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ficha-photo {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    background: var(--gray-100);
+  }
+  .ficha-photo-placeholder {
+    width: 100%;
+    height: 180px;
+    background: var(--gray-100);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-400);
+    font-size: 13px;
+    gap: 8px;
+  }
+  .ficha-photo-placeholder svg { width: 36px; height: 36px; stroke: var(--gray-200); }
+
+  .ficha-body { padding: 20px; }
+
+  .ficha-section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--aysa-teal);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--gray-100);
+  }
+
+  .ficha-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .ficha-field { }
+  .ficha-field.full { grid-column: 1 / -1; }
+  .ficha-field label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gray-400);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .ficha-field value {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-800);
+    line-height: 1.4;
+  }
+  .ficha-field value.empty { color: var(--gray-200); font-style: italic; font-weight: 400; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .badge-success { background: #e6f9f0; color: var(--success); }
+  .badge-warning { background: #fff8e6; color: var(--warning); }
+  .badge-danger { background: #fde8e8; color: var(--danger); }
+  .badge-alto { background: #fde8e8; color: var(--danger); }
+  .badge-medio { background: #fff8e6; color: var(--warning); }
+  .badge-bajo { background: #e6f9f0; color: var(--success); }
+
+  .ficha-maps-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: var(--aysa-blue);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+  }
+  .ficha-maps-btn:hover { background: var(--gray-100); }
+  .ficha-maps-btn svg { width: 18px; height: 18px; stroke: var(--aysa-teal); flex-shrink: 0; }
+
+  .ficha-obs {
+    background: var(--gray-50);
+    border-left: 3px solid var(--aysa-teal);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+
+  .btn-sugerencia {
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px;
+    background: transparent;
+    border: 2px solid var(--aysa-blue);
+    border-radius: var(--radius-sm);
+    color: var(--aysa-blue);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-sugerencia:hover { background: var(--aysa-blue); color: white; }
+  .btn-sugerencia svg { width: 16px; height: 16px; }
+
+  /* ===== NOT FOUND ===== */
+  .not-found {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-400);
+  }
+  .not-found svg { width: 56px; height: 56px; stroke: var(--gray-200); margin-bottom: 12px; }
+  .not-found h3 { font-size: 16px; font-weight: 700; color: var(--gray-600); margin-bottom: 6px; }
+  .not-found p { font-size: 13px; }
+
+  /* ===== LOADING ===== */
+  .loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-400);
+  }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--aysa-teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== SUGERENCIAS SCREEN ===== */
+  .sug-form-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .sug-form-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--aysa-blue);
+    margin-bottom: 4px;
+  }
+  .sug-form-card p { font-size: 13px; color: var(--gray-400); margin-bottom: 20px; }
+
+  .form-field { margin-bottom: 14px; }
+  .form-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-600);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .form-field input, .form-field textarea, .form-field select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    color: var(--gray-800);
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  .form-field input:focus, .form-field textarea:focus { border-color: var(--aysa-teal); }
+  .form-field textarea { resize: vertical; min-height: 90px; }
+
+  .btn-enviar {
+    width: 100%;
+    padding: 13px;
+    background: var(--aysa-teal);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: white;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-enviar:hover { background: var(--aysa-teal-light); }
+
+  .sug-success {
+    background: #e6f9f0;
+    border: 1px solid #b3ecd6;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    color: var(--success);
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  /* ===== ADMIN SCREEN ===== */
+  .admin-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .admin-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .admin-card-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--aysa-blue);
+  }
+  .admin-card-body { padding: 16px 20px; }
+  .admin-stat {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .admin-stat:last-child { border-bottom: none; }
+  .admin-stat-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--aysa-blue);
+    min-width: 50px;
+  }
+  .admin-stat-label { font-size: 13px; color: var(--gray-600); }
+
+  .sug-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .sug-item:last-child { border-bottom: none; }
+  .sug-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .sug-codigo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--aysa-blue);
+    letter-spacing: 0.5px;
+  }
+  .sug-fecha { font-size: 11px; color: var(--gray-400); }
+  .sug-usuario { font-size: 12px; color: var(--gray-600); margin-bottom: 6px; }
+  .sug-texto { font-size: 13px; color: var(--gray-800); line-height: 1.5; }
+  .sug-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .btn-sug-action {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-resolver { background: #e6f9f0; color: var(--success); }
+  .btn-resolver:hover { background: var(--success); color: white; }
+  .btn-ignorar { background: var(--gray-100); color: var(--gray-600); }
+  .btn-ignorar:hover { background: var(--gray-200); }
+
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--gray-400);
+    font-size: 13px;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17,31,85,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 24px 40px;
+    width: 100%;
+    max-width: 600px;
+    animation: slideModal 0.3s ease;
+  }
+  @keyframes slideModal {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--gray-200);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+  .modal h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--aysa-blue);
+    margin-bottom: 6px;
+  }
+  .modal p { font-size: 13px; color: var(--gray-400); margin-bottom: 20px; }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: var(--gray-100);
+    border: none;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--gray-600);
+  }
+
+  /* COORDS */
+  .coords-link {
+    font-size: 12px;
+    color: var(--aysa-teal);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* HEADER SECTION */
+  .page-header {
+    margin-bottom: 20px;
+  }
+  .page-header h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--aysa-blue);
+    margin-bottom: 4px;
+  }
+  .page-header p { font-size: 13px; color: var(--gray-400); }
+
+  .admin-only { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="screen-login" class="screen active">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/AySA_logo.svg/200px-AySA_logo.svg.png" 
+           onerror="this.style.display='none'" alt="AySA">
+      <h1>Fichas de Puntos de Muestreo CIC</h1>
+    </div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchTab('login')">Ingresar</button>
+      <button class="login-tab" onclick="switchTab('register')">Registrarse</button>
+    </div>
+
+    <div id="login-error" class="login-error"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="login-pass" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Ingresar</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="form-register" style="display:none">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" id="reg-nombre" placeholder="Juan Pérez">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Organismo</label>
+        <input type="text" id="reg-organismo" placeholder="AySA / Municipio de...">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Crear cuenta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="screen-app" class="screen">
+
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <div class="topnav-left">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/AySA_logo.svg/200px-AySA_logo.svg.png"
+           onerror="this.style.background='#1a2f7a'; this.style.padding='4px'" alt="AySA">
+      <div class="topnav-title">
+        Muestreo CIC
+        <span>AySA - D. Medio Ambiente</span>
+      </div>
+    </div>
+    <div class="topnav-right">
+      <div class="topnav-user">
+        <strong id="nav-username">Usuario</strong>
+        <span id="nav-organismo">Organismo</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </nav>
+
+  <!-- TAB: BUSCAR -->
+  <div id="tab-buscar" class="content">
+    <div class="search-header">
+      <h2>Buscar Punto</h2>
+      <p>Ingresá el código del punto de muestreo</p>
+    </div>
+
+    <div class="search-box">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-input" id="search-input" placeholder="Ej: MAB001 o MCA018"
+               onkeydown="if(event.key==='Enter') buscarPunto()">
+      </div>
+      <button class="btn-search" onclick="buscarPunto()">Buscar</button>
+    </div>
+
+    <div id="search-result"></div>
+  </div>
+
+  <!-- TAB: SUGERENCIAS (campo) -->
+  <div id="tab-sugerencias" class="content" style="display:none">
+    <div class="page-header">
+      <h2>Enviar Sugerencia</h2>
+      <p>Reportá información incorrecta o desactualizada</p>
+    </div>
+
+    <div class="sug-form-card">
+      <h3>Nueva sugerencia</h3>
+      <p>Tu reporte llegará a los administradores del sistema</p>
+
+      <div class="form-field">
+        <label>Código del punto</label>
+        <input type="text" id="sug-codigo" placeholder="Ej: MAB001" style="text-transform:uppercase">
+      </div>
+      <div class="form-field">
+        <label>Campo con error</label>
+        <select id="sug-campo">
+          <option value="">— Seleccioná el campo —</option>
+          <option>Dirección</option>
+          <option>Coordenadas</option>
+          <option>Estado</option>
+          <option>Tránsito</option>
+          <option>Riesgo</option>
+          <option>Ubicación (Vereda/Calzada)</option>
+          <option>Diámetro</option>
+          <option>Intradós</option>
+          <option>Observaciones</option>
+          <option>Fotografía</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Descripción del problema</label>
+        <textarea id="sug-desc" placeholder="Describí qué información está incorrecta y cuál debería ser la correcta..."></textarea>
+      </div>
+
+      <button class="btn-enviar" onclick="enviarSugerencia()">Enviar sugerencia</button>
+
+      <div class="sug-success" id="sug-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><path d="M20 6L9 17l-5-5"/></svg>
+        ¡Sugerencia enviada! Los administradores la revisarán.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ADMIN -->
+  <div id="tab-admin" class="content admin-only" style="display:none">
+    <div class="page-header">
+      <h2>Panel Admin</h2>
+      <p>Gestión de usuarios y sugerencias</p>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h3>Estadísticas</h3>
+      </div>
+      <div class="admin-card-body">
+        <div class="admin-stat">
+          <div class="admin-stat-num" id="stat-puntos">254</div>
+          <div class="admin-stat-label">Puntos de muestreo registrados</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-num" id="stat-usuarios">—</div>
+          <div class="admin-stat-label">Usuarios registrados</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-num" id="stat-sugerencias">—</div>
+          <div class="admin-stat-label">Sugerencias pendientes</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h3>Sugerencias pendientes</h3>
+        <span class="badge badge-warning" id="badge-sug">0</span>
+      </div>
+      <div id="admin-sugerencias-list">
+        <div class="empty-state">No hay sugerencias pendientes</div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h3>Usuarios registrados</h3>
+      </div>
+      <div id="admin-usuarios-list">
+        <div class="empty-state">Sin usuarios aún</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottomnav">
+    <button class="bnav-item active" onclick="showTab('buscar', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      Buscar
+    </button>
+    <button class="bnav-item" onclick="showTab('sugerencias', this)" style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Sugerir
+    </button>
+    <button class="bnav-item admin-only" id="bnav-admin" onclick="showTab('admin', this)" style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+      </svg>
+      Admin
+      <span class="bnav-badge" id="admin-badge" style="display:none">0</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MODAL SUGERENCIA DESDE FICHA -->
+<div class="modal-overlay" id="modal-sug">
+  <div class="modal" style="position:relative">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3>Reportar un error</h3>
+    <p>Indicá qué información está incorrecta en este punto</p>
+
+    <div class="form-field">
+      <label>Campo con error</label>
+      <select id="modal-sug-campo">
+        <option value="">— Seleccioná el campo —</option>
+        <option>Dirección</option>
+        <option>Coordenadas</option>
+        <option>Estado</option>
+        <option>Tránsito</option>
+        <option>Riesgo</option>
+        <option>Ubicación (Vereda/Calzada)</option>
+        <option>Diámetro</option>
+        <option>Intradós</option>
+        <option>Observaciones</option>
+        <option>Fotografía</option>
+        <option>Otro</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Descripción del problema</label>
+      <textarea id="modal-sug-desc" placeholder="Describí qué está mal y cuál sería la información correcta..."></textarea>
+    </div>
+    <button class="btn-enviar" onclick="enviarSugerenciaModal()">Enviar reporte</button>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const SHEET_ID = '1xX53Bw8l2r_iOVNbpK4obQ-yXGwPy1iF2RUEcyWJHKg';
+const SHEET_NAME = 'Hoja1';
+const DRIVE_FOLDER = '1NPCKlpl64gqJRmPC09c2Bt9kDN7kp4EL';
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+const FOTOS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz177cG37OltyEZZmNvVbVh472QVUgIGhfAcxNGcGZHrcXqPZZofb-vkO43T0wV-AAZ/exec';
+
+// ===== STATE =====
+let currentUser = null;
+let currentCodigo = null;
+let sheetData = [];
+let fotosMap = {};
+
+// Admin emails (agregá los tuyos acá)
+const ADMIN_EMAILS = ['admin@aysa.com.ar', 'xavilbg1987@gmail.com'];
+
+// ===== LOCAL STORAGE HELPERS =====
+function getUsers() { try { return JSON.parse(localStorage.getItem('aysa_users') || '[]'); } catch { return []; } }
+function saveUsers(u) { localStorage.setItem('aysa_users', JSON.stringify(u)); }
+function getSugerencias() { try { return JSON.parse(localStorage.getItem('aysa_sugerencias') || '[]'); } catch { return []; } }
+function saveSugerencias(s) { localStorage.setItem('aysa_sugerencias', JSON.stringify(s)); }
+
+// ===== AUTH =====
+function switchTab(tab) {
+  document.querySelectorAll('.login-tab').forEach((t,i) => t.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register')));
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function isAdmin(email) {
+  // Check ADMIN_EMAILS list or if user has admin flag
+  const users = getUsers();
+  const user = users.find(u => u.email === email);
+  return ADMIN_EMAILS.includes(email) || (user && user.isAdmin);
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) return showError('Completá todos los campos.');
+
+  const users = getUsers();
+  const user = users.find(u => u.email === email && u.pass === pass);
+  if (!user) return showError('Email o contraseña incorrectos.');
+
+  currentUser = user;
+  localStorage.setItem('aysa_session', JSON.stringify(user));
+  enterApp(user);
+}
+
+function doRegister() {
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const organismo = document.getElementById('reg-organismo').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  if (!nombre || !email || !organismo || !pass) return showError('Completá todos los campos.');
+  if (pass.length < 6) return showError('La contraseña debe tener al menos 6 caracteres.');
+
+  const users = getUsers();
+  if (users.find(u => u.email === email)) return showError('Ya existe una cuenta con ese email.');
+
+  const newUser = { nombre, email, organismo, pass, fecha: new Date().toLocaleDateString('es-AR'), isAdmin: ADMIN_EMAILS.includes(email) };
+  users.push(newUser);
+  saveUsers(users);
+  currentUser = newUser;
+  localStorage.setItem('aysa_session', JSON.stringify(newUser));
+  enterApp(newUser);
+}
+
+function doLogout() {
+  localStorage.removeItem('aysa_session');
+  currentUser = null;
+  document.getElementById('screen-app').classList.remove('active');
+  document.getElementById('screen-login').classList.add('active');
+  document.getElementById('search-result').innerHTML = '';
+  document.getElementById('search-input').value = '';
+}
+
+function enterApp(user) {
+  document.getElementById('screen-login').classList.remove('active');
+  document.getElementById('screen-app').classList.add('active');
+  document.getElementById('nav-username').textContent = user.nombre;
+  document.getElementById('nav-organismo').textContent = user.organismo;
+
+  if (isAdmin(user.email)) {
+    document.querySelectorAll('.admin-only').forEach(el => {
+      el.style.display = el.tagName === 'BUTTON' ? 'flex' : 'block';
+    });
+    refreshAdminPanel();
+  }
+
+  refreshAdminBadge();
+  loadSheetData();
+  loadFotos();
+}
+
+// ===== GOOGLE SHEETS DATA =====
+async function loadSheetData() {
+  try {
+    const res = await fetch(SHEET_URL);
+    const text = await res.text();
+    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);$/, ''));
+    const rows = json.table.rows;
+    sheetData = rows.map(r => ({
+      codigo: r.c[0]?.v?.toString().trim().toUpperCase() || '',
+      macrocuenca: r.c[1]?.v?.toString().trim() || '',
+      direccion: r.c[2]?.v?.toString().trim() || '',
+      maps: r.c[3]?.v?.toString().trim() || '',
+      coordenadas: r.c[4]?.v?.toString().trim().replace(/\n/g,'').trim() || '',
+      region: r.c[5]?.v?.toString().trim() || '',
+      localidad: r.c[6]?.v?.toString().trim() || '',
+      ubicacion: r.c[7]?.v?.toString().trim() || '',
+      estado: r.c[8]?.v?.toString().trim() || '',
+      transito: r.c[9]?.v?.toString().trim() || '',
+      riesgo: r.c[10]?.v?.toString().trim() || '',
+      observaciones: r.c[11]?.v?.toString().trim() || '',
+      diametro: r.c[12]?.v?.toString().trim() || '',
+      intrados: r.c[13]?.v?.toString().trim() || '',
+      foto: r.c[14]?.v?.toString().trim() || '',
+    }));
+  } catch(e) {
+    console.error('Error cargando datos:', e);
+  }
+}
+
+// ===== FOTOS =====
+async function loadFotos() {
+  try {
+    const res = await fetch(FOTOS_SCRIPT_URL);
+    const data = await res.json();
+    fotosMap = data;
+  } catch(e) {
+    console.error('Error cargando fotos:', e);
+  }
+}
+
+// ===== BUSCAR =====
+function buscarPunto() {
+  const codigo = document.getElementById('search-input').value.trim().toUpperCase();
+  const container = document.getElementById('search-result');
+  if (!codigo) return;
+
+  if (sheetData.length === 0) {
+    container.innerHTML = `<div class="loading"><div class="spinner"></div><p>Cargando datos...</p></div>`;
+    setTimeout(() => buscarPunto(), 1500);
+    return;
+  }
+
+  const punto = sheetData.find(p => p.codigo === codigo);
+  if (!punto) {
+    container.innerHTML = `
+      <div class="not-found">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M8 11h6M11 8v6"/></svg>
+        <h3>Código no encontrado</h3>
+        <p>No existe el punto <strong>${codigo}</strong> en la base de datos.<br>Verificá el código e intentá de nuevo.</p>
+      </div>`;
+    return;
+  }
+
+  currentCodigo = punto.codigo;
+  renderFicha(punto, container);
+}
+
+function renderFicha(p, container) {
+  const estadoBadge = p.estado.includes('BUENO') ? 'badge-success' : p.estado.includes('REGULAR') ? 'badge-warning' : p.estado.includes('MALO') ? 'badge-danger' : '';
+  const transitoBadge = p.transito === 'ALTO' ? 'badge-alto' : p.transito === 'MEDIO' ? 'badge-medio' : p.transito === 'BAJO' ? 'badge-bajo' : '';
+
+  // Build photo URL from Drive via Apps Script
+  const fotoNombre = `FOTO${p.codigo}`;
+  let fotoUrl = fotosMap[fotoNombre] || p.foto || '';
+
+  const mapsLink = p.maps && p.maps.startsWith('http')
+    ? `<a href="${p.maps}" target="_blank" class="ficha-maps-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Ver en Google Maps
+      </a>`
+    : '';
+
+  const coordsClean = p.coordenadas.replace(/\n/g,'').trim();
+
+  const obs = (p.observaciones && p.observaciones !== '---')
+    ? `<div class="ficha-section-title">Observaciones</div><div class="ficha-obs">${p.observaciones}</div>`
+    : '';
+
+  const fotoHTML = fotoUrl
+    ? `<img class="ficha-photo" src="${fotoUrl}" alt="Foto ${p.codigo}" onerror="this.parentNode.innerHTML='<div class=ficha-photo-placeholder><svg viewBox=&quot;0 0 24 24&quot; fill=none stroke=currentColor stroke-width=1.5><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21,15 16,10 5,21&quot;/></svg><span>Foto no disponible</span></div>'">`
+    : `<div class="ficha-photo-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+        <span>Sin fotografía cargada</span>
+      </div>`;
+
+  container.innerHTML = `
+    <div class="ficha-card">
+      <div class="ficha-header">
+        <div class="ficha-header-top">
+          <div class="ficha-codigo">${p.codigo}</div>
+          <div class="ficha-region">${p.region || '—'}</div>
+        </div>
+        <div class="ficha-dir">${p.direccion || '—'}</div>
+        <div class="ficha-localidad">${p.localidad || '—'} ${p.macrocuenca && p.macrocuenca !== '---' ? '· ' + p.macrocuenca : ''}</div>
+      </div>
+
+      ${fotoHTML}
+
+      <div class="ficha-body">
+        <div class="ficha-section-title">Ubicación</div>
+        ${mapsLink}
+        <div class="ficha-grid">
+          <div class="ficha-field">
+            <label>Coordenadas</label>
+            <value>${coordsClean ? `<a href="https://maps.google.com/?q=${encodeURIComponent(coordsClean)}" target="_blank" class="coords-link">${coordsClean}</a>` : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Ubicación</label>
+            <value>${p.ubicacion && p.ubicacion !== '---' ? p.ubicacion : '<span class="empty">—</span>'}</value>
+          </div>
+        </div>
+
+        <div class="ficha-section-title">Estado del punto</div>
+        <div class="ficha-grid">
+          <div class="ficha-field">
+            <label>Estado</label>
+            <value>${p.estado && p.estado !== '---' ? `<span class="badge ${estadoBadge}">${p.estado}</span>` : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Tránsito</label>
+            <value>${p.transito && p.transito !== '---' ? `<span class="badge ${transitoBadge}">${p.transito}</span>` : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Riesgo</label>
+            <value>${p.riesgo && p.riesgo !== '---' ? p.riesgo : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Diámetro</label>
+            <value>${p.diametro && p.diametro !== '---' ? p.diametro : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field full">
+            <label>Intradós</label>
+            <value>${p.intrados && p.intrados !== '---' ? p.intrados : '<span class="empty">—</span>'}</value>
+          </div>
+        </div>
+
+        ${obs}
+
+        <button class="btn-sugerencia" onclick="openModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Reportar información incorrecta
+        </button>
+      </div>
+    </div>`;
+}
+
+// ===== SUGERENCIAS =====
+function openModal() {
+  document.getElementById('modal-sug').classList.add('active');
+  document.getElementById('modal-sug-desc').value = '';
+  document.getElementById('modal-sug-campo').value = '';
+}
+function closeModal() {
+  document.getElementById('modal-sug').classList.remove('active');
+}
+document.getElementById('modal-sug').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function enviarSugerenciaModal() {
+  const campo = document.getElementById('modal-sug-campo').value;
+  const desc = document.getElementById('modal-sug-desc').value.trim();
+  if (!campo || !desc) return alert('Completá todos los campos.');
+
+  guardarSugerencia(currentCodigo, campo, desc);
+  closeModal();
+  alert('¡Sugerencia enviada! Los administradores la revisarán.');
+}
+
+function enviarSugerencia() {
+  const codigo = document.getElementById('sug-codigo').value.trim().toUpperCase();
+  const campo = document.getElementById('sug-campo').value;
+  const desc = document.getElementById('sug-desc').value.trim();
+  if (!codigo || !campo || !desc) return alert('Completá todos los campos.');
+
+  guardarSugerencia(codigo, campo, desc);
+
+  document.getElementById('sug-codigo').value = '';
+  document.getElementById('sug-campo').value = '';
+  document.getElementById('sug-desc').value = '';
+  const ok = document.getElementById('sug-success');
+  ok.style.display = 'flex';
+  setTimeout(() => ok.style.display = 'none', 4000);
+}
+
+function guardarSugerencia(codigo, campo, desc) {
+  const sugs = getSugerencias();
+  sugs.unshift({
+    id: Date.now(),
+    codigo,
+    campo,
+    descripcion: desc,
+    usuario: currentUser.nombre,
+    email: currentUser.email,
+    organismo: currentUser.organismo,
+    fecha: new Date().toLocaleDateString('es-AR'),
+    estado: 'pendiente'
+  });
+  saveSugerencias(sugs);
+  refreshAdminBadge();
+  if (currentUser && isAdmin(currentUser.email)) refreshAdminPanel();
+}
+
+// ===== ADMIN =====
+function refreshAdminBadge() {
+  const sugs = getSugerencias().filter(s => s.estado === 'pendiente');
+  const badge = document.getElementById('admin-badge');
+  const badgeSug = document.getElementById('badge-sug');
+  if (badge) {
+    badge.textContent = sugs.length;
+    badge.style.display = sugs.length > 0 ? 'flex' : 'none';
+  }
+  if (badgeSug) badgeSug.textContent = sugs.length;
+  document.getElementById('stat-sugerencias').textContent = sugs.length;
+}
+
+function refreshAdminPanel() {
+  const users = getUsers();
+  document.getElementById('stat-usuarios').textContent = users.length;
+
+  // Usuarios
+  const usersContainer = document.getElementById('admin-usuarios-list');
+  if (users.length === 0) {
+    usersContainer.innerHTML = '<div class="empty-state">Sin usuarios registrados</div>';
+  } else {
+    usersContainer.innerHTML = users.map(u => `
+      <div class="sug-item">
+        <div class="sug-item-header">
+          <span class="sug-codigo">${u.nombre}</span>
+          <span class="sug-fecha">${u.fecha || ''}</span>
+        </div>
+        <div class="sug-usuario">${u.email} · ${u.organismo}</div>
+      </div>`).join('');
+  }
+
+  // Sugerencias
+  const sugs = getSugerencias().filter(s => s.estado === 'pendiente');
+  const sugContainer = document.getElementById('admin-sugerencias-list');
+  if (sugs.length === 0) {
+    sugContainer.innerHTML = '<div class="empty-state">No hay sugerencias pendientes ✓</div>';
+  } else {
+    sugContainer.innerHTML = sugs.map(s => `
+      <div class="sug-item" id="sug-${s.id}">
+        <div class="sug-item-header">
+          <span class="sug-codigo">${s.codigo}</span>
+          <span class="sug-fecha">${s.fecha}</span>
+        </div>
+        <div class="sug-usuario">${s.usuario} · ${s.organismo}</div>
+        <div style="font-size:11px;color:var(--aysa-teal);font-weight:600;margin-bottom:4px">Campo: ${s.campo}</div>
+        <div class="sug-texto">${s.descripcion}</div>
+        <div class="sug-actions">
+          <button class="btn-sug-action btn-resolver" onclick="resolverSug(${s.id})">✓ Resolver</button>
+          <button class="btn-sug-action btn-ignorar" onclick="ignorarSug(${s.id})">Ignorar</button>
+        </div>
+      </div>`).join('');
+  }
+  refreshAdminBadge();
+}
+
+function resolverSug(id) {
+  const sugs = getSugerencias();
+  const idx = sugs.findIndex(s => s.id === id);
+  if (idx !== -1) { sugs[idx].estado = 'resuelto'; saveSugerencias(sugs); }
+  refreshAdminPanel();
+}
+function ignorarSug(id) {
+  const sugs = getSugerencias();
+  const idx = sugs.findIndex(s => s.id === id);
+  if (idx !== -1) { sugs[idx].estado = 'ignorado'; saveSugerencias(sugs); }
+  refreshAdminPanel();
+}
+
+// ===== NAV =====
+function showTab(tab, btn) {
+  ['buscar','sugerencias','admin'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById(`tab-${tab}`).style.display = 'block';
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (tab === 'admin') refreshAdminPanel();
+}
+
+// ===== CHECK SESSION =====
+window.addEventListener('load', () => {
+  const session = localStorage.getItem('aysa_session');
+  if (session) {
+    try {
+      const user = JSON.parse(session);
+      // Verify user still exists
+      const users = getUsers();
+      const found = users.find(u => u.email === user.email);
+      if (found) {
+        currentUser = found;
+        enterApp(found);
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // Add default admin if no users
+  const users = getUsers();
+  if (users.length === 0) {
+    users.push({
+      nombre: 'Administrador',
+      email: 'admin@aysa.com.ar',
+      organismo: 'AySA',
+      pass: 'aysa2024',
+      fecha: new Date().toLocaleDateString('es-AR'),
+      isAdmin: true
+    });
+    saveUsers(users);
+  }
+});
+</script>
+</body>
+</html>
