@@ -836,6 +836,33 @@
   .page-header p { font-size: 13px; color: var(--gray-400); }
 
   .admin-only { display: none; }
+
+  /* PRINT / PDF */
+  @media print {
+    body * { visibility: hidden !important; }
+    #print-area, #print-area * { visibility: visible !important; }
+    #print-area { display: block !important; position: fixed; inset: 0; padding: 15mm 20mm; }
+    @page { size: A4 portrait; margin: 0; }
+  }
+  #print-area {
+    display: none;
+    background: white;
+    font-family: 'Barlow', Arial, sans-serif;
+  }
+  .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #1a2f7a; padding-bottom: 10px; margin-bottom: 14px; }
+  .print-header-left h1 { font-size: 11pt; color: #1a2f7a; font-weight: 700; margin: 0; }
+  .print-header-left p { font-size: 8pt; color: #666; margin: 2px 0 0; }
+  .print-header-right { font-size: 8pt; color: #666; text-align: right; }
+  .print-codigo { font-size: 22pt; font-weight: 800; color: #1a2f7a; margin-bottom: 2px; }
+  .print-dir { font-size: 11pt; color: #333; }
+  .print-loc { font-size: 9pt; color: #666; margin-bottom: 14px; }
+  .print-foto { width: 100%; max-height: 220px; object-fit: contain; margin-bottom: 14px; border: 1px solid #eee; border-radius: 4px; }
+  .print-section-title { font-size: 7pt; font-weight: 700; color: #00a8b5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #eef; }
+  .print-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px 16px; margin-bottom: 14px; }
+  .print-field label { display: block; font-size: 7pt; font-weight: 700; color: #8f9ab5; text-transform: uppercase; margin-bottom: 2px; }
+  .print-field value { display: block; font-size: 10pt; font-weight: 600; color: #1e2640; }
+  .print-obs { font-size: 9pt; color: #333; line-height: 1.6; background: #f7f9fc; border-left: 3px solid #00a8b5; padding: 8px 12px; border-radius: 0 4px 4px 0; }
+  .print-footer { margin-top: 16px; border-top: 1px solid #eee; padding-top: 8px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
 </style>
 </head>
 <body>
@@ -864,7 +891,12 @@
       </div>
       <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" id="login-pass" placeholder="••••••••">
+        <div style="position:relative">
+          <input type="password" id="login-pass" placeholder="••••••••" style="padding-right:44px">
+          <button type="button" onclick="togglePass('login-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
+            <svg id="eye-login" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
       </div>
       <button class="btn-primary" onclick="doLogin()">Ingresar</button>
     </div>
@@ -885,7 +917,12 @@
       </div>
       <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+        <div style="position:relative">
+          <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" style="padding-right:44px">
+          <button type="button" onclick="togglePass('reg-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
+            <svg id="eye-reg" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
       </div>
       <button class="btn-primary" onclick="doRegister()">Crear cuenta</button>
     </div>
@@ -1084,6 +1121,9 @@
     <button class="btn-enviar" onclick="enviarSugerenciaModal()">Enviar reporte</button>
   </div>
 </div>
+
+<!-- PRINT AREA -->
+<div id="print-area"></div>
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -1348,6 +1388,10 @@ function renderFicha(p, container) {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Reportar información incorrecta
         </button>
+        <button class="btn-sugerencia" onclick="descargarPDF()" style="margin-top:10px;border-color:var(--aysa-teal);color:var(--aysa-teal)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descargar ficha PDF
+        </button>
       </div>
     </div>`;
 }
@@ -1488,6 +1532,79 @@ function showTab(tab, btn) {
   document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   if (tab === 'admin') refreshAdminPanel();
+}
+
+function togglePass(id, btn) {
+  const input = document.getElementById(id);
+  const svg = btn.querySelector('svg');
+  if (input.type === 'password') {
+    input.type = 'text';
+    svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    input.type = 'password';
+    svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+function descargarPDF() {
+  const p = sheetData.find(d => d.codigo === currentCodigo);
+  if (!p) return;
+
+  const fotoUrl = fotosMap[`FOTO${p.codigo}`] || `https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/FOTO${p.codigo}.GIF`;
+  const fecha = new Date().toLocaleDateString('es-AR');
+
+  const val = (v) => (v && v !== '---' && v !== '--') ? v : '—';
+
+  document.getElementById('print-area').innerHTML = `
+    <div class="print-header">
+      <div class="print-header-left">
+        <h1>Dirección de Medio Ambiente y Calidad — Gerencia de Calidad</h1>
+        <p>Ficha de Puntos de Muestreo CIC &nbsp;·&nbsp; R-CAL-EFL-004</p>
+      </div>
+      <div class="print-header-right">
+        Fecha: ${fecha}<br>
+        Generado por: ${currentUser.nombre}
+      </div>
+    </div>
+
+    <div class="print-codigo">${p.codigo}</div>
+    <div class="print-dir">${val(p.direccion)}</div>
+    <div class="print-loc">${val(p.localidad)} · ${val(p.region)} ${p.macrocuenca && p.macrocuenca !== '---' ? '· ' + p.macrocuenca : ''}</div>
+
+    <img class="print-foto" src="${fotoUrl}" alt="Foto ${p.codigo}" onerror="this.style.display='none'">
+
+    <div class="print-section-title">Ubicación</div>
+    <div class="print-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
+      <div class="print-field"><label>Coordenadas</label><value>${val(p.coordenadas)}</value></div>
+      <div class="print-field"><label>Ubicación</label><value>${val(p.ubicacion)}</value></div>
+    </div>
+
+    <div class="print-section-title">Boca de Registro</div>
+    <div class="print-grid">
+      <div class="print-field"><label>Estado</label><value>${val(p.estado)}</value></div>
+      <div class="print-field"><label>Tránsito</label><value>${val(p.transito)}</value></div>
+      <div class="print-field"><label>Riesgo</label><value>${val(p.riesgo)}</value></div>
+      <div class="print-field"><label>Diámetro</label><value>${val(p.diametro)}</value></div>
+      <div class="print-field"><label>Intradós</label><value>${val(p.intrados)}</value></div>
+    </div>
+
+    ${p.observaciones && p.observaciones !== '---' ? `
+    <div class="print-section-title">Observaciones</div>
+    <div class="print-obs">${p.observaciones}</div>` : ''}
+
+    <div class="print-footer">
+      <span>AySA — Agua y Saneamientos Argentinos S.A.</span>
+      <span>${p.codigo} · ${fecha}</span>
+    </div>
+  `;
+
+  document.getElementById('print-area').style.display = 'block';
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => {
+      document.getElementById('print-area').style.display = 'none';
+    }, 1000);
+  }, 300);
 }
 
 function openLightbox(src) {
