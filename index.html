@@ -1553,18 +1553,219 @@ function descargarPDF() {
   const fotoUrl = fotosMap[`FOTO${p.codigo}`] || `https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/FOTO${p.codigo}.GIF`;
   const val = (v) => (v && v !== '---' && v !== '--') ? v : '';
 
-  // AySA logo base64 (inline SVG converted)
-  const logoSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 90'%3E%3Crect width='120' height='90' fill='%231a2f7a' rx='6'/%3E%3Ctext x='60' y='52' font-family='Arial' font-weight='bold' font-size='28' fill='white' text-anchor='middle'%3Eaysa%3C/text%3E%3Ccircle cx='38' cy='58' r='4' fill='%2300a8b5'/%3E%3C/svg%3E`;
+  // Logo AySA real desde Wikipedia (SVG oficial)
+  const logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/AySA_logo.svg/200px-AySA_logo.svg.png';
 
   document.getElementById('print-area').innerHTML = `
     <style>
       @media print {
         @page { size: A4 portrait; margin: 0; }
         body > *:not(#print-area) { display: none !important; }
-        #print-area { display: flex !important; }
+        #print-area { display: block !important; }
       }
     </style>
+    <div style="font-family:Arial,sans-serif;width:210mm;height:297mm;padding:8mm 10mm;box-sizing:border-box;display:flex;flex-direction:column;font-size:9pt;color:#000;gap:0;">
 
+      <!-- ENCABEZADO -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #aaa;">
+        <tr>
+          <td style="width:82%;background:#d0d0d0;text-align:center;padding:10px;border-right:1px solid #aaa;vertical-align:middle;">
+            <div style="font-weight:700;font-size:11pt;">Direccion de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:10pt;margin-top:3px;">Gerencia de Calidad</div>
+            <div style="font-weight:700;font-size:10pt;margin-top:3px;">Ficha de Puntos de Muestreo CIC</div>
+            <div style="font-weight:700;font-size:10pt;margin-top:3px;">R-CAL-EFL-004</div>
+          </td>
+          <td style="width:18%;background:#d0d0d0;text-align:center;padding:8px;vertical-align:middle;">
+            <img src="${logoUrl}" style="width:80px;" onerror="this.style.background='#1a2f7a';this.style.color='white';this.style.padding='8px';this.style.borderRadius='6px';this.alt='AySA'">
+          </td>
+        </tr>
+      </table>
+
+      <!-- DIRECCIÓN -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #aaa;border-top:none;">
+        <tr>
+          <td style="width:20%;padding:6px 10px;font-weight:700;border-right:1px solid #aaa;border-bottom:1px solid #aaa;">DIRECCION:</td>
+          <td style="padding:6px 10px;border-bottom:1px solid #aaa;text-align:center;">${val(p.direccion)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 10px;font-weight:700;border-right:1px solid #aaa;border-bottom:1px solid #aaa;">MAPS:</td>
+          <td style="padding:6px 10px;border-bottom:1px solid #aaa;text-align:center;font-size:8pt;">${val(p.maps)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 10px;font-weight:700;border-right:1px solid #aaa;border-bottom:1px solid #aaa;">COORDENADAS:</td>
+          <td style="padding:6px 10px;border-bottom:1px solid #aaa;text-align:center;">${val(p.coordenadas)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 10px;font-weight:700;border-right:1px solid #aaa;">REGION:</td>
+          <td style="padding:0;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:6px 10px;text-align:center;width:20%;border-right:1px solid #aaa;">${val(p.region)}</td>
+                <td style="padding:6px 10px;font-weight:700;text-align:center;width:16%;border-right:1px solid #aaa;">LOCALIDAD</td>
+                <td style="padding:6px 10px;text-align:center;width:28%;border-right:1px solid #aaa;">${val(p.localidad)}</td>
+                <td style="padding:6px 10px;font-weight:700;text-align:center;width:14%;border-right:1px solid #aaa;">CODIGO:</td>
+                <td style="padding:6px 10px;font-weight:700;text-align:center;">${val(p.codigo)}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <!-- UBICACIÓN Y FOTOGRAFÍAS -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #aaa;border-top:none;flex:1;">
+        <tr>
+          <td style="background:#d0d0d0;text-align:center;font-weight:700;font-size:10.5pt;padding:7px;border-bottom:1px solid #aaa;">
+            UBICACIÓN Y FOTOGRAFIAS
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:6px;text-align:center;vertical-align:middle;height:148mm;">
+            <img src="${fotoUrl}"
+                 style="max-width:100%;max-height:145mm;object-fit:contain;border:1px solid #ccc;"
+                 onerror="this.style.display='none'">
+          </td>
+        </tr>
+      </table>
+
+      <!-- BOCA DE REGISTRO -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #aaa;border-top:none;">
+        <tr>
+          <td colspan="4" style="background:#d0d0d0;text-align:center;font-weight:700;font-size:10.5pt;padding:7px;border-bottom:1px solid #aaa;">
+            BOCA DE REGISTRO
+          </td>
+        </tr>
+        <tr>
+          <td style="width:18%;padding:7px 10px;font-weight:700;border-right:1px solid #aaa;border-bottom:1px solid #aaa;text-align:center;">UBICACIÓN:</td>
+          <td style="width:32%;padding:7px 10px;border-right:1px solid #aaa;border-bottom:1px solid #aaa;text-align:center;">${val(p.ubicacion)}</td>
+          <td style="width:18%;padding:7px 10px;font-weight:700;border-right:1px solid #aaa;border-bottom:1px solid #aaa;text-align:center;">TRANSITO:</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #aaa;text-align:center;">${val(p.transito)}</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;font-weight:700;border-right:1px solid #aaa;border-bottom:1px solid #aaa;text-align:center;">ESTADO:</td>
+          <td style="padding:7px 10px;border-right:1px solid #aaa;border-bottom:1px solid #aaa;text-align:center;">${val(p.estado)}</td>
+          <td style="padding:7px 10px;font-weight:700;border-right:1px solid #aaa;border-bottom:1px solid #aaa;text-align:center;">RIESGO:</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #aaa;text-align:center;">${val(p.riesgo)}</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;font-weight:700;border-right:1px solid #aaa;text-align:center;">OBSERVACIONES:</td>
+          <td colspan="3" style="padding:7px 10px;text-align:center;font-weight:600;">${val(p.observaciones)}</td>
+        </tr>
+      </table>
+
+    </div>
+  `;
+
+  document.getElementById('print-area').style.display = 'block';
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => { document.getElementById('print-area').style.display = 'none'; }, 1500);
+  }, 600);
+}
+
+  document.getElementById('print-area').innerHTML = `
+    <style>
+      @media print {
+        @page { size: A4 portrait; margin: 0; }
+        body > *:not(#print-area) { display: none !important; }
+        #print-area { display: block !important; }
+      }
+    </style>
+    <div style="font-family:Arial,sans-serif;width:210mm;height:297mm;padding:8mm 10mm;box-sizing:border-box;display:flex;flex-direction:column;font-size:9.5pt;color:#000;">
+
+      <table style="width:100%;border-collapse:collapse;border:1.5px solid #555;">
+        <tr>
+          <td style="width:80%;background:#c0c0c0;text-align:center;padding:7px 10px;border-right:1.5px solid #555;vertical-align:middle;">
+            <div style="font-weight:700;font-size:12pt;">Direccion de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:10pt;margin-top:2px;">Gerencia de Calidad</div>
+            <div style="font-weight:700;font-size:10pt;margin-top:2px;">Ficha de Puntos de Muestreo CIC</div>
+            <div style="font-weight:700;font-size:10pt;margin-top:2px;">R-CAL-EFL-004</div>
+          </td>
+          <td style="width:20%;background:#c0c0c0;text-align:center;padding:8px;vertical-align:middle;">
+            <img src="${logoSvg}" style="width:72px;height:54px;">
+          </td>
+        </tr>
+      </table>
+
+      <table style="width:100%;border-collapse:collapse;border:1.5px solid #555;border-top:none;">
+        <tr>
+          <td style="width:22%;padding:5px 8px;font-weight:700;border-right:1.5px solid #555;border-bottom:1.5px solid #555;background:#ebebeb;">DIRECCION:</td>
+          <td style="padding:5px 8px;border-bottom:1.5px solid #555;">${val(p.direccion)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1.5px solid #555;border-bottom:1.5px solid #555;background:#ebebeb;">MAPS:</td>
+          <td style="padding:5px 8px;border-bottom:1.5px solid #555;font-size:7pt;word-break:break-all;">${val(p.maps)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1.5px solid #555;border-bottom:1.5px solid #555;background:#ebebeb;">COORDENADAS:</td>
+          <td style="padding:5px 8px;border-bottom:1.5px solid #555;">${val(p.coordenadas)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1.5px solid #555;background:#ebebeb;">REGION:</td>
+          <td style="padding:0;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:5px 8px;width:18%;">${val(p.region)}</td>
+                <td style="padding:5px 8px;font-weight:700;border-left:1.5px solid #555;width:16%;background:#ebebeb;">LOCALIDAD</td>
+                <td style="padding:5px 8px;border-left:1.5px solid #555;width:26%;">${val(p.localidad)}</td>
+                <td style="padding:5px 8px;font-weight:700;border-left:1.5px solid #555;width:14%;background:#ebebeb;">CODIGO:</td>
+                <td style="padding:5px 8px;border-left:1.5px solid #555;font-weight:700;color:#1a2f7a;">${val(p.codigo)}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <table style="width:100%;border-collapse:collapse;border:1.5px solid #555;border-top:none;flex:1;display:flex;flex-direction:column;">
+        <tr style="display:block;">
+          <td style="display:block;background:#c0c0c0;text-align:center;font-weight:700;font-size:11pt;padding:6px;border-bottom:1.5px solid #555;">UBICACIÓN Y FOTOGRAFIAS</td>
+        </tr>
+        <tr style="flex:1;display:block;height:155mm;">
+          <td style="display:block;width:100%;height:100%;text-align:center;vertical-align:middle;padding:0;overflow:hidden;">
+            <img src="${fotoUrl}" style="width:100%;height:155mm;object-fit:cover;" onerror="this.style.display='none'">
+          </td>
+        </tr>
+      </table>
+
+      <table style="width:100%;border-collapse:collapse;border:1.5px solid #555;border-top:none;">
+        <tr>
+          <td colspan="4" style="background:#c0c0c0;text-align:center;font-weight:700;font-size:11pt;padding:6px;border-bottom:1.5px solid #555;">BOCA DE REGISTRO</td>
+        </tr>
+        <tr>
+          <td style="width:18%;padding:6px 8px;font-weight:700;border-right:1.5px solid #555;border-bottom:1.5px solid #555;background:#ebebeb;">UBICACIÓN:</td>
+          <td style="width:32%;padding:6px 8px;border-right:1.5px solid #555;border-bottom:1.5px solid #555;">${val(p.ubicacion)}</td>
+          <td style="width:18%;padding:6px 8px;font-weight:700;border-right:1.5px solid #555;border-bottom:1.5px solid #555;background:#ebebeb;">TRANSITO:</td>
+          <td style="padding:6px 8px;border-bottom:1.5px solid #555;">${val(p.transito)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1.5px solid #555;border-bottom:1.5px solid #555;background:#ebebeb;">ESTADO:</td>
+          <td style="padding:6px 8px;border-right:1.5px solid #555;border-bottom:1.5px solid #555;">${val(p.estado)}</td>
+          <td style="padding:6px 8px;font-weight:700;border-right:1.5px solid #555;border-bottom:1.5px solid #555;background:#ebebeb;">RIESGO:</td>
+          <td style="padding:6px 8px;border-bottom:1.5px solid #555;">${val(p.riesgo)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1.5px solid #555;background:#ebebeb;">DIAMETRO</td>
+          <td style="padding:6px 8px;border-right:1.5px solid #555;">${val(p.diametro)}</td>
+          <td style="padding:6px 8px;font-weight:700;border-right:1.5px solid #555;background:#ebebeb;">INTRADOS</td>
+          <td style="padding:6px 8px;">${val(p.intrados)}</td>
+        </tr>
+      </table>
+
+      <table style="width:100%;border-collapse:collapse;border:1.5px solid #555;border-top:none;">
+        <tr>
+          <td style="width:22%;padding:8px;font-weight:700;border-right:1.5px solid #555;vertical-align:top;background:#ebebeb;height:20mm;">OBSERVACIONES:</td>
+          <td style="padding:8px;vertical-align:top;">${val(p.observaciones)}</td>
+        </tr>
+      </table>
+
+    </div>
+  `;
+
+  document.getElementById('print-area').style.display = 'block';
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => { document.getElementById('print-area').style.display = 'none'; }, 1500);
+  }, 500);
+}
 function openLightbox(src) {
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox').classList.add('active');
