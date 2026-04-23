@@ -1225,8 +1225,7 @@ function renderFicha(p, container) {
   // Build photo URL from GitHub
   const fotoNombre = `FOTO${p.codigo}`;
   const baseGithub = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
-  const extensions = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG'];
-  let fotoUrl = fotosMap[fotoNombre] || `${baseGithub}${fotoNombre}.jpg`;
+  let fotoUrl = fotosMap[fotoNombre] || `${baseGithub}${fotoNombre}.GIF`;
 
   const mapsLink = p.maps && p.maps.startsWith('http')
     ? `<a href="${p.maps}" target="_blank" class="ficha-maps-btn">
