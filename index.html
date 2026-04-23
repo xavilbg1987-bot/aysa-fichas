@@ -1222,9 +1222,11 @@ function renderFicha(p, container) {
   const estadoBadge = p.estado.includes('BUENO') ? 'badge-success' : p.estado.includes('REGULAR') ? 'badge-warning' : p.estado.includes('MALO') ? 'badge-danger' : '';
   const transitoBadge = p.transito === 'ALTO' ? 'badge-alto' : p.transito === 'MEDIO' ? 'badge-medio' : p.transito === 'BAJO' ? 'badge-bajo' : '';
 
-  // Build photo URL from Drive via Apps Script
+  // Build photo URL from GitHub
   const fotoNombre = `FOTO${p.codigo}`;
-  let fotoUrl = fotosMap[fotoNombre] || p.foto || '';
+  const baseGithub = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
+  const extensions = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG'];
+  let fotoUrl = fotosMap[fotoNombre] || `${baseGithub}${fotoNombre}.jpg`;
 
   const mapsLink = p.maps && p.maps.startsWith('http')
     ? `<a href="${p.maps}" target="_blank" class="ficha-maps-btn">
