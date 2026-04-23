@@ -1308,7 +1308,6 @@ const SHEET_NAME = 'MI-MAC 2026';
 const DRIVE_FOLDER = '1NPCKlpl64gqJRmPC09c2Bt9kDN7kp4EL';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 const FOTOS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhsKX9V6ixc_UEzFk95sgx1W7-GuE3WHk51rnDaFrVl20OxqJR7px6t4cdEnh_0Lt/exec';
-const USERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz177cG37OltyEZZmNvVbVh472QVUgIGhfAcxNGcGZHrcXqPZZofb-vkO43T0wV-AAZ/exec';
 
 // ===== STATE =====
 let currentUser = null;
@@ -1383,47 +1382,40 @@ function isAdmin(email) {
   return ADMIN_EMAILS.includes(email) || (user && user.isAdmin);
 }
 
-async function doLogin() {
+function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pass = document.getElementById('login-pass').value;
   if (!email || !pass) return showError('Completá todos los campos.');
-
-  showError('Verificando...');
-  const users = await fetchUsers();
+  const users = getUsers();
   const user = users.find(u => u.email === email && u.pass === pass);
   if (!user) return showError('Email o contraseña incorrectos.');
   if (user.estado === 'pendiente') return showError('Tu cuenta está pendiente de aprobación. Un administrador te habilitará el acceso.');
-
   currentUser = user;
   localStorage.setItem('aysa_session', JSON.stringify(user));
   enterApp(user);
 }
 
-async function doRegister() {
+function doRegister() {
   const nombre = document.getElementById('reg-nombre').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const organismo = document.getElementById('reg-organismo').value.trim();
   const pass = document.getElementById('reg-pass').value;
   if (!nombre || !email || !organismo || !pass) return showError('Completá todos los campos.');
   if (pass.length < 6) return showError('La contraseña debe tener al menos 6 caracteres.');
-
-  showError('Registrando...');
-  try {
-    const res = await fetch(`${USERS_SCRIPT_URL}?action=registrar&nombre=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&organismo=${encodeURIComponent(organismo)}&pass=${encodeURIComponent(pass)}`);
-    const data = await res.json();
-    if (data.error) return showError(data.error === 'Email ya registrado' ? 'Ya existe una cuenta con ese email.' : data.error);
-    if (data.estado === 'aprobado') {
-      const user = { nombre, email, organismo, pass, estado: 'aprobado', isAdmin: true };
-      currentUser = user;
-      localStorage.setItem('aysa_session', JSON.stringify(user));
-      enterApp(user);
-    } else {
-      showError('✓ Cuenta creada. Esperá la aprobación de un administrador para acceder.');
-      switchTab('login');
-    }
-  } catch(e) {
-    showError('Error de conexión. Intentá de nuevo.');
+  const users = getUsers();
+  if (users.find(u => u.email === email)) return showError('Ya existe una cuenta con ese email.');
+  const isAdminEmail = ADMIN_EMAILS.includes(email);
+  const newUser = { nombre, email, organismo, pass, fecha: new Date().toLocaleDateString('es-AR'), isAdmin: isAdminEmail, estado: isAdminEmail ? 'aprobado' : 'pendiente' };
+  users.push(newUser);
+  saveUsers(users);
+  if (!isAdminEmail) {
+    showError('✓ Cuenta creada. Esperá la aprobación de un administrador para acceder.');
+    switchTab('login');
+    return;
   }
+  currentUser = newUser;
+  localStorage.setItem('aysa_session', JSON.stringify(newUser));
+  enterApp(newUser);
 }
 
 function doLogout() {
