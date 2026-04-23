@@ -1684,6 +1684,7 @@ function refreshAdminPanel() {
           <span class="sug-fecha">${u.fecha || ''}</span>
         </div>
         <div class="sug-usuario">${u.email} · ${u.organismo}</div>
+        ${u.email !== currentUser.email ? `<div class="sug-actions"><button class="btn-sug-action btn-ignorar" onclick="rechazarUsuario('${u.email}')">✗ Eliminar</button></div>` : ''}
       </div>`).join('');
   }
   if (users.length === 0) html = '<div class="empty-state">Sin usuarios registrados</div>';
