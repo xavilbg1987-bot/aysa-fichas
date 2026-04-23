@@ -837,6 +837,118 @@
 
   .admin-only { display: none; }
 
+  /* ===== SIDEBAR ===== */
+  .app-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .sidebar {
+    width: 220px;
+    background: var(--aysa-blue-dark);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+  .sidebar-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0 16px 8px;
+  }
+  .sidebar-folder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-weight: 600;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .sidebar-folder:hover { background: rgba(255,255,255,0.06); color: white; }
+  .sidebar-folder.active { background: rgba(0,168,181,0.15); border-left-color: var(--aysa-teal); color: white; }
+  .sidebar-folder svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .sidebar-folder .folder-badge {
+    margin-left: auto;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+  }
+  .sidebar-folder.coming-soon { opacity: 0.4; cursor: default; }
+  .sidebar-folder.coming-soon:hover { background: transparent; color: rgba(255,255,255,0.7); }
+  .sidebar-coming {
+    font-size: 9px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: auto;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.3px;
+  }
+  .sidebar-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 10px 16px;
+  }
+
+  .main-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 80px;
+  }
+
+  /* Hide sidebar on mobile by default, show on wider screens */
+  @media (max-width: 640px) {
+    .sidebar { display: none; }
+    .sidebar.open { display: flex; position: fixed; top: 60px; left: 0; bottom: 60px; z-index: 50; width: 240px; box-shadow: 4px 0 20px rgba(0,0,0,0.3); }
+  }
+
+  .sidebar-toggle {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    display: none;
+  }
+  @media (max-width: 640px) { .sidebar-toggle { display: flex; align-items: center; } }
+
+  /* Notif emails */
+  .notif-email-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--gray-50);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--gray-800);
+  }
+  .notif-email-item button {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .notif-email-item button:hover { background: #fde8e8; }
+
   /* PRINT / PDF */
   @media print {
     body * { visibility: hidden !important; }
@@ -935,6 +1047,9 @@
   <!-- TOP NAV -->
   <nav class="topnav">
     <div class="topnav-left">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="22" height="22"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/AySA_logo.svg/200px-AySA_logo.svg.png"
            onerror="this.style.background='#1a2f7a'; this.style.padding='4px'" alt="AySA">
       <div class="topnav-title">
@@ -950,6 +1065,37 @@
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   </nav>
+
+  <!-- APP LAYOUT CON SIDEBAR -->
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-title">Fichas</div>
+      <a class="sidebar-folder active" onclick="showTab('buscar', null); closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        MICRO / MACRO
+        <span class="folder-badge">254</span>
+      </a>
+      <a class="sidebar-folder coming-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        PLANTAS DEPURADORAS
+        <span class="sidebar-coming">Próx.</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-title">Acciones</div>
+      <a class="sidebar-folder" onclick="showTab('sugerencias', null); closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Enviar sugerencia
+      </a>
+      <a class="sidebar-folder admin-only" onclick="showTab('admin', null); closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Panel Admin
+      </a>
+    </aside>
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
 
   <!-- TAB: BUSCAR -->
   <div id="tab-buscar" class="content">
@@ -1063,7 +1209,25 @@
         <div class="empty-state">Sin usuarios aún</div>
       </div>
     </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h3>Mails de notificación</h3>
+      </div>
+      <div class="admin-card-body">
+        <p style="font-size:13px;color:var(--gray-400);margin-bottom:14px;">Estos emails recibirán un aviso cada vez que un usuario envíe una sugerencia de modificación.</p>
+        <div id="notif-emails-list"></div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <input type="email" id="new-notif-email" placeholder="email@organismo.com" style="flex:1;padding:10px 12px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;">
+          <button onclick="agregarNotifEmail()" style="padding:10px 16px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Agregar</button>
+        </div>
+      </div>
+    </div>
+
   </div>
+
+    </div> <!-- /main-panel -->
+  </div> <!-- /app-layout -->
 
   <!-- BOTTOM NAV -->
   <nav class="bottomnav">
@@ -1507,6 +1671,7 @@ function refreshAdminPanel() {
       </div>`).join('');
   }
   refreshAdminBadge();
+  renderNotifEmails();
 }
 
 function resolverSug(id) {
@@ -1657,6 +1822,51 @@ function descargarPDF() {
     setTimeout(() => { document.getElementById('print-area').style.display = 'none'; }, 1500);
   }, 600);
 }
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ===== NOTIF EMAILS =====
+function getNotifEmails() { try { return JSON.parse(localStorage.getItem('aysa_notif_emails') || '[]'); } catch { return []; } }
+function saveNotifEmails(e) { localStorage.setItem('aysa_notif_emails', JSON.stringify(e)); }
+
+function renderNotifEmails() {
+  const emails = getNotifEmails();
+  const container = document.getElementById('notif-emails-list');
+  if (!container) return;
+  if (emails.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:10px 0;text-align:left;">Sin emails configurados</div>';
+    return;
+  }
+  container.innerHTML = emails.map((email, i) => `
+    <div class="notif-email-item">
+      <span>${email}</span>
+      <button onclick="eliminarNotifEmail(${i})" title="Eliminar">×</button>
+    </div>`).join('');
+}
+
+function agregarNotifEmail() {
+  const input = document.getElementById('new-notif-email');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) return alert('Ingresá un email válido.');
+  const emails = getNotifEmails();
+  if (emails.includes(email)) return alert('Ese email ya está en la lista.');
+  emails.push(email);
+  saveNotifEmails(emails);
+  input.value = '';
+  renderNotifEmails();
+}
+
+function eliminarNotifEmail(i) {
+  const emails = getNotifEmails();
+  emails.splice(i, 1);
+  saveNotifEmails(emails);
+  renderNotifEmails();
+}
+
 function openLightbox(src) {
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox').classList.add('active');
