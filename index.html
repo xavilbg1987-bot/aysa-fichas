@@ -1308,6 +1308,7 @@ const SHEET_NAME = 'MI-MAC 2026';
 const DRIVE_FOLDER = '1NPCKlpl64gqJRmPC09c2Bt9kDN7kp4EL';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 const FOTOS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhsKX9V6ixc_UEzFk95sgx1W7-GuE3WHk51rnDaFrVl20OxqJR7px6t4cdEnh_0Lt/exec';
+const USERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz177cG37OltyEZZmNvVbVh472QVUgIGhfAcxNGcGZHrcXqPZZofb-vkO43T0wV-AAZ/exec';
 
 // ===== STATE =====
 let currentUser = null;
@@ -1318,16 +1319,25 @@ let fotosMap = {};
 // Admin emails (agregá los tuyos acá)
 const ADMIN_EMAILS = ['admin@aysa.com.ar', 'xavilbg1987@gmail.com'];
 
-// ===== LOCAL STORAGE HELPERS =====
-// ===== USER MANAGEMENT (localStorage) =====
-function getUsers() { try { return JSON.parse(localStorage.getItem('aysa_users') || '[]'); } catch { return []; } }
-function saveUsers(u) { localStorage.setItem('aysa_users', JSON.stringify(u)); }
+// ===== USER MANAGEMENT VIA SHEETS =====
+function getUsers() { try { return JSON.parse(localStorage.getItem('aysa_users_cache') || '[]'); } catch { return []; } }
+function saveUsers(u) { localStorage.setItem('aysa_users_cache', JSON.stringify(u)); }
 
-function doLogin() {
+async function fetchAndCacheUsers() {
+  try {
+    const res = await fetch(`${USERS_SCRIPT_URL}?action=getUsuarios`);
+    const data = await res.json();
+    if (Array.isArray(data)) { saveUsers(data); return data; }
+    return getUsers();
+  } catch(e) { return getUsers(); }
+}
+
+async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pass = document.getElementById('login-pass').value;
   if (!email || !pass) return showError('Completá todos los campos.');
-  const users = getUsers();
+  showError('Verificando...');
+  const users = await fetchAndCacheUsers();
   const user = users.find(u => u.email === email && u.pass === pass);
   if (!user) return showError('Email o contraseña incorrectos.');
   if (user.estado === 'pendiente') return showError('Tu cuenta está pendiente de aprobación. Un administrador te habilitará el acceso.');
@@ -1336,28 +1346,31 @@ function doLogin() {
   enterApp(user);
 }
 
-function doRegister() {
+async function doRegister() {
   const nombre = document.getElementById('reg-nombre').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const organismo = document.getElementById('reg-organismo').value.trim();
   const pass = document.getElementById('reg-pass').value;
   if (!nombre || !email || !organismo || !pass) return showError('Completá todos los campos.');
   if (pass.length < 6) return showError('La contraseña debe tener al menos 6 caracteres.');
-  const users = getUsers();
-  if (users.find(u => u.email === email)) return showError('Ya existe una cuenta con ese email.');
-  const isAdminEmail = ADMIN_EMAILS.includes(email);
-  const newUser = { nombre, email, organismo, pass, fecha: new Date().toLocaleDateString('es-AR'), isAdmin: isAdminEmail, estado: isAdminEmail ? 'aprobado' : 'pendiente' };
-  users.push(newUser);
-  saveUsers(users);
-  if (!isAdminEmail) {
-    showError('✓ Cuenta creada. Esperá la aprobación de un administrador para acceder.');
-    switchTab('login');
-    return;
-  }
-  currentUser = newUser;
-  localStorage.setItem('aysa_session', JSON.stringify(newUser));
-  enterApp(newUser);
+  showError('Registrando...');
+  try {
+    const res = await fetch(`${USERS_SCRIPT_URL}?action=registrar&nombre=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&organismo=${encodeURIComponent(organismo)}&pass=${encodeURIComponent(pass)}`);
+    const data = await res.json();
+    if (data.error === 'ya_registrado') return showError('Ya existe una cuenta con ese email.');
+    if (data.error) return showError('Error al registrar. Intentá de nuevo.');
+    if (data.estado === 'aprobado') {
+      const user = { nombre, email, organismo, pass, estado: 'aprobado', isAdmin: data.esAdmin };
+      currentUser = user;
+      localStorage.setItem('aysa_session', JSON.stringify(user));
+      enterApp(user);
+    } else {
+      showError('✓ Cuenta creada. Esperá la aprobación de un administrador para acceder.');
+      switchTab('login');
+    }
+  } catch(e) { showError('Error de conexión. Intentá de nuevo.'); }
 }
+
 function getSugerencias() { try { return JSON.parse(localStorage.getItem('aysa_sugerencias') || '[]'); } catch { return []; } }
 function saveSugerencias(s) { localStorage.setItem('aysa_sugerencias', JSON.stringify(s)); }
 
@@ -1380,42 +1393,6 @@ function isAdmin(email) {
   const users = getUsers();
   const user = users.find(u => u.email === email);
   return ADMIN_EMAILS.includes(email) || (user && user.isAdmin);
-}
-
-function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass = document.getElementById('login-pass').value;
-  if (!email || !pass) return showError('Completá todos los campos.');
-  const users = getUsers();
-  const user = users.find(u => u.email === email && u.pass === pass);
-  if (!user) return showError('Email o contraseña incorrectos.');
-  if (user.estado === 'pendiente') return showError('Tu cuenta está pendiente de aprobación. Un administrador te habilitará el acceso.');
-  currentUser = user;
-  localStorage.setItem('aysa_session', JSON.stringify(user));
-  enterApp(user);
-}
-
-function doRegister() {
-  const nombre = document.getElementById('reg-nombre').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const organismo = document.getElementById('reg-organismo').value.trim();
-  const pass = document.getElementById('reg-pass').value;
-  if (!nombre || !email || !organismo || !pass) return showError('Completá todos los campos.');
-  if (pass.length < 6) return showError('La contraseña debe tener al menos 6 caracteres.');
-  const users = getUsers();
-  if (users.find(u => u.email === email)) return showError('Ya existe una cuenta con ese email.');
-  const isAdminEmail = ADMIN_EMAILS.includes(email);
-  const newUser = { nombre, email, organismo, pass, fecha: new Date().toLocaleDateString('es-AR'), isAdmin: isAdminEmail, estado: isAdminEmail ? 'aprobado' : 'pendiente' };
-  users.push(newUser);
-  saveUsers(users);
-  if (!isAdminEmail) {
-    showError('✓ Cuenta creada. Esperá la aprobación de un administrador para acceder.');
-    switchTab('login');
-    return;
-  }
-  currentUser = newUser;
-  localStorage.setItem('aysa_session', JSON.stringify(newUser));
-  enterApp(newUser);
 }
 
 function doLogout() {
@@ -1676,8 +1653,8 @@ function refreshAdminBadge() {
   document.getElementById('stat-sugerencias').textContent = sugs.length;
 }
 
-function refreshAdminPanel() {
-  const users = getUsers();
+async function refreshAdminPanel() {
+  const users = await fetchAndCacheUsers();
   document.getElementById('stat-usuarios').textContent = users.length;
   const pendientesCount = users.filter(u => u.estado === 'pendiente').length;
   if (pendientesCount > 0) {
@@ -1745,17 +1722,14 @@ function refreshAdminPanel() {
   renderNotifEmails();
 }
 
-function aprobarUsuario(email) {
-  const users = getUsers();
-  const idx = users.findIndex(u => u.email === email);
-  if (idx !== -1) { users[idx].estado = 'aprobado'; saveUsers(users); }
+async function aprobarUsuario(email) {
+  await fetch(`${USERS_SCRIPT_URL}?action=aprobar&email=${encodeURIComponent(email)}&estado=aprobado`);
   refreshAdminPanel();
 }
 
-function rechazarUsuario(email) {
+async function rechazarUsuario(email) {
   if (!confirm(`¿Eliminar la cuenta de ${email}?`)) return;
-  const users = getUsers().filter(u => u.email !== email);
-  saveUsers(users);
+  await fetch(`${USERS_SCRIPT_URL}?action=eliminar&email=${encodeURIComponent(email)}`);
   refreshAdminPanel();
 }
 
@@ -1961,12 +1935,12 @@ function closeLightbox() {
 }
 
 // ===== CHECK SESSION =====
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   const session = localStorage.getItem('aysa_session');
   if (session) {
     try {
       const user = JSON.parse(session);
-      const users = getUsers();
+      const users = await fetchAndCacheUsers();
       const found = users.find(u => u.email === user.email && u.estado === 'aprobado');
       if (found) {
         currentUser = found;
@@ -1975,12 +1949,6 @@ window.addEventListener('load', () => {
       }
     } catch(e) {}
     localStorage.removeItem('aysa_session');
-  }
-  // Crear admin por defecto si no hay usuarios
-  const users = getUsers();
-  if (users.length === 0) {
-    users.push({ nombre: 'Administrador', email: 'admin@aysa.com.ar', organismo: 'AySA', pass: 'aysa2024', fecha: new Date().toLocaleDateString('es-AR'), isAdmin: true, estado: 'aprobado' });
-    saveUsers(users);
   }
 });
 </script>
