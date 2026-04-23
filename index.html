@@ -1098,6 +1098,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         Panel Admin
       </a>
+      <a class="sidebar-folder admin-only" onclick="showTab('usuarios', null); closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Usuarios
+      </a>
     </aside>
 
     <!-- MAIN PANEL -->
@@ -1209,15 +1213,6 @@
 
     <div class="admin-card">
       <div class="admin-card-header">
-        <h3>Usuarios registrados</h3>
-      </div>
-      <div id="admin-usuarios-list">
-        <div class="empty-state">Sin usuarios aún</div>
-      </div>
-    </div>
-
-    <div class="admin-card">
-      <div class="admin-card-header">
         <h3>Mails de notificación</h3>
       </div>
       <div class="admin-card-body">
@@ -1230,6 +1225,31 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- TAB: USUARIOS -->
+  <div id="tab-usuarios" class="content admin-only" style="display:none">
+    <div class="page-header">
+      <h2>Usuarios</h2>
+      <p>Gestión de accesos al sistema</p>
+    </div>
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h3>Pendientes de aprobación</h3>
+        <span class="badge badge-warning" id="badge-pendientes">0</span>
+      </div>
+      <div id="usuarios-pendientes-list">
+        <div class="empty-state">Sin usuarios pendientes ✓</div>
+      </div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h3>Usuarios aprobados</h3>
+      </div>
+      <div id="usuarios-aprobados-list">
+        <div class="empty-state">Sin usuarios aún</div>
+      </div>
+    </div>
   </div>
 
     </div> <!-- /main-panel -->
@@ -1325,11 +1345,23 @@ function saveUsers(u) { localStorage.setItem('aysa_users_cache', JSON.stringify(
 
 async function fetchAndCacheUsers() {
   try {
-    const res = await fetch(`${USERS_SCRIPT_URL}?action=getUsuarios`);
-    const data = await res.json();
+    const data = await jsonpFetch(`${USERS_SCRIPT_URL}?action=getUsuarios`);
     if (Array.isArray(data)) { saveUsers(data); return data; }
     return getUsers();
   } catch(e) { return getUsers(); }
+}
+
+// JSONP helper to bypass CORS
+function jsonpFetch(url) {
+  return new Promise((resolve, reject) => {
+    const cb = 'cb_' + Date.now();
+    const script = document.createElement('script');
+    window[cb] = (data) => { delete window[cb]; document.body.removeChild(script); resolve(data); };
+    script.onerror = () => { delete window[cb]; document.body.removeChild(script); reject(new Error('JSONP error')); };
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+    document.body.appendChild(script);
+    setTimeout(() => { if (window[cb]) { delete window[cb]; try { document.body.removeChild(script); } catch(e){} reject(new Error('Timeout')); } }, 10000);
+  });
 }
 
 async function doLogin() {
@@ -1355,8 +1387,7 @@ async function doRegister() {
   if (pass.length < 6) return showError('La contraseña debe tener al menos 6 caracteres.');
   showError('Registrando...');
   try {
-    const res = await fetch(`${USERS_SCRIPT_URL}?action=registrar&nombre=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&organismo=${encodeURIComponent(organismo)}&pass=${encodeURIComponent(pass)}`);
-    const data = await res.json();
+    const data = await jsonpFetch(`${USERS_SCRIPT_URL}?action=registrar&nombre=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&organismo=${encodeURIComponent(organismo)}&pass=${encodeURIComponent(pass)}`);
     if (data.error === 'ya_registrado') return showError('Ya existe una cuenta con ese email.');
     if (data.error) return showError('Error al registrar. Intentá de nuevo.');
     if (data.estado === 'aprobado') {
@@ -1723,13 +1754,13 @@ async function refreshAdminPanel() {
 }
 
 async function aprobarUsuario(email) {
-  await fetch(`${USERS_SCRIPT_URL}?action=aprobar&email=${encodeURIComponent(email)}&estado=aprobado`);
+  await jsonpFetch(`${USERS_SCRIPT_URL}?action=aprobar&email=${encodeURIComponent(email)}&estado=aprobado`);
   refreshAdminPanel();
 }
 
 async function rechazarUsuario(email) {
   if (!confirm(`¿Eliminar la cuenta de ${email}?`)) return;
-  await fetch(`${USERS_SCRIPT_URL}?action=eliminar&email=${encodeURIComponent(email)}`);
+  await jsonpFetch(`${USERS_SCRIPT_URL}?action=eliminar&email=${encodeURIComponent(email)}`);
   refreshAdminPanel();
 }
 
@@ -1748,7 +1779,7 @@ function ignorarSug(id) {
 
 // ===== NAV =====
 function showTab(tab, btn) {
-  ['buscar','sugerencias','admin'].forEach(t => {
+  ['buscar','sugerencias','admin','usuarios'].forEach(t => {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
@@ -1756,6 +1787,51 @@ function showTab(tab, btn) {
   document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   if (tab === 'admin') refreshAdminPanel();
+  if (tab === 'usuarios') renderUsuariosTab();
+}
+
+async function renderUsuariosTab() {
+  const users = await fetchAndCacheUsers();
+  const pendientes = users.filter(u => u.estado === 'pendiente');
+  const aprobados = users.filter(u => u.estado !== 'pendiente');
+
+  const badge = document.getElementById('badge-pendientes');
+  if (badge) badge.textContent = pendientes.length;
+
+  const pendContainer = document.getElementById('usuarios-pendientes-list');
+  if (pendContainer) {
+    pendContainer.innerHTML = pendientes.length === 0
+      ? '<div class="empty-state">Sin usuarios pendientes ✓</div>'
+      : pendientes.map(u => `
+        <div class="sug-item">
+          <div class="sug-item-header">
+            <span class="sug-codigo">${u.nombre}</span>
+            <span class="badge badge-warning">Pendiente</span>
+          </div>
+          <div class="sug-usuario">${u.email} · ${u.organismo}</div>
+          <div class="sug-fecha">${u.fecha || ''}</div>
+          <div class="sug-actions">
+            <button class="btn-sug-action btn-resolver" onclick="aprobarUsuario('${u.email}')">✓ Aprobar</button>
+            <button class="btn-sug-action btn-ignorar" onclick="rechazarUsuario('${u.email}')">✗ Rechazar</button>
+          </div>
+        </div>`).join('');
+  }
+
+  const aprobContainer = document.getElementById('usuarios-aprobados-list');
+  if (aprobContainer) {
+    aprobContainer.innerHTML = aprobados.length === 0
+      ? '<div class="empty-state">Sin usuarios aprobados aún</div>'
+      : aprobados.map(u => `
+        <div class="sug-item">
+          <div class="sug-item-header">
+            <span class="sug-codigo">${u.nombre}</span>
+            <span class="badge badge-success">Aprobado</span>
+          </div>
+          <div class="sug-usuario">${u.email} · ${u.organismo}</div>
+          <div class="sug-fecha">${u.fecha || ''}</div>
+          ${u.email !== currentUser.email ? `<div class="sug-actions"><button class="btn-sug-action btn-ignorar" onclick="rechazarUsuario('${u.email}')">✗ Eliminar</button></div>` : ''}
+        </div>`).join('');
+  }
 }
 
 function togglePass(id, btn) {
