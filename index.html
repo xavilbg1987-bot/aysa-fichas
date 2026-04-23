@@ -1552,49 +1552,101 @@ function descargarPDF() {
 
   const fotoUrl = fotosMap[`FOTO${p.codigo}`] || `https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/FOTO${p.codigo}.GIF`;
   const fecha = new Date().toLocaleDateString('es-AR');
-
-  const val = (v) => (v && v !== '---' && v !== '--') ? v : '—';
+  const val = (v) => (v && v !== '---' && v !== '--') ? v : '';
 
   document.getElementById('print-area').innerHTML = `
-    <div class="print-header">
-      <div class="print-header-left">
-        <h1>Dirección de Medio Ambiente y Calidad — Gerencia de Calidad</h1>
-        <p>Ficha de Puntos de Muestreo CIC &nbsp;·&nbsp; R-CAL-EFL-004</p>
-      </div>
-      <div class="print-header-right">
-        Fecha: ${fecha}<br>
-        Generado por: ${currentUser.nombre}
-      </div>
-    </div>
+    <div style="font-family:Arial,sans-serif;width:170mm;margin:0 auto;border:1px solid #999;font-size:9pt;">
 
-    <div class="print-codigo">${p.codigo}</div>
-    <div class="print-dir">${val(p.direccion)}</div>
-    <div class="print-loc">${val(p.localidad)} · ${val(p.region)} ${p.macrocuenca && p.macrocuenca !== '---' ? '· ' + p.macrocuenca : ''}</div>
+      <!-- ENCABEZADO -->
+      <table style="width:100%;border-collapse:collapse;background:#c0c0c0;">
+        <tr>
+          <td style="width:75%;padding:6px 10px;text-align:center;vertical-align:middle;">
+            <div style="font-weight:700;font-size:10pt;color:#000;">Direccion de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:9pt;color:#000;margin-top:2px;">Gerencia de Calidad</div>
+            <div style="font-weight:700;font-size:9pt;color:#000;margin-top:2px;">Ficha de Puntos de Muestreo CIC</div>
+            <div style="font-weight:700;font-size:9pt;color:#000;margin-top:2px;">R-CAL-EFL-004</div>
+          </td>
+          <td style="width:25%;padding:6px;text-align:center;vertical-align:middle;border-left:1px solid #999;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/AySA_logo.svg/200px-AySA_logo.svg.png" style="width:60px;" onerror="this.style.display='none'">
+          </td>
+        </tr>
+      </table>
 
-    <img class="print-foto" src="${fotoUrl}" alt="Foto ${p.codigo}" onerror="this.style.display='none'">
+      <!-- DIRECCIÓN -->
+      <table style="width:100%;border-collapse:collapse;border-top:1px solid #999;">
+        <tr>
+          <td style="width:20%;padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">DIRECCION:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #999;">${val(p.direccion)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">MAPS:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #999;font-size:7pt;color:#1a2f7a;">${val(p.maps)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">COORDENADAS:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #999;">${val(p.coordenadas)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">REGION:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #999;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="width:33%;">${val(p.region)}</td>
+                <td style="width:15%;font-weight:700;border-left:1px solid #999;padding-left:8px;">LOCALIDAD</td>
+                <td style="width:30%;border-left:1px solid #999;padding-left:8px;">${val(p.localidad)}</td>
+                <td style="width:10%;font-weight:700;border-left:1px solid #999;padding-left:8px;">CODIGO:</td>
+                <td style="border-left:1px solid #999;padding-left:8px;font-weight:700;color:#1a2f7a;">${val(p.codigo)}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
 
-    <div class="print-section-title">Ubicación</div>
-    <div class="print-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
-      <div class="print-field"><label>Coordenadas</label><value>${val(p.coordenadas)}</value></div>
-      <div class="print-field"><label>Ubicación</label><value>${val(p.ubicacion)}</value></div>
-    </div>
+      <!-- UBICACIÓN Y FOTOGRAFÍAS -->
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="background:#c0c0c0;text-align:center;font-weight:700;padding:5px;border-top:1px solid #999;border-bottom:1px solid #999;">UBICACIÓN Y FOTOGRAFIAS</td>
+        </tr>
+        <tr>
+          <td style="padding:8px;text-align:center;height:200px;vertical-align:middle;border-bottom:1px solid #999;">
+            <img src="${fotoUrl}" style="max-width:100%;max-height:190px;object-fit:contain;" onerror="this.style.display='none'">
+          </td>
+        </tr>
+      </table>
 
-    <div class="print-section-title">Boca de Registro</div>
-    <div class="print-grid">
-      <div class="print-field"><label>Estado</label><value>${val(p.estado)}</value></div>
-      <div class="print-field"><label>Tránsito</label><value>${val(p.transito)}</value></div>
-      <div class="print-field"><label>Riesgo</label><value>${val(p.riesgo)}</value></div>
-      <div class="print-field"><label>Diámetro</label><value>${val(p.diametro)}</value></div>
-      <div class="print-field"><label>Intradós</label><value>${val(p.intrados)}</value></div>
-    </div>
+      <!-- BOCA DE REGISTRO -->
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td colspan="4" style="background:#c0c0c0;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #999;">BOCA DE REGISTRO</td>
+        </tr>
+        <tr>
+          <td style="width:15%;padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">UBICACIÓN:</td>
+          <td style="width:35%;padding:5px 8px;border-right:1px solid #999;border-bottom:1px solid #999;">${val(p.ubicacion)}</td>
+          <td style="width:15%;padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">TRANSITO:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #999;">${val(p.transito)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">ESTADO:</td>
+          <td style="padding:5px 8px;border-right:1px solid #999;border-bottom:1px solid #999;">${val(p.estado)}</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">RIESGO:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #999;">${val(p.riesgo)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">DIAMETRO</td>
+          <td style="padding:5px 8px;border-right:1px solid #999;border-bottom:1px solid #999;">${val(p.diametro)}</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;border-bottom:1px solid #999;">INTRADOS</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #999;">${val(p.intrados)}</td>
+        </tr>
+      </table>
 
-    ${p.observaciones && p.observaciones !== '---' ? `
-    <div class="print-section-title">Observaciones</div>
-    <div class="print-obs">${p.observaciones}</div>` : ''}
+      <!-- OBSERVACIONES -->
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #999;width:20%;vertical-align:top;">OBSERVACIONES:</td>
+          <td style="padding:5px 8px;min-height:40px;vertical-align:top;">${val(p.observaciones)}</td>
+        </tr>
+      </table>
 
-    <div class="print-footer">
-      <span>AySA — Agua y Saneamientos Argentinos S.A.</span>
-      <span>${p.codigo} · ${fecha}</span>
     </div>
   `;
 
@@ -1604,7 +1656,7 @@ function descargarPDF() {
     setTimeout(() => {
       document.getElementById('print-area').style.display = 'none';
     }, 1000);
-  }, 300);
+  }, 400);
 }
 
 function openLightbox(src) {
