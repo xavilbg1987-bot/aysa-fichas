@@ -1340,28 +1340,29 @@ let fotosMap = {};
 const ADMIN_EMAILS = ['admin@aysa.com.ar', 'xavilbg1987@gmail.com'];
 
 // ===== USER MANAGEMENT VIA SHEETS =====
+const USERS_SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Usuarios`;
+
 function getUsers() { try { return JSON.parse(localStorage.getItem('aysa_users_cache') || '[]'); } catch { return []; } }
 function saveUsers(u) { localStorage.setItem('aysa_users_cache', JSON.stringify(u)); }
 
 async function fetchAndCacheUsers() {
   try {
-    const data = await jsonpFetch(`${USERS_SCRIPT_URL}?action=getUsuarios`);
-    if (Array.isArray(data)) { saveUsers(data); return data; }
-    return getUsers();
+    const res = await fetch(USERS_SHEET_URL);
+    const text = await res.text();
+    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);$/, ''));
+    const rows = json.table.rows;
+    const users = rows.map(r => ({
+      nombre: r.c[0]?.v?.toString().trim() || '',
+      email: r.c[1]?.v?.toString().trim() || '',
+      organismo: r.c[2]?.v?.toString().trim() || '',
+      pass: r.c[3]?.v?.toString().trim() || '',
+      fecha: r.c[4]?.v?.toString().trim() || '',
+      estado: r.c[5]?.v?.toString().trim() || '',
+      isAdmin: r.c[6]?.v === true || r.c[6]?.v === 'TRUE'
+    })).filter(u => u.email);
+    saveUsers(users);
+    return users;
   } catch(e) { return getUsers(); }
-}
-
-// JSONP helper to bypass CORS
-function jsonpFetch(url) {
-  return new Promise((resolve, reject) => {
-    const cb = 'cb_' + Date.now();
-    const script = document.createElement('script');
-    window[cb] = (data) => { delete window[cb]; document.body.removeChild(script); resolve(data); };
-    script.onerror = () => { delete window[cb]; document.body.removeChild(script); reject(new Error('JSONP error')); };
-    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
-    document.body.appendChild(script);
-    setTimeout(() => { if (window[cb]) { delete window[cb]; try { document.body.removeChild(script); } catch(e){} reject(new Error('Timeout')); } }, 10000);
-  });
 }
 
 async function doLogin() {
@@ -1385,21 +1386,25 @@ async function doRegister() {
   const pass = document.getElementById('reg-pass').value;
   if (!nombre || !email || !organismo || !pass) return showError('Completá todos los campos.');
   if (pass.length < 6) return showError('La contraseña debe tener al menos 6 caracteres.');
-  showError('Registrando...');
+  showError('Verificando...');
+  const users = await fetchAndCacheUsers();
+  if (users.find(u => u.email === email)) return showError('Ya existe una cuenta con ese email.');
+  // Save via Apps Script
   try {
-    const data = await jsonpFetch(`${USERS_SCRIPT_URL}?action=registrar&nombre=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&organismo=${encodeURIComponent(organismo)}&pass=${encodeURIComponent(pass)}`);
-    if (data.error === 'ya_registrado') return showError('Ya existe una cuenta con ese email.');
-    if (data.error) return showError('Error al registrar. Intentá de nuevo.');
-    if (data.estado === 'aprobado') {
-      const user = { nombre, email, organismo, pass, estado: 'aprobado', isAdmin: data.esAdmin };
+    const url = `${USERS_SCRIPT_URL}?action=registrar&nombre=${encodeURIComponent(nombre)}&email=${encodeURIComponent(email)}&organismo=${encodeURIComponent(organismo)}&pass=${encodeURIComponent(pass)}`;
+    await fetch(url, {mode: 'no-cors'});
+    const isAdminEmail = ADMIN_EMAILS.includes(email);
+    if (isAdminEmail) {
+      const user = { nombre, email, organismo, pass, estado: 'aprobado', isAdmin: true };
       currentUser = user;
       localStorage.setItem('aysa_session', JSON.stringify(user));
-      enterApp(user);
+      // Give sheets time to update
+      setTimeout(() => enterApp(user), 1000);
     } else {
       showError('✓ Cuenta creada. Esperá la aprobación de un administrador para acceder.');
       switchTab('login');
     }
-  } catch(e) { showError('Error de conexión. Intentá de nuevo.'); }
+  } catch(e) { showError('Error al registrar. Intentá de nuevo.'); }
 }
 
 function getSugerencias() { try { return JSON.parse(localStorage.getItem('aysa_sugerencias') || '[]'); } catch { return []; } }
@@ -1754,14 +1759,14 @@ async function refreshAdminPanel() {
 }
 
 async function aprobarUsuario(email) {
-  await jsonpFetch(`${USERS_SCRIPT_URL}?action=aprobar&email=${encodeURIComponent(email)}&estado=aprobado`);
-  refreshAdminPanel();
+  await fetch(`${USERS_SCRIPT_URL}?action=aprobar&email=${encodeURIComponent(email)}&estado=aprobado`, {mode:'no-cors'});
+  setTimeout(() => refreshAdminPanel(), 1500);
 }
 
 async function rechazarUsuario(email) {
   if (!confirm(`¿Eliminar la cuenta de ${email}?`)) return;
-  await jsonpFetch(`${USERS_SCRIPT_URL}?action=eliminar&email=${encodeURIComponent(email)}`);
-  refreshAdminPanel();
+  await fetch(`${USERS_SCRIPT_URL}?action=eliminar&email=${encodeURIComponent(email)}`, {mode:'no-cors'});
+  setTimeout(() => refreshAdminPanel(), 1500);
 }
 
 function resolverSug(id) {
