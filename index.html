@@ -190,7 +190,7 @@
 
   /* ===== TOP NAV ===== */
   .topnav {
-    background: var(--aysa-blue);
+    background: #2a45a8;
     padding: 0 20px;
     height: 60px;
     display: flex;
@@ -1354,6 +1354,8 @@ function doLogin() {
   const user = users.find(u => u.email === email && u.pass === pass);
   if (!user) return showError('Email o contraseña incorrectos.');
 
+  if (user.estado === 'pendiente') return showError('Tu cuenta está pendiente de aprobación. Un administrador te habilitará el acceso.');
+
   currentUser = user;
   localStorage.setItem('aysa_session', JSON.stringify(user));
   enterApp(user);
@@ -1370,9 +1372,17 @@ function doRegister() {
   const users = getUsers();
   if (users.find(u => u.email === email)) return showError('Ya existe una cuenta con ese email.');
 
-  const newUser = { nombre, email, organismo, pass, fecha: new Date().toLocaleDateString('es-AR'), isAdmin: ADMIN_EMAILS.includes(email) };
+  const isAdminEmail = ADMIN_EMAILS.includes(email);
+  const newUser = { nombre, email, organismo, pass, fecha: new Date().toLocaleDateString('es-AR'), isAdmin: isAdminEmail, estado: isAdminEmail ? 'aprobado' : 'pendiente' };
   users.push(newUser);
   saveUsers(users);
+
+  if (!isAdminEmail) {
+    showError('✓ Cuenta creada. Esperá la aprobación de un administrador para acceder.');
+    switchTab('login');
+    return;
+  }
+
   currentUser = newUser;
   localStorage.setItem('aysa_session', JSON.stringify(newUser));
   enterApp(newUser);
@@ -1639,13 +1649,35 @@ function refreshAdminBadge() {
 function refreshAdminPanel() {
   const users = getUsers();
   document.getElementById('stat-usuarios').textContent = users.length;
+  const pendientesCount = users.filter(u => u.estado === 'pendiente').length;
+  if (pendientesCount > 0) {
+    document.getElementById('stat-usuarios').textContent = `${users.length} (${pendientesCount} pend.)`;
+  }
 
   // Usuarios
   const usersContainer = document.getElementById('admin-usuarios-list');
-  if (users.length === 0) {
-    usersContainer.innerHTML = '<div class="empty-state">Sin usuarios registrados</div>';
-  } else {
-    usersContainer.innerHTML = users.map(u => `
+  const pendientes = users.filter(u => u.estado === 'pendiente');
+  const aprobados = users.filter(u => u.estado !== 'pendiente');
+
+  let html = '';
+  if (pendientes.length > 0) {
+    html += `<div style="padding:10px 20px 4px;font-size:11px;font-weight:700;color:var(--warning);letter-spacing:0.5px;text-transform:uppercase;">Pendientes de aprobación (${pendientes.length})</div>`;
+    html += pendientes.map(u => `
+      <div class="sug-item">
+        <div class="sug-item-header">
+          <span class="sug-codigo">${u.nombre}</span>
+          <span class="badge badge-warning">Pendiente</span>
+        </div>
+        <div class="sug-usuario">${u.email} · ${u.organismo}</div>
+        <div class="sug-actions">
+          <button class="btn-sug-action btn-resolver" onclick="aprobarUsuario('${u.email}')">✓ Aprobar</button>
+          <button class="btn-sug-action btn-ignorar" onclick="rechazarUsuario('${u.email}')">✗ Rechazar</button>
+        </div>
+      </div>`).join('');
+  }
+  if (aprobados.length > 0) {
+    html += `<div style="padding:10px 20px 4px;font-size:11px;font-weight:700;color:var(--success);letter-spacing:0.5px;text-transform:uppercase;">Aprobados (${aprobados.length})</div>`;
+    html += aprobados.map(u => `
       <div class="sug-item">
         <div class="sug-item-header">
           <span class="sug-codigo">${u.nombre}</span>
@@ -1654,6 +1686,8 @@ function refreshAdminPanel() {
         <div class="sug-usuario">${u.email} · ${u.organismo}</div>
       </div>`).join('');
   }
+  if (users.length === 0) html = '<div class="empty-state">Sin usuarios registrados</div>';
+  usersContainer.innerHTML = html;
 
   // Sugerencias
   const sugs = getSugerencias().filter(s => s.estado === 'pendiente');
@@ -1678,6 +1712,20 @@ function refreshAdminPanel() {
   }
   refreshAdminBadge();
   renderNotifEmails();
+}
+
+function aprobarUsuario(email) {
+  const users = getUsers();
+  const idx = users.findIndex(u => u.email === email);
+  if (idx !== -1) { users[idx].estado = 'aprobado'; saveUsers(users); }
+  refreshAdminPanel();
+}
+
+function rechazarUsuario(email) {
+  if (!confirm(`¿Eliminar la cuenta de ${email}?`)) return;
+  const users = getUsers().filter(u => u.email !== email);
+  saveUsers(users);
+  refreshAdminPanel();
 }
 
 function resolverSug(id) {
