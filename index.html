@@ -962,6 +962,8 @@
     #print-area, #print-area * { visibility: visible !important; }
     #print-area { display: block !important; position: fixed; inset: 0; padding: 15mm 20mm; }
     @page { size: A4 portrait; margin: 0; }
+    /* Remove browser header/footer */
+    html { margin: 0 !important; }
   }
   #print-area {
     display: none;
@@ -1425,10 +1427,7 @@ function showError(msg) {
 }
 
 function isAdmin(email) {
-  // Check ADMIN_EMAILS list or if user has admin flag
-  const users = getUsers();
-  const user = users.find(u => u.email === email);
-  return ADMIN_EMAILS.includes(email) || (user && user.isAdmin);
+  return ADMIN_EMAILS.includes(email);
 }
 
 function doLogout() {
@@ -1446,6 +1445,12 @@ function enterApp(user) {
   document.getElementById('nav-username').textContent = user.nombre;
   document.getElementById('nav-organismo').textContent = user.organismo;
 
+  // Primero ocultar todos los elementos admin-only
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = 'none';
+  });
+
+  // Mostrar solo si es admin
   if (isAdmin(user.email)) {
     document.querySelectorAll('.admin-only').forEach(el => {
       el.style.display = el.tagName === 'BUTTON' ? 'flex' : 'block';
