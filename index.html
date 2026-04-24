@@ -1721,12 +1721,28 @@ function enviarSugerencia() {
   setTimeout(() => ok.style.display = 'none', 4000);
 }
 
-function guardarSugerencia(codigo, campo, desc) {
-  const asunto = `Sugerencia de modificación - ${codigo}`;
-  const cuerpo = `Código: ${codigo}%0D%0ACampo: ${campo}%0D%0ADescripción: ${desc}%0D%0A%0D%0AUsuario: ${currentUser.nombre}%0D%0AEmail: ${currentUser.email}%0D%0AOrganismo: ${currentUser.organismo}%0D%0AFecha: ${new Date().toLocaleDateString('es-AR')}`;
+async function guardarSugerencia(codigo, campo, desc) {
+  const formData = new FormData();
+  formData.append('Código', codigo);
+  formData.append('Campo', campo);
+  formData.append('Descripción', desc);
+  formData.append('Usuario', currentUser.nombre);
+  formData.append('Email usuario', currentUser.email);
+  formData.append('Organismo', currentUser.organismo);
+  formData.append('Fecha', new Date().toLocaleDateString('es-AR'));
+  formData.append('_subject', `Sugerencia modificación - ${codigo}`);
+  formData.append('_captcha', 'false');
+  formData.append('_template', 'table');
+
   const notifEmails = getNotifEmails();
-  const destino = notifEmails.length > 0 ? notifEmails.join(',') : 'xavilbg1987@gmail.com';
-  window.location.href = `mailto:${destino}?subject=${encodeURIComponent(asunto)}&body=${cuerpo}`;
+  const destino = notifEmails.length > 0 ? notifEmails[0] : 'xavilbg1987@gmail.com';
+
+  try {
+    await fetch(`https://formsubmit.co/ajax/${destino}`, {
+      method: 'POST',
+      body: formData
+    });
+  } catch(e) {}
 }
 
 // ===== ADMIN =====
