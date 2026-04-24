@@ -1722,10 +1722,11 @@ function enviarSugerencia() {
 }
 
 function guardarSugerencia(codigo, campo, desc) {
-  const url = `${USERS_SCRIPT_URL}?action=agregarSugerencia&codigo=${encodeURIComponent(codigo)}&campo=${encodeURIComponent(campo)}&descripcion=${encodeURIComponent(desc)}&usuario=${encodeURIComponent(currentUser.nombre)}&email=${encodeURIComponent(currentUser.email)}&organismo=${encodeURIComponent(currentUser.organismo)}`;
-  const img = new Image();
-  img.src = url;
-  refreshAdminBadge();
+  const asunto = `Sugerencia de modificación - ${codigo}`;
+  const cuerpo = `Código: ${codigo}%0D%0ACampo: ${campo}%0D%0ADescripción: ${desc}%0D%0A%0D%0AUsuario: ${currentUser.nombre}%0D%0AEmail: ${currentUser.email}%0D%0AOrganismo: ${currentUser.organismo}%0D%0AFecha: ${new Date().toLocaleDateString('es-AR')}`;
+  const notifEmails = getNotifEmails();
+  const destino = notifEmails.length > 0 ? notifEmails.join(',') : 'xavilbg1987@gmail.com';
+  window.location.href = `mailto:${destino}?subject=${encodeURIComponent(asunto)}&body=${cuerpo}`;
 }
 
 // ===== ADMIN =====
