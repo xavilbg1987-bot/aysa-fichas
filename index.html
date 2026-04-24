@@ -1090,7 +1090,7 @@
       </a>
       <div class="sidebar-divider"></div>
       <div class="sidebar-title">Acciones</div>
-      <a class="sidebar-folder" onclick="showTab('sugerencias', null); closeSidebar()">
+      <a class="sidebar-folder admin-only" onclick="showTab('sugerencias', null); closeSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Enviar sugerencia
       </a>
@@ -1129,7 +1129,7 @@
   </div>
 
   <!-- TAB: SUGERENCIAS (campo) -->
-  <div id="tab-sugerencias" class="content" style="display:none">
+  <div id="tab-sugerencias" class="content admin-only" style="display:none">
     <div class="page-header">
       <h2>Enviar Sugerencia</h2>
       <p>Reportá información incorrecta o desactualizada</p>
@@ -1263,7 +1263,7 @@
       </svg>
       Buscar
     </button>
-    <button class="bnav-item" onclick="showTab('sugerencias', this)" style="position:relative">
+    <button class="bnav-item admin-only" onclick="showTab('sugerencias', this)" style="position:relative">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
