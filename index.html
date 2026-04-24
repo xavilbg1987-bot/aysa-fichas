@@ -1721,39 +1721,49 @@ function enviarSugerencia() {
   setTimeout(() => ok.style.display = 'none', 4000);
 }
 
-function guardarSugerencia(codigo, campo, desc) {
-  const sugs = getSugerencias();
-  sugs.unshift({
-    id: Date.now(),
-    codigo,
-    campo,
-    descripcion: desc,
-    usuario: currentUser.nombre,
-    email: currentUser.email,
-    organismo: currentUser.organismo,
-    fecha: new Date().toLocaleDateString('es-AR'),
-    estado: 'pendiente'
-  });
-  saveSugerencias(sugs);
+async function guardarSugerencia(codigo, campo, desc) {
+  const url = `${USERS_SCRIPT_URL}?action=agregarSugerencia&codigo=${encodeURIComponent(codigo)}&campo=${encodeURIComponent(campo)}&descripcion=${encodeURIComponent(desc)}&usuario=${encodeURIComponent(currentUser.nombre)}&email=${encodeURIComponent(currentUser.email)}&organismo=${encodeURIComponent(currentUser.organismo)}`;
+  try {
+    await fetch(url, {mode: 'no-cors'});
+  } catch(e) {}
   refreshAdminBadge();
-  if (currentUser && isAdmin(currentUser.email)) refreshAdminPanel();
 }
 
 // ===== ADMIN =====
-function refreshAdminBadge() {
-  const sugs = getSugerencias().filter(s => s.estado === 'pendiente');
+function refreshAdminBadge(count) {
+  const n = count || 0;
   const badge = document.getElementById('admin-badge');
   const badgeSug = document.getElementById('badge-sug');
-  if (badge) {
-    badge.textContent = sugs.length;
-    badge.style.display = sugs.length > 0 ? 'flex' : 'none';
-  }
-  if (badgeSug) badgeSug.textContent = sugs.length;
-  document.getElementById('stat-sugerencias').textContent = sugs.length;
+  if (badge) { badge.textContent = n; badge.style.display = n > 0 ? 'flex' : 'none'; }
+  if (badgeSug) badgeSug.textContent = n;
+  const stat = document.getElementById('stat-sugerencias');
+  if (stat) stat.textContent = n;
 }
 
 async function refreshAdminPanel() {
   const users = await fetchAndCacheUsers();
+  
+  // Fetch sugerencias from Sheets
+  let sugs = [];
+  try {
+    const res = await fetch(`${USERS_SHEET_URL.replace('Usuarios', 'Sugerencias')}`);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
+    if (json.table && json.table.rows) {
+      sugs = json.table.rows
+        .map(r => ({
+          codigo: r.c[0]?.v?.toString().trim() || '',
+          campo: r.c[1]?.v?.toString().trim() || '',
+          descripcion: r.c[2]?.v?.toString().trim() || '',
+          usuario: r.c[3]?.v?.toString().trim() || '',
+          email: r.c[4]?.v?.toString().trim() || '',
+          organismo: r.c[5]?.v?.toString().trim() || '',
+          fecha: r.c[6]?.v?.toString().trim() || '',
+          estado: r.c[7]?.v?.toString().trim() || ''
+        }))
+        .filter(s => s.codigo && s.estado === 'pendiente');
+    }
+  } catch(e) { console.error('Error cargando sugerencias:', e); }
   document.getElementById('stat-usuarios').textContent = users.length;
   const pendientesCount = users.filter(u => u.estado === 'pendiente').length;
   if (pendientesCount > 0) {
@@ -1797,28 +1807,32 @@ async function refreshAdminPanel() {
   usersContainer.innerHTML = html;
 
   // Sugerencias
-  const sugs = getSugerencias().filter(s => s.estado === 'pendiente');
   const sugContainer = document.getElementById('admin-sugerencias-list');
   if (sugs.length === 0) {
     sugContainer.innerHTML = '<div class="empty-state">No hay sugerencias pendientes ✓</div>';
   } else {
-    sugContainer.innerHTML = sugs.map(s => `
-      <div class="sug-item" id="sug-${s.id}">
+    sugContainer.innerHTML = sugs.map((s, idx) => `
+      <div class="sug-item">
         <div class="sug-item-header">
-          <span class="sug-codigo">${s.codigo}</span>
+          <span class="sug-codigo" style="cursor:pointer;text-decoration:underline" onclick="document.getElementById('search-input').value='${s.codigo}';showTab('buscar',null);buscarPunto()">${s.codigo}</span>
           <span class="sug-fecha">${s.fecha}</span>
         </div>
         <div class="sug-usuario">${s.usuario} · ${s.organismo}</div>
         <div style="font-size:11px;color:var(--aysa-teal);font-weight:600;margin-bottom:4px">Campo: ${s.campo}</div>
         <div class="sug-texto">${s.descripcion}</div>
         <div class="sug-actions">
-          <button class="btn-sug-action btn-resolver" onclick="resolverSug(${s.id})">✓ Resolver</button>
-          <button class="btn-sug-action btn-ignorar" onclick="ignorarSug(${s.id})">Ignorar</button>
+          <button class="btn-sug-action btn-resolver" onclick="resolverSugSheets('${s.codigo}')">✓ Resolver</button>
         </div>
       </div>`).join('');
   }
+  document.getElementById('stat-sugerencias').textContent = sugs.length;
   refreshAdminBadge();
   renderNotifEmails();
+}
+
+async function resolverSugSheets(codigo) {
+  await fetch(`${USERS_SCRIPT_URL}?action=resolverSugerencia&codigo=${encodeURIComponent(codigo)}`, {mode:'no-cors'});
+  setTimeout(() => refreshAdminPanel(), 1500);
 }
 
 async function aprobarUsuario(email) {
