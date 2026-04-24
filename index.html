@@ -1721,11 +1721,10 @@ function enviarSugerencia() {
   setTimeout(() => ok.style.display = 'none', 4000);
 }
 
-async function guardarSugerencia(codigo, campo, desc) {
+function guardarSugerencia(codigo, campo, desc) {
   const url = `${USERS_SCRIPT_URL}?action=agregarSugerencia&codigo=${encodeURIComponent(codigo)}&campo=${encodeURIComponent(campo)}&descripcion=${encodeURIComponent(desc)}&usuario=${encodeURIComponent(currentUser.nombre)}&email=${encodeURIComponent(currentUser.email)}&organismo=${encodeURIComponent(currentUser.organismo)}`;
-  try {
-    await fetch(url, {mode: 'no-cors'});
-  } catch(e) {}
+  const img = new Image();
+  img.src = url;
   refreshAdminBadge();
 }
 
@@ -1830,20 +1829,23 @@ async function refreshAdminPanel() {
   renderNotifEmails();
 }
 
-async function resolverSugSheets(codigo) {
-  await fetch(`${USERS_SCRIPT_URL}?action=resolverSugerencia&codigo=${encodeURIComponent(codigo)}`, {mode:'no-cors'});
-  setTimeout(() => refreshAdminPanel(), 1500);
+function resolverSugSheets(codigo) {
+  const img = new Image();
+  img.src = `${USERS_SCRIPT_URL}?action=resolverSugerencia&codigo=${encodeURIComponent(codigo)}`;
+  setTimeout(() => refreshAdminPanel(), 3000);
 }
 
-async function aprobarUsuario(email) {
-  await fetch(`${USERS_SCRIPT_URL}?action=aprobar&email=${encodeURIComponent(email)}&estado=aprobado`, {mode:'no-cors'});
-  setTimeout(() => refreshAdminPanel(), 1500);
+function aprobarUsuario(email) {
+  const img = new Image();
+  img.src = `${USERS_SCRIPT_URL}?action=aprobar&email=${encodeURIComponent(email)}&estado=aprobado`;
+  setTimeout(() => refreshAdminPanel(), 3000);
 }
 
-async function rechazarUsuario(email) {
+function rechazarUsuario(email) {
   if (!confirm(`¿Eliminar la cuenta de ${email}?`)) return;
-  await fetch(`${USERS_SCRIPT_URL}?action=eliminar&email=${encodeURIComponent(email)}`, {mode:'no-cors'});
-  setTimeout(() => refreshAdminPanel(), 1500);
+  const img = new Image();
+  img.src = `${USERS_SCRIPT_URL}?action=eliminar&email=${encodeURIComponent(email)}`;
+  setTimeout(() => refreshAdminPanel(), 3000);
 }
 
 function resolverSug(id) {
