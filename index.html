@@ -1350,7 +1350,7 @@ async function fetchAndCacheUsers() {
   try {
     const res = await fetch(USERS_SHEET_URL);
     const text = await res.text();
-    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);$/, ''));
+    const json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
     const rows = json.table.rows;
     const users = rows.map(r => ({
       nombre: r.c[0]?.v?.toString().trim() || '',
@@ -1467,7 +1467,7 @@ async function loadSheetData() {
   try {
     const res = await fetch(SHEET_URL);
     const text = await res.text();
-    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);$/, ''));
+    const json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
     const rows = json.table.rows;
     sheetData = rows.map(r => ({
       codigo: r.c[0]?.v?.toString().trim().toUpperCase() || '',
@@ -1954,11 +1954,11 @@ function descargarPDF() {
   </tr>
 </table>
 
-<script>
+<scr` + `ipt>
   window.onload = function() {
     setTimeout(function(){ window.print(); }, 800);
   };
-</script>
+</scr` + `ipt>
 </body>
 </html>`;
 
