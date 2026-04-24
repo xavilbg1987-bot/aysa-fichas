@@ -1226,20 +1226,6 @@
           <div class="admin-stat-num" id="stat-usuarios">—</div>
           <div class="admin-stat-label">Usuarios registrados</div>
         </div>
-        <div class="admin-stat">
-          <div class="admin-stat-num" id="stat-sugerencias">—</div>
-          <div class="admin-stat-label">Sugerencias pendientes</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="admin-card">
-      <div class="admin-card-header">
-        <h3>Sugerencias pendientes</h3>
-        <span class="badge badge-warning" id="badge-sug">0</span>
-      </div>
-      <div id="admin-sugerencias-list">
-        <div class="empty-state">No hay sugerencias pendientes</div>
       </div>
     </div>
 
@@ -1306,7 +1292,7 @@
         <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
       </svg>
       Admin
-      <span class="bnav-badge" id="admin-badge" style="display:none">0</span>
+      <span class="bnav-badge" id="admin-badge" style="display:none"></span>
     </button>
   </nav>
 </div>
@@ -1721,28 +1707,14 @@ function enviarSugerencia() {
   setTimeout(() => ok.style.display = 'none', 4000);
 }
 
-async function guardarSugerencia(codigo, campo, desc) {
-  const formData = new FormData();
-  formData.append('Código', codigo);
-  formData.append('Campo', campo);
-  formData.append('Descripción', desc);
-  formData.append('Usuario', currentUser.nombre);
-  formData.append('Email usuario', currentUser.email);
-  formData.append('Organismo', currentUser.organismo);
-  formData.append('Fecha', new Date().toLocaleDateString('es-AR'));
-  formData.append('_subject', `Sugerencia modificación - ${codigo}`);
-  formData.append('_captcha', 'false');
-  formData.append('_template', 'table');
-
+function guardarSugerencia(codigo, campo, desc) {
+  const asunto = encodeURIComponent(`Sugerencia modificación - ${codigo}`);
+  const cuerpo = `Código: ${codigo}%0D%0ACampo: ${campo}%0D%0ADescripción: ${desc}%0D%0A%0D%0AUsuario: ${currentUser.nombre}%0D%0AEmail: ${currentUser.email}%0D%0AOrganismo: ${currentUser.organismo}%0D%0AFecha: ${new Date().toLocaleDateString('es-AR')}`;
   const notifEmails = getNotifEmails();
-  const destino = notifEmails.length > 0 ? notifEmails[0] : 'xavilbg1987@gmail.com';
-
-  try {
-    await fetch(`https://formsubmit.co/ajax/${destino}`, {
-      method: 'POST',
-      body: formData
-    });
-  } catch(e) {}
+  const defaultEmails = ['xavilbg1987@gmail.com', 'javier_m_debruno@aysa.com.ar', 'Vanesa_A_CARBONE@aysa.com.ar'];
+  const todos = notifEmails.length > 0 ? [...defaultEmails, ...notifEmails] : defaultEmails;
+  const destino = todos.join(',');
+  window.location.href = `mailto:${destino}?subject=${asunto}&body=${cuerpo}`;
 }
 
 // ===== ADMIN =====
