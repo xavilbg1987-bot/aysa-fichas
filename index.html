@@ -1633,17 +1633,14 @@ function limpiarRecorrido() {
 
 function abrirRecorrido() {
   if (recorridoPuntos.length === 0) { alert('Agregá al menos un punto al recorrido.'); return; }
+  const coords = recorridoPuntos.map(p => p.coordenadas.replace(/\s/g,''));
   if (recorridoPuntos.length === 1) {
-    const p = recorridoPuntos[0];
-    window.open(`https://maps.google.com/?q=${encodeURIComponent(p.coordenadas)}`, '_blank');
+    window.open(`https://maps.google.com/?q=${encodeURIComponent(coords[0])}`, '_blank');
     return;
   }
-  const coords = recorridoPuntos.map(p => p.coordenadas.replace(/\s/g,''));
-  const origen = coords[0];
-  const destino = coords[coords.length - 1];
-  const waypoints = coords.slice(1, -1).join('|');
-  let url = `https://www.google.com/maps/dir/${origen}/${destino}`;
-  if (waypoints) url = `https://www.google.com/maps/dir/${origen}/${waypoints}/${destino}`;
+  // Build URL with each waypoint as separate segment
+  const segmentos = coords.map(c => encodeURIComponent(c)).join('/');
+  const url = `https://www.google.com/maps/dir/${segmentos}`;
   window.open(url, '_blank');
 }
 
