@@ -821,6 +821,15 @@
     color: var(--gray-600);
   }
 
+  /* RECORRIDO */
+  .recorrido-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .recorrido-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--aysa-blue); transition: background 0.15s; }
+  .recorrido-header:hover { background: var(--gray-50); }
+  .recorrido-punto { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--gray-50); border-radius: var(--radius-sm); margin-bottom: 6px; }
+  .recorrido-punto-codigo { font-weight: 700; color: var(--aysa-blue); font-size: 14px; }
+  .recorrido-punto-dir { font-size: 11px; color: var(--gray-400); }
+  .recorrido-punto button { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 18px; padding: 0 4px; }
+
   /* COORDS */
   .autocomplete-list {
     position: absolute;
@@ -1158,6 +1167,38 @@
     </div>
 
     <div id="search-result"></div>
+
+    <!-- ARMAR RECORRIDO -->
+    <div class="recorrido-card" id="recorrido-section" style="margin-top:24px;">
+      <div class="recorrido-header" onclick="toggleRecorrido()">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+          <span>Armar recorrido</span>
+        </div>
+        <svg id="recorrido-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18" style="transition:transform 0.2s"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div id="recorrido-body" style="display:none;padding:16px;">
+        <p style="font-size:13px;color:var(--gray-400);margin-bottom:14px;">Agregá los códigos de los puntos que querés visitar y abrí el recorrido en Google Maps.</p>
+        <div style="display:flex;gap:8px;margin-bottom:12px;position:relative;">
+          <input type="text" id="recorrido-input" placeholder="Ej: MAB001"
+                 style="flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;outline:none;"
+                 onkeydown="if(event.key==='Enter') agregarPuntoRecorrido()"
+                 oninput="mostrarSugerenciasRecorrido(this.value)"
+                 onblur="setTimeout(()=>ocultarSugerenciasRecorrido(),200)"
+                 autocomplete="off">
+          <div class="autocomplete-list" id="autocomplete-recorrido" style="display:none;top:100%;left:0;right:60px;"></div>
+          <button onclick="agregarPuntoRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">+</button>
+        </div>
+        <div id="recorrido-lista" style="margin-bottom:14px;"></div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="abrirRecorrido()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+            Ver en Google Maps
+          </button>
+          <button onclick="limpiarRecorrido()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- TAB: SUGERENCIAS (campo) -->
@@ -1517,6 +1558,93 @@ async function loadFotos() {
   } catch(e) {
     console.error('Error cargando fotos:', e);
   }
+}
+
+// ===== RECORRIDO =====
+let recorridoPuntos = [];
+
+function toggleRecorrido() {
+  const body = document.getElementById('recorrido-body');
+  const chevron = document.getElementById('recorrido-chevron');
+  const abierto = body.style.display !== 'none';
+  body.style.display = abierto ? 'none' : 'block';
+  chevron.style.transform = abierto ? '' : 'rotate(180deg)';
+}
+
+function mostrarSugerenciasRecorrido(query) {
+  const list = document.getElementById('autocomplete-recorrido');
+  if (!query || query.length < 2 || sheetData.length === 0) { list.style.display = 'none'; return; }
+  const q = query.toUpperCase();
+  const matches = sheetData.filter(p => p.codigo.includes(q)).slice(0, 6);
+  if (matches.length === 0) { list.style.display = 'none'; return; }
+  list.innerHTML = matches.map(p => `
+    <div class="autocomplete-item" onmousedown="seleccionarRecorrido('${p.codigo}')">
+      ${p.codigo}<span>${p.direccion || ''}</span>
+    </div>`).join('');
+  list.style.display = 'block';
+}
+
+function ocultarSugerenciasRecorrido() {
+  const list = document.getElementById('autocomplete-recorrido');
+  if (list) list.style.display = 'none';
+}
+
+function seleccionarRecorrido(codigo) {
+  document.getElementById('recorrido-input').value = codigo;
+  ocultarSugerenciasRecorrido();
+  agregarPuntoRecorrido();
+}
+
+function agregarPuntoRecorrido() {
+  const input = document.getElementById('recorrido-input');
+  const codigo = input.value.trim().toUpperCase();
+  if (!codigo) return;
+  const punto = sheetData.find(p => p.codigo === codigo);
+  if (!punto) { alert(`Código ${codigo} no encontrado.`); return; }
+  if (recorridoPuntos.find(p => p.codigo === codigo)) { alert('Ese punto ya está en el recorrido.'); return; }
+  if (!punto.coordenadas || punto.coordenadas === '---') { alert(`El punto ${codigo} no tiene coordenadas.`); return; }
+  recorridoPuntos.push(punto);
+  input.value = '';
+  renderRecorrido();
+}
+
+function renderRecorrido() {
+  const lista = document.getElementById('recorrido-lista');
+  if (recorridoPuntos.length === 0) { lista.innerHTML = ''; return; }
+  lista.innerHTML = recorridoPuntos.map((p, i) => `
+    <div class="recorrido-punto">
+      <div>
+        <div class="recorrido-punto-codigo">${i+1}. ${p.codigo}</div>
+        <div class="recorrido-punto-dir">${p.direccion || ''} ${p.localidad ? '· ' + p.localidad : ''}</div>
+      </div>
+      <button onclick="quitarPuntoRecorrido(${i})">×</button>
+    </div>`).join('');
+}
+
+function quitarPuntoRecorrido(i) {
+  recorridoPuntos.splice(i, 1);
+  renderRecorrido();
+}
+
+function limpiarRecorrido() {
+  recorridoPuntos = [];
+  renderRecorrido();
+}
+
+function abrirRecorrido() {
+  if (recorridoPuntos.length === 0) { alert('Agregá al menos un punto al recorrido.'); return; }
+  if (recorridoPuntos.length === 1) {
+    const p = recorridoPuntos[0];
+    window.open(`https://maps.google.com/?q=${encodeURIComponent(p.coordenadas)}`, '_blank');
+    return;
+  }
+  const coords = recorridoPuntos.map(p => p.coordenadas.replace(/\s/g,''));
+  const origen = coords[0];
+  const destino = coords[coords.length - 1];
+  const waypoints = coords.slice(1, -1).join('|');
+  let url = `https://www.google.com/maps/dir/${origen}/${destino}`;
+  if (waypoints) url = `https://www.google.com/maps/dir/${origen}/${waypoints}/${destino}`;
+  window.open(url, '_blank');
 }
 
 function mostrarSugerencias(query) {
