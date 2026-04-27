@@ -1711,7 +1711,7 @@ function guardarSugerencia(codigo, campo, desc) {
   const asunto = encodeURIComponent(`Sugerencia modificación - ${codigo}`);
   const cuerpo = `Código: ${codigo}%0D%0ACampo: ${campo}%0D%0ADescripción: ${desc}%0D%0A%0D%0AUsuario: ${currentUser.nombre}%0D%0AEmail: ${currentUser.email}%0D%0AOrganismo: ${currentUser.organismo}%0D%0AFecha: ${new Date().toLocaleDateString('es-AR')}`;
   const notifEmails = getNotifEmails();
-  const defaultEmails = ['xavilbg1987@gmail.com', 'javier_m_debruno@aysa.com.ar', 'Vanesa_A_CARBONE@aysa.com.ar'];
+  const defaultEmails = ['javier_m_debruno@aysa.com.ar', 'Vanesa_A_CARBONE@aysa.com.ar'];
   const todos = notifEmails.length > 0 ? [...defaultEmails, ...notifEmails] : defaultEmails;
   const destino = todos.join(',');
   window.location.href = `mailto:${destino}?subject=${asunto}&body=${cuerpo}`;
