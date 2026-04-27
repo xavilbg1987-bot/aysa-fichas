@@ -1640,27 +1640,32 @@ function abrirRecorrido() {
   if (recorridoPuntos.length === 0) { alert('Agregá al menos un punto al recorrido.'); return; }
   const coords = recorridoPuntos.map(p => p.coordenadas.replace(/\s/g,''));
   
-  let mapaUrl, externalUrl;
-  
-  if (recorridoPuntos.length === 1) {
-    const c = coords[0];
-    mapaUrl = `https://maps.google.com/maps?q=${encodeURIComponent(c)}&output=embed`;
-    externalUrl = `https://maps.google.com/?q=${encodeURIComponent(c)}`;
-  } else {
-    const segmentos = coords.map(c => encodeURIComponent(c)).join('/');
-    externalUrl = `https://www.google.com/maps/dir/${segmentos}`;
-    // For embed, use directions
-    const origen = encodeURIComponent(coords[0]);
-    const destino = encodeURIComponent(coords[coords.length - 1]);
-    const waypoints = coords.slice(1, -1).map(c => encodeURIComponent(c)).join('|');
-    mapaUrl = `https://maps.google.com/maps?saddr=${origen}&daddr=${waypoints ? waypoints + '|' : ''}${destino}&output=embed`;
-  }
+  let externalUrl;
+  const segmentos = coords.map(c => encodeURIComponent(c)).join('/');
+  externalUrl = `https://www.google.com/maps/dir/${segmentos}`;
 
-  // Show embedded map
-  document.getElementById('mapa-iframe').src = mapaUrl;
+  // For embed - use simple map centered on midpoint with markers
+  const lats = recorridoPuntos.map(p => parseFloat(p.coordenadas.split(',')[0]));
+  const lngs = recorridoPuntos.map(p => parseFloat(p.coordenadas.split(',')[1]));
+  const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+  const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
+  
+  // Build markers string
+  const markers = recorridoPuntos.map((p, i) => {
+    const c = p.coordenadas.replace(/\s/g,'');
+    return `markers=color:blue%7Clabel:${i+1}%7C${encodeURIComponent(c)}`;
+  }).join('&');
+  
+  const mapaUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${centerLat},${centerLng}&zoom=14&size=600x300&${markers}&key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY`;
+  
+  // Use iframe with directions instead
+  const origen = encodeURIComponent(coords[0]);
+  const destino = encodeURIComponent(coords[coords.length - 1]);
+  const iframeUrl = `https://maps.google.com/maps?saddr=${origen}&daddr=${destino}&output=embed`;
+  
+  document.getElementById('mapa-iframe').src = iframeUrl;
   document.getElementById('mapa-recorrido').style.display = 'block';
   
-  // Also open in new tab
   window.open(externalUrl, '_blank');
 }
 
