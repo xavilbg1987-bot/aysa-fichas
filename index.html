@@ -840,9 +840,9 @@
     border: 2px solid var(--aysa-teal);
     border-top: none;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    max-height: 220px;
+    max-height: 320px;
     overflow-y: auto;
-    z-index: 50;
+    z-index: 500;
     box-shadow: var(--shadow-md);
   }
   .autocomplete-item {
@@ -1638,35 +1638,18 @@ function limpiarRecorrido() {
 
 function abrirRecorrido() {
   if (recorridoPuntos.length === 0) { alert('Agregá al menos un punto al recorrido.'); return; }
-  const coords = recorridoPuntos.map(p => p.coordenadas.replace(/\s/g,''));
   
-  let externalUrl;
-  const segmentos = coords.map(c => encodeURIComponent(c)).join('/');
-  externalUrl = `https://www.google.com/maps/dir/${segmentos}`;
+  // External URL - full recorrido
+  const coords = recorridoPuntos.map(p => p.coordenadas.trim().replace(/\s/g,''));
+  const segmentos = coords.join('/');
+  const externalUrl = `https://www.google.com/maps/dir/${segmentos}`;
+  window.open(externalUrl, '_blank');
 
-  // For embed - use simple map centered on midpoint with markers
-  const lats = recorridoPuntos.map(p => parseFloat(p.coordenadas.split(',')[0]));
-  const lngs = recorridoPuntos.map(p => parseFloat(p.coordenadas.split(',')[1]));
-  const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
-  const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-  
-  // Build markers string
-  const markers = recorridoPuntos.map((p, i) => {
-    const c = p.coordenadas.replace(/\s/g,'');
-    return `markers=color:blue%7Clabel:${i+1}%7C${encodeURIComponent(c)}`;
-  }).join('&');
-  
-  const mapaUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${centerLat},${centerLng}&zoom=14&size=600x300&${markers}&key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY`;
-  
-  // Use iframe with directions instead
-  const origen = encodeURIComponent(coords[0]);
-  const destino = encodeURIComponent(coords[coords.length - 1]);
-  const iframeUrl = `https://maps.google.com/maps?saddr=${origen}&daddr=${destino}&output=embed`;
-  
+  // Embedded map - show first point centered
+  const primerPunto = recorridoPuntos[0].coordenadas.trim();
+  const iframeUrl = `https://maps.google.com/maps?q=${encodeURIComponent(primerPunto)}&output=embed&z=14`;
   document.getElementById('mapa-iframe').src = iframeUrl;
   document.getElementById('mapa-recorrido').style.display = 'block';
-  
-  window.open(externalUrl, '_blank');
 }
 
 function mostrarSugerencias(query) {
@@ -1676,7 +1659,7 @@ function mostrarSugerencias(query) {
     return;
   }
   const q = query.toUpperCase();
-  const matches = sheetData.filter(p => p.codigo.includes(q)).slice(0, 8);
+  const matches = sheetData.filter(p => p.codigo.includes(q)).slice(0, 12);
   if (matches.length === 0) { list.style.display = 'none'; return; }
   list.innerHTML = matches.map(p => `
     <div class="autocomplete-item" onmousedown="seleccionarSugerencia('${p.codigo}')">
