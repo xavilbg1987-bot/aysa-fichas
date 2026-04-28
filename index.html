@@ -821,6 +821,25 @@
     color: var(--gray-600);
   }
 
+  /* ===== DASHBOARD ===== */
+  .dashboard-grid { display: flex; flex-direction: column; gap: 20px; }
+  .dash-section { }
+  .dash-section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--gray-400); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .dash-card { display: flex; align-items: center; gap: 14px; background: white; border-radius: var(--radius); padding: 16px 18px; margin-bottom: 8px; box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+  .dash-card:hover { border-color: var(--aysa-teal); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .dash-card svg:first-child { width: 22px; height: 22px; stroke: var(--aysa-teal); flex-shrink: 0; }
+  .dash-card-title { font-weight: 700; font-size: 14px; color: var(--aysa-blue); }
+  .dash-card-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+  .dash-arrow { width: 16px; height: 16px; stroke: var(--gray-200); margin-left: auto; flex-shrink: 0; }
+  .dash-card:hover .dash-arrow { stroke: var(--aysa-teal); }
+  .dash-card.coming { opacity: 0.45; cursor: default; }
+  .dash-card.coming:hover { border-color: transparent; transform: none; box-shadow: var(--shadow-sm); }
+
+  /* BACK BUTTON */
+  .back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--aysa-blue); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; padding: 0; margin-bottom: 18px; }
+  .back-btn:hover { color: var(--aysa-teal); }
+  .back-btn svg { width: 18px; height: 18px; }
+
   /* RECORRIDO */
   .recorrido-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
   .recorrido-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--aysa-blue); transition: background 0.15s; }
@@ -1109,45 +1128,88 @@
     </div>
   </nav>
 
-  <!-- APP LAYOUT CON SIDEBAR -->
+  <!-- APP LAYOUT CON DASHBOARD -->
   <div class="app-layout">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-title">Fichas</div>
-      <a class="sidebar-folder active" onclick="showTab('buscar', null); closeSidebar()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        MICRO / MACRO
-        <span class="folder-badge">254</span>
-      </a>
-      <a class="sidebar-folder coming-soon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        PLANTAS DEPURADORAS
-        <span class="sidebar-coming">Próx.</span>
-      </a>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-title">Acciones</div>
-      <a class="sidebar-folder admin-only" onclick="showTab('sugerencias', null); closeSidebar()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Enviar sugerencia
-      </a>
-      <a class="sidebar-folder admin-only" onclick="showTab('admin', null); closeSidebar()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Panel Admin
-      </a>
-      <a class="sidebar-folder admin-only" onclick="showTab('usuarios', null); closeSidebar()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Usuarios
-      </a>
-    </aside>
-
-    <!-- MAIN PANEL -->
     <div class="main-panel">
 
-  <!-- TAB: BUSCAR -->
-  <div id="tab-buscar" class="content">
+    <!-- DASHBOARD (pantalla principal) -->
+    <div id="tab-dashboard" class="content">
+      <div class="dashboard-grid">
+
+        <!-- CARPETAS -->
+        <div class="dash-section">
+          <div class="dash-section-title">📁 Fichas</div>
+          <div class="dash-card folder-card" onclick="irABuscar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <div class="dash-card-title">MICRO / MACRO</div>
+              <div class="dash-card-sub">254 puntos</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="dash-card folder-card coming">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <div class="dash-card-title">PLANTAS DEPURADORAS</div>
+              <div class="dash-card-sub">Próximamente</div>
+            </div>
+          </div>
+          <div class="dash-card folder-card coming">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <div class="dash-card-title">EBC</div>
+              <div class="dash-card-sub">Próximamente</div>
+            </div>
+          </div>
+          <div class="dash-card folder-card coming">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <div class="dash-card-title">PMA</div>
+              <div class="dash-card-sub">Próximamente</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCIONES -->
+        <div class="dash-section">
+          <div class="dash-section-title">⚡ Acciones</div>
+          <div class="dash-card action-card" onclick="irARecorrido()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+            <div>
+              <div class="dash-card-title">Armar recorrido</div>
+              <div class="dash-card-sub">Planificá tu visita en Maps</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="dash-card action-card" onclick="irASugerencias()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <div class="dash-card-title">Enviar sugerencia</div>
+              <div class="dash-card-sub">Reportá información incorrecta</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="dash-card action-card admin-only" onclick="irAAdmin()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <div>
+              <div class="dash-card-title">Panel Admin</div>
+              <div class="dash-card-sub">Gestión de usuarios</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB: BUSCAR -->
+  <div id="tab-buscar" class="content" style="display:none">
+    <button class="back-btn" onclick="irADashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Menú principal
+    </button>
     <div class="search-header">
-      <h2>Buscar Punto</h2>
+      <h2>MICRO / MACRO</h2>
       <p>Ingresá el código del punto de muestreo</p>
     </div>
 
@@ -1206,6 +1268,10 @@
 
   <!-- TAB: SUGERENCIAS (campo) -->
   <div id="tab-sugerencias" class="content admin-only" style="display:none">
+    <button class="back-btn" onclick="irADashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Menú principal
+    </button>
     <div class="page-header">
       <h2>Enviar Sugerencia</h2>
       <p>Reportá información incorrecta o desactualizada</p>
@@ -1252,6 +1318,10 @@
 
   <!-- TAB: ADMIN -->
   <div id="tab-admin" class="content admin-only" style="display:none">
+    <button class="back-btn" onclick="irADashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Menú principal
+    </button>
     <div class="page-header">
       <h2>Panel Admin</h2>
       <p>Gestión de usuarios y sugerencias</p>
@@ -1317,28 +1387,10 @@
     </div> <!-- /main-panel -->
   </div> <!-- /app-layout -->
 
-  <!-- BOTTOM NAV -->
-  <nav class="bottomnav">
-    <button class="bnav-item active" onclick="showTab('buscar', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      Buscar
-    </button>
-    <button class="bnav-item admin-only" onclick="showTab('sugerencias', this)" style="position:relative">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-      Sugerir
-    </button>
-    <button class="bnav-item admin-only" id="bnav-admin" onclick="showTab('admin', this)" style="position:relative">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-      </svg>
-      Admin
-      <span class="bnav-badge" id="admin-badge" style="display:none"></span>
-    </button>
-  </nav>
+  <!-- HOME BUTTON (fixed) -->
+  <button onclick="irADashboard()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:var(--aysa-blue);color:white;border:none;border-radius:50%;width:50px;height:50px;box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Menú principal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </button>
 </div>
 
 <!-- MODAL SUGERENCIA DESDE FICHA -->
@@ -1521,6 +1573,7 @@ function enterApp(user) {
   refreshAdminBadge();
   loadSheetData();
   loadFotos();
+  irADashboard();
 }
 
 // ===== GOOGLE SHEETS DATA =====
@@ -1561,6 +1614,46 @@ async function loadFotos() {
   } catch(e) {
     console.error('Error cargando fotos:', e);
   }
+}
+
+// ===== DASHBOARD NAVIGATION =====
+function irADashboard() {
+  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('tab-dashboard').style.display = 'block';
+}
+
+function irABuscar() {
+  irADashboard();
+  document.getElementById('tab-dashboard').style.display = 'none';
+  document.getElementById('tab-buscar').style.display = 'block';
+}
+
+function irARecorrido() {
+  irADashboard();
+  document.getElementById('tab-dashboard').style.display = 'none';
+  // Show recorrido section inside buscar tab
+  document.getElementById('tab-buscar').style.display = 'block';
+  document.getElementById('search-result').innerHTML = '';
+  // Open recorrido section
+  const body = document.getElementById('recorrido-body');
+  const chevron = document.getElementById('recorrido-chevron');
+  if (body) { body.style.display = 'block'; if(chevron) chevron.style.transform = 'rotate(180deg)'; }
+}
+
+function irASugerencias() {
+  irADashboard();
+  document.getElementById('tab-dashboard').style.display = 'none';
+  document.getElementById('tab-sugerencias').style.display = 'block';
+}
+
+function irAAdmin() {
+  irADashboard();
+  document.getElementById('tab-dashboard').style.display = 'none';
+  document.getElementById('tab-admin').style.display = 'block';
+  refreshAdminPanel();
 }
 
 // ===== RECORRIDO =====
