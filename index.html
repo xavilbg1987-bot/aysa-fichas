@@ -1336,6 +1336,12 @@
         <textarea id="sug-desc" placeholder="Describí qué información está incorrecta y cuál debería ser la correcta..."></textarea>
       </div>
 
+      <div class="form-field">
+        <label>Fotografías (hasta 4)</label>
+        <input type="file" id="sug-fotos" accept="image/*" multiple style="width:100%;padding:10px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Barlow',sans-serif;font-size:13px;color:var(--gray-800);outline:none;box-sizing:border-box;background:white;">
+        <p style="font-size:11px;color:var(--gray-400);margin-top:6px;">📎 Las fotos se adjuntarán manualmente al correo antes de enviarlo.</p>
+      </div>
+
       <button class="btn-enviar" onclick="enviarSugerencia()">Enviar sugerencia</button>
 
       <div class="sug-success" id="sug-success">
@@ -1981,16 +1987,27 @@ function enviarSugerencia() {
   const codigo = document.getElementById('sug-codigo').value.trim().toUpperCase();
   const campo = document.getElementById('sug-campo').value;
   const desc = document.getElementById('sug-desc').value.trim();
-  if (!codigo || !campo || !desc) return alert('Completá todos los campos.');
+  const fotosInput = document.getElementById('sug-fotos');
+  const cantFotos = fotosInput?.files?.length || 0;
 
-  guardarSugerencia(codigo, campo, desc);
+  if (!codigo || !campo || !desc) return alert('Completá todos los campos obligatorios.');
+
+  const fotosTxt = cantFotos > 0 
+    ? `%0D%0A%0D%0A📸 FOTOGRAFÍAS: El usuario seleccionó ${cantFotos} foto(s). Por favor adjuntalas antes de enviar.`
+    : '';
+
+  guardarSugerencia(codigo, campo, desc + (cantFotos > 0 ? ` [${cantFotos} foto(s) adjunta(s)]` : ''));
+
+  if (cantFotos > 0) {
+    setTimeout(() => {
+      alert(`✓ Se abrió tu correo con la sugerencia.\n\n📎 Recordá adjuntar las ${cantFotos} foto(s) seleccionadas antes de enviar.`);
+    }, 500);
+  }
 
   document.getElementById('sug-codigo').value = '';
   document.getElementById('sug-campo').value = '';
   document.getElementById('sug-desc').value = '';
-  const ok = document.getElementById('sug-success');
-  ok.style.display = 'flex';
-  setTimeout(() => ok.style.display = 'none', 4000);
+  if (fotosInput) fotosInput.value = '';
 }
 
 function guardarSugerencia(codigo, campo, desc) {
