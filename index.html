@@ -1764,20 +1764,14 @@ function abrirRecorrido() {
   const externalUrl = `https://www.google.com/maps/dir/${segmentos}`;
   window.open(externalUrl, '_blank');
 
-  // Embedded map - show all points as markers
-  const allCoords = todosLosCoords.map(c => c.replace(/\s/g,''));
-  const lats = allCoords.map(c => parseFloat(c.split(',')[0]));
-  const lngs = allCoords.map(c => parseFloat(c.split(',')[1]));
-  const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
-  const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-
-  // Build markers for embed
-  const markerParams = allCoords.map((c, i) => 
-    `markers=color:${i===0?'green':'red'}%7Clabel:${i===0?'S':i}%7C${encodeURIComponent(c)}`
-  ).join('&');
-
-  const iframeUrl = `https://maps.google.com/maps?q=${encodeURIComponent(centerLat+','+centerLng)}&z=13&output=embed`;
+  // Embedded map - show route using directions embed
+  const origen = encodeURIComponent(todosLosCoords[0]);
+  const destino = encodeURIComponent(todosLosCoords[todosLosCoords.length - 1]);
+  const waypoints = todosLosCoords.slice(1, -1).map(c => encodeURIComponent(c)).join('%7C');
   
+  let iframeUrl = `https://maps.google.com/maps?saddr=${origen}&daddr=${destino}&output=embed`;
+  if (waypoints) iframeUrl = `https://maps.google.com/maps?saddr=${origen}&waypoints=${waypoints}&daddr=${destino}&output=embed`;
+
   document.getElementById('mapa-iframe').src = iframeUrl;
   document.getElementById('mapa-recorrido').style.display = 'block';
 }
