@@ -1213,7 +1213,6 @@
       <h2>MICRO / MACRO</h2>
       <p>Ingresá el código del punto de muestreo</p>
     </div>
-
     <div class="search-box">
       <div class="search-input-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1230,17 +1229,22 @@
     </div>
 
     <div id="search-result"></div>
+  </div>
+
+  <!-- TAB: RECORRIDO -->
+  <div id="tab-recorrido" class="content" style="display:none">
+    <button class="back-btn" onclick="irADashboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Menú principal
+    </button>
+    <div class="search-header">
+      <h2>Armar recorrido</h2>
+      <p>Agregá puntos y planificá tu visita en Google Maps</p>
+    </div>
 
     <!-- ARMAR RECORRIDO -->
-    <div class="recorrido-card" id="recorrido-section" style="margin-top:24px;">
-      <div class="recorrido-header" onclick="toggleRecorrido()">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
-          <span>Armar recorrido</span>
-        </div>
-        <svg id="recorrido-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18" style="transition:transform 0.2s"><polyline points="6 9 12 15 18 9"/></svg>
-      </div>
-      <div id="recorrido-body" style="display:none;padding:16px;">
+    <div class="recorrido-card" id="recorrido-section">
+      <div id="recorrido-body" style="padding:16px;">
         <p style="font-size:13px;color:var(--gray-400);margin-bottom:14px;">Agregá los códigos de los puntos que querés visitar y abrí el recorrido en Google Maps.</p>
         <div style="display:flex;gap:8px;margin-bottom:12px;position:relative;">
           <input type="text" id="recorrido-input" placeholder="Ej: MAB001"
@@ -1633,15 +1637,11 @@ function irABuscar() {
 }
 
 function irARecorrido() {
-  irADashboard();
-  document.getElementById('tab-dashboard').style.display = 'none';
-  // Show recorrido section inside buscar tab
-  document.getElementById('tab-buscar').style.display = 'block';
-  document.getElementById('search-result').innerHTML = '';
-  // Open recorrido section
-  const body = document.getElementById('recorrido-body');
-  const chevron = document.getElementById('recorrido-chevron');
-  if (body) { body.style.display = 'block'; if(chevron) chevron.style.transform = 'rotate(180deg)'; }
+  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('tab-recorrido').style.display = 'block';
 }
 
 function irASugerencias() {
