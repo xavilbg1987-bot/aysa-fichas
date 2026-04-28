@@ -1983,26 +1983,34 @@ function enviarSugerenciaModal() {
   alert('¡Sugerencia enviada! Los administradores la revisarán.');
 }
 
-function enviarSugerencia() {
+async function enviarSugerencia() {
   const codigo = document.getElementById('sug-codigo').value.trim().toUpperCase();
   const campo = document.getElementById('sug-campo').value;
   const desc = document.getElementById('sug-desc').value.trim();
   const fotosInput = document.getElementById('sug-fotos');
-  const cantFotos = fotosInput?.files?.length || 0;
+  const fotos = fotosInput?.files ? Array.from(fotosInput.files).slice(0, 4) : [];
 
   if (!codigo || !campo || !desc) return alert('Completá todos los campos obligatorios.');
 
-  const fotosTxt = cantFotos > 0 
-    ? `%0D%0A%0D%0A📸 FOTOGRAFÍAS: El usuario seleccionó ${cantFotos} foto(s). Por favor adjuntalas antes de enviar.`
-    : '';
-
-  guardarSugerencia(codigo, campo, desc + (cantFotos > 0 ? ` [${cantFotos} foto(s) adjunta(s)]` : ''));
-
-  if (cantFotos > 0) {
-    setTimeout(() => {
-      alert(`✓ Se abrió tu correo con la sugerencia.\n\n📎 Recordá adjuntar las ${cantFotos} foto(s) seleccionadas antes de enviar.`);
-    }, 500);
+  // Subir fotos al Drive si hay
+  let fotosUrls = [];
+  if (fotos.length > 0) {
+    alert('Subiendo fotos... esperá un momento.');
+    for (let i = 0; i < fotos.length; i++) {
+      const foto = fotos[i];
+      const base64 = await new Promise((res) => {
+        const reader = new FileReader();
+        reader.onload = e => res(e.target.result.split(',')[1]);
+        reader.readAsDataURL(foto);
+      });
+      const nombre = `SUG_${codigo}_${new Date().toLocaleDateString('es-AR').replace(/\//g,'-')}_${i+1}.${foto.name.split('.').pop()}`;
+      const img = new Image();
+      img.src = `${USERS_SCRIPT_URL}?action=subirFoto&nombre=${encodeURIComponent(nombre)}&foto=${encodeURIComponent(base64)}&tipo=${encodeURIComponent(foto.type)}`;
+    }
   }
+
+  const descFinal = fotos.length > 0 ? `${desc} [${fotos.length} foto(s) subida(s) a Drive]` : desc;
+  guardarSugerencia(codigo, campo, descFinal);
 
   document.getElementById('sug-codigo').value = '';
   document.getElementById('sug-campo').value = '';
