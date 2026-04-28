@@ -1128,47 +1128,40 @@
     </div>
   </nav>
 
-  <!-- APP LAYOUT CON DASHBOARD -->
+  <!-- APP LAYOUT CON SIDEBAR -->
   <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-title">Fichas</div>
+      <a class="sidebar-folder active" onclick="irABuscar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        MICRO / MACRO
+        <span class="folder-badge">254</span>
+      </a>
+      <a class="sidebar-folder coming-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        PLANTAS DEPURADORAS
+        <span class="sidebar-coming">Próx.</span>
+      </a>
+      <a class="sidebar-folder coming-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        EBC
+        <span class="sidebar-coming">Próx.</span>
+      </a>
+      <a class="sidebar-folder coming-soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        PMA
+        <span class="sidebar-coming">Próx.</span>
+      </a>
+    </aside>
+
+    <!-- MAIN PANEL -->
     <div class="main-panel">
 
     <!-- DASHBOARD (pantalla principal) -->
     <div id="tab-dashboard" class="content">
       <div class="dashboard-grid">
-
-        <!-- CARPETAS -->
-        <div class="dash-section">
-          <div class="dash-section-title">📁 Fichas</div>
-          <div class="dash-card folder-card" onclick="irABuscar()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            <div>
-              <div class="dash-card-title">MICRO / MACRO</div>
-              <div class="dash-card-sub">254 puntos</div>
-            </div>
-            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div class="dash-card folder-card coming">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            <div>
-              <div class="dash-card-title">PLANTAS DEPURADORAS</div>
-              <div class="dash-card-sub">Próximamente</div>
-            </div>
-          </div>
-          <div class="dash-card folder-card coming">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            <div>
-              <div class="dash-card-title">EBC</div>
-              <div class="dash-card-sub">Próximamente</div>
-            </div>
-          </div>
-          <div class="dash-card folder-card coming">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            <div>
-              <div class="dash-card-title">PMA</div>
-              <div class="dash-card-sub">Próximamente</div>
-            </div>
-          </div>
-        </div>
 
         <!-- ACCIONES -->
         <div class="dash-section">
