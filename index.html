@@ -1239,34 +1239,52 @@
     </button>
     <div class="search-header">
       <h2>Armar recorrido</h2>
-      <p>Agregá puntos y planificá tu visita en Google Maps</p>
+      <p>Seleccioná el punto de partida y agregá los puntos a visitar</p>
     </div>
 
-    <!-- ARMAR RECORRIDO -->
     <div class="recorrido-card" id="recorrido-section">
       <div id="recorrido-body" style="padding:16px;">
-        <p style="font-size:13px;color:var(--gray-400);margin-bottom:14px;">Agregá los códigos de los puntos que querés visitar y abrí el recorrido en Google Maps.</p>
-        <div style="display:flex;gap:8px;margin-bottom:12px;position:relative;">
-          <input type="text" id="recorrido-input" placeholder="Ej: MAB001"
-                 style="flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;outline:none;"
-                 onkeydown="if(event.key==='Enter') agregarPuntoRecorrido()"
-                 oninput="mostrarSugerenciasRecorrido(this.value)"
-                 onblur="setTimeout(()=>ocultarSugerenciasRecorrido(),200)"
-                 autocomplete="off">
-          <div class="autocomplete-list" id="autocomplete-recorrido" style="display:none;top:100%;left:0;right:60px;"></div>
-          <button onclick="agregarPuntoRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">+</button>
+
+        <!-- PUNTO DE PARTIDA -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:12px;font-weight:700;color:var(--gray-600);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;">Punto de partida</label>
+          <select id="partida-select" style="width:100%;padding:11px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;background:white;">
+            <option value="">— Seleccioná el punto de partida —</option>
+            <option value="-34.55709212168997,-58.429911126843876">🏢 Laboratorio Central</option>
+            <option value="-34.55697400416435,-58.42486058884896">🌿 Medio Ambiente</option>
+            <option value="-34.647837378177556,-58.44865426971511">🔧 Talleres Varela</option>
+          </select>
         </div>
+
+        <!-- AGREGAR PUNTOS -->
+        <div style="margin-bottom:12px;">
+          <label style="display:block;font-size:12px;font-weight:700;color:var(--gray-600);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;">Puntos a visitar</label>
+          <div style="display:flex;gap:8px;position:relative;">
+            <input type="text" id="recorrido-input" placeholder="Ej: MAB001"
+                   style="flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;outline:none;"
+                   onkeydown="if(event.key==='Enter') agregarPuntoRecorrido()"
+                   oninput="mostrarSugerenciasRecorrido(this.value)"
+                   onblur="setTimeout(()=>ocultarSugerenciasRecorrido(),200)"
+                   autocomplete="off">
+            <div class="autocomplete-list" id="autocomplete-recorrido" style="display:none;top:100%;left:0;right:60px;"></div>
+            <button onclick="agregarPuntoRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;font-size:18px;">+</button>
+          </div>
+        </div>
+
         <div id="recorrido-lista" style="margin-bottom:14px;"></div>
-        <div style="display:flex;gap:8px;">
+
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
           <button onclick="abrirRecorrido()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
-            Ver en Google Maps
+            Ver recorrido en Maps
           </button>
           <button onclick="limpiarRecorrido()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
         </div>
-        <div id="mapa-recorrido" style="display:none;margin-top:14px;border-radius:10px;overflow:hidden;border:1px solid var(--gray-200);">
-          <iframe id="mapa-iframe" width="100%" height="320" frameborder="0" style="border:0;display:block;" allowfullscreen></iframe>
+
+        <div id="mapa-recorrido" style="display:none;border-radius:10px;overflow:hidden;border:1px solid var(--gray-200);">
+          <iframe id="mapa-iframe" width="100%" height="380" frameborder="0" style="border:0;display:block;" allowfullscreen></iframe>
         </div>
+
       </div>
     </div>
   </div>
@@ -1728,20 +1746,38 @@ function limpiarRecorrido() {
   renderRecorrido();
   document.getElementById('mapa-recorrido').style.display = 'none';
   document.getElementById('mapa-iframe').src = '';
+  const select = document.getElementById('partida-select');
+  if (select) select.value = '';
 }
 
 function abrirRecorrido() {
   if (recorridoPuntos.length === 0) { alert('Agregá al menos un punto al recorrido.'); return; }
   
-  // External URL - full recorrido
-  const coords = recorridoPuntos.map(p => p.coordenadas.trim().replace(/\s/g,''));
-  const segmentos = coords.join('/');
+  const partida = document.getElementById('partida-select').value;
+  const coords = recorridoPuntos.map(p => p.coordenadas.trim());
+  
+  // Build full route with optional departure point
+  let todosLosCoords = partida ? [partida, ...coords] : coords;
+  
+  // External URL - full recorrido in Google Maps
+  const segmentos = todosLosCoords.map(c => encodeURIComponent(c)).join('/');
   const externalUrl = `https://www.google.com/maps/dir/${segmentos}`;
   window.open(externalUrl, '_blank');
 
-  // Embedded map - show first point centered
-  const primerPunto = recorridoPuntos[0].coordenadas.trim();
-  const iframeUrl = `https://maps.google.com/maps?q=${encodeURIComponent(primerPunto)}&output=embed&z=14`;
+  // Embedded map - show all points as markers
+  const allCoords = todosLosCoords.map(c => c.replace(/\s/g,''));
+  const lats = allCoords.map(c => parseFloat(c.split(',')[0]));
+  const lngs = allCoords.map(c => parseFloat(c.split(',')[1]));
+  const centerLat = (Math.min(...lats) + Math.max(...lats)) / 2;
+  const centerLng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
+
+  // Build markers for embed
+  const markerParams = allCoords.map((c, i) => 
+    `markers=color:${i===0?'green':'red'}%7Clabel:${i===0?'S':i}%7C${encodeURIComponent(c)}`
+  ).join('&');
+
+  const iframeUrl = `https://maps.google.com/maps?q=${encodeURIComponent(centerLat+','+centerLng)}&z=13&output=embed`;
+  
   document.getElementById('mapa-iframe').src = iframeUrl;
   document.getElementById('mapa-recorrido').style.display = 'block';
 }
