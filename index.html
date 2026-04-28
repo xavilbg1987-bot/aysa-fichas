@@ -1336,12 +1336,6 @@
         <textarea id="sug-desc" placeholder="Describí qué información está incorrecta y cuál debería ser la correcta..."></textarea>
       </div>
 
-      <div class="form-field">
-        <label>Fotografías (hasta 4)</label>
-        <input type="file" id="sug-fotos" accept="image/*" multiple style="width:100%;padding:10px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Barlow',sans-serif;font-size:13px;color:var(--gray-800);outline:none;box-sizing:border-box;background:white;">
-        <p style="font-size:11px;color:var(--gray-400);margin-top:6px;">📎 Las fotos se adjuntarán manualmente al correo antes de enviarlo.</p>
-      </div>
-
       <button class="btn-enviar" onclick="enviarSugerencia()">Enviar sugerencia</button>
 
       <div class="sug-success" id="sug-success">
@@ -1987,33 +1981,25 @@ function enviarSugerencia() {
   const codigo = document.getElementById('sug-codigo').value.trim().toUpperCase();
   const campo = document.getElementById('sug-campo').value;
   const desc = document.getElementById('sug-desc').value.trim();
-  const fotosInput = document.getElementById('sug-fotos');
-  const cantFotos = fotosInput?.files?.length || 0;
 
   if (!codigo || !campo || !desc) return alert('Completá todos los campos obligatorios.');
 
-  guardarSugerencia(codigo, campo, desc + (cantFotos > 0 ? ` [${cantFotos} foto(s) adjunta(s)]` : ''));
-
-  if (cantFotos > 0) {
-    setTimeout(() => {
-      alert(`✓ Se abrió tu correo con la sugerencia.\n\n📎 Recordá adjuntar las ${cantFotos} foto(s) antes de enviar.`);
-    }, 500);
-  }
+  guardarSugerencia(codigo, campo, desc);
 
   document.getElementById('sug-codigo').value = '';
   document.getElementById('sug-campo').value = '';
   document.getElementById('sug-desc').value = '';
-  if (fotosInput) fotosInput.value = '';
 }
 
 function guardarSugerencia(codigo, campo, desc) {
+  const esFoto = campo === 'Fotografía';
   const asunto = encodeURIComponent(`Sugerencia modificación - ${codigo}`);
-  const cuerpo = `Código: ${codigo}%0D%0ACampo: ${campo}%0D%0ADescripción: ${desc}%0D%0A%0D%0AUsuario: ${currentUser.nombre}%0D%0AEmail: ${currentUser.email}%0D%0AOrganismo: ${currentUser.organismo}%0D%0AFecha: ${new Date().toLocaleDateString('es-AR')}`;
-  const notifEmails = getNotifEmails();
+  const fotoMsg = esFoto ? `%0D%0A%0D%0A*** ADJUNTAR FOTOS - LA FOTOGRAFÍA DE LA FICHA ESTÁ INCORRECTA ***%0D%0APor favor adjuntá las fotos correctas a este correo.` : '';
+  const cuerpo = `Código: ${codigo}%0D%0ACampo: ${campo}%0D%0ADescripción: ${desc}%0D%0A%0D%0AUsuario: ${currentUser.nombre}%0D%0AEmail: ${currentUser.email}%0D%0AOrganismo: ${currentUser.organismo}%0D%0AFecha: ${new Date().toLocaleDateString('es-AR')}${fotoMsg}`;
   const defaultEmails = ['javier_m_debruno@aysa.com.ar', 'Vanesa_A_CARBONE@aysa.com.ar'];
+  const notifEmails = getNotifEmails();
   const todos = notifEmails.length > 0 ? [...defaultEmails, ...notifEmails] : defaultEmails;
-  const destino = todos.join(',');
-  window.location.href = `mailto:${destino}?subject=${asunto}&body=${cuerpo}`;
+  window.location.href = `mailto:${todos.join(',')}?subject=${asunto}&body=${cuerpo}`;
 }
 
 // ===== ADMIN =====
