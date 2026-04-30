@@ -1139,10 +1139,10 @@
         MICRO / MACRO
         <span class="folder-badge">254</span>
       </a>
-      <a class="sidebar-folder coming-soon">
+      <a class="sidebar-folder" onclick="irAPlantas()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         PLANTAS DEPURADORAS
-        <span class="sidebar-coming">Próx.</span>
+        <span class="folder-badge" id="badge-plantas">—</span>
       </a>
       <a class="sidebar-folder coming-soon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -1416,6 +1416,34 @@
     </div> <!-- /main-panel -->
   </div> <!-- /app-layout -->
 
+  <!-- TAB PLANTAS DEPURADORAS -->
+  <div id="tab-plantas" class="content" style="display:none;padding:0;">
+    <div style="background:var(--aysa-blue);padding:16px 20px;display:flex;align-items:center;gap:12px;">
+      <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </button>
+      <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">PLANTAS DEPURADORAS</span>
+    </div>
+
+    <!-- BUSCADOR DE PLANTA -->
+    <div style="padding:16px 20px;">
+      <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:16px;">
+        <label style="font-size:11px;font-weight:700;color:var(--gray-400);letter-spacing:0.5px;text-transform:uppercase;">Seleccioná una planta</label>
+        <div style="position:relative;margin-top:8px;">
+          <select id="plantas-select" onchange="seleccionarPlanta(this.value)"
+            style="width:100%;padding:12px 16px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;appearance:none;cursor:pointer;">
+            <option value="">— Elegí una planta —</option>
+          </select>
+          <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- FICHA PLANTA -->
+    <div id="plantas-ficha-container" style="padding:0 20px 20px;"></div>
+  </div>
+
   <!-- HOME BUTTON (fixed) -->
   <button onclick="irADashboard()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:var(--aysa-blue);color:white;border:none;border-radius:50%;width:50px;height:50px;box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Menú principal">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -1472,6 +1500,12 @@ const DRIVE_FOLDER = '1NPCKlpl64gqJRmPC09c2Bt9kDN7kp4EL';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 const FOTOS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhsKX9V6ixc_UEzFk95sgx1W7-GuE3WHk51rnDaFrVl20OxqJR7px6t4cdEnh_0Lt/exec';
 const USERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz177cG37OltyEZZmNvVbVh472QVUgIGhfAcxNGcGZHrcXqPZZofb-vkO43T0wV-AAZ/exec';
+
+// ===== CONFIG PLANTAS DEPURADORAS =====
+const PD_SHEET_ID   = '1KFiroa8I401biLedDauWT324jLeXSQBE';
+const PD_SHEET_NAME = 'PLANTAS DEPURADORAS 2026';
+const PD_SHEET_URL  = `https://docs.google.com/spreadsheets/d/${PD_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(PD_SHEET_NAME)}`;
+const PD_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
 
 // ===== STATE =====
 let currentUser = null;
@@ -1602,6 +1636,7 @@ function enterApp(user) {
   refreshAdminBadge();
   loadSheetData();
   loadFotos();
+  loadPlantasData();
   irADashboard();
 }
 
@@ -2351,6 +2386,426 @@ function openLightbox(src) {
 }
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('active');
+}
+
+// ===== PLANTAS DEPURADORAS =====
+let plantasData = [];   // todas las filas del Sheets PD
+let plantaActual = null; // sigla de la planta seleccionada
+
+async function loadPlantasData() {
+  if (plantasData.length > 0) return;
+  try {
+    const res  = await fetch(PD_SHEET_URL);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
+    const rows = json.table.rows;
+    // Mapeo de columnas según plantilla:
+    // A=sigla B=nombre C=localidad D=direccion E=coord_planta F=maps G=fecha_rev H=nro_rev
+    // I=tipo_punto J=codigo_punto K=coord_punto L=tipo_equipo M=analitica_puntual
+    // N=q_promedio O=dbo P=posee_digestor Q=analitica_compuesta
+    // R=foto_df S=foto_vp T=foto_f1 U=foto_f2
+    plantasData = rows
+      .filter(r => r.c[0]?.v) // ignorar filas vacías
+      .map(r => ({
+        sigla:               r.c[0]?.v?.toString().trim().toUpperCase() || '',
+        nombre:              r.c[1]?.v?.toString().trim().toUpperCase() || '',
+        localidad:           r.c[2]?.v?.toString().trim() || '',
+        direccion:           r.c[3]?.v?.toString().trim() || '',
+        coord_planta:        r.c[4]?.v?.toString().trim() || '',
+        maps:                r.c[5]?.v?.toString().trim() || '',
+        fecha_revision:      r.c[6]?.v?.toString().trim() || '',
+        nro_revision:        r.c[7]?.v?.toString().trim() || '',
+        tipo_punto:          r.c[8]?.v?.toString().trim().toUpperCase() || '',
+        codigo_punto:        r.c[9]?.v?.toString().trim().toUpperCase() || '',
+        coord_punto:         r.c[10]?.v?.toString().trim() || '',
+        tipo_equipo:         r.c[11]?.v?.toString().trim() || '',
+        analitica_puntual:   r.c[12]?.v?.toString().trim() || '',
+        q_promedio:          r.c[13]?.v?.toString().trim() || '',
+        dbo:                 r.c[14]?.v?.toString().trim() || '',
+        posee_digestor:      r.c[15]?.v?.toString().trim() || '',
+        analitica_compuesta: r.c[16]?.v?.toString().trim() || '',
+        foto_df:             r.c[17]?.v?.toString().trim() || '',
+        foto_vp:             r.c[18]?.v?.toString().trim() || '',
+        foto_f1:             r.c[19]?.v?.toString().trim() || '',
+        foto_f2:             r.c[20]?.v?.toString().trim() || '',
+      }));
+
+    // Actualizar badge con cantidad de plantas únicas
+    const plantasUnicas = [...new Set(plantasData.map(r => r.sigla))];
+    const badge = document.getElementById('badge-plantas');
+    if (badge) badge.textContent = plantasUnicas.length;
+
+    // Popular select
+    const sel = document.getElementById('plantas-select');
+    if (sel) {
+      sel.innerHTML = '<option value="">— Elegí una planta —</option>';
+      plantasUnicas.forEach(sigla => {
+        const fila = plantasData.find(r => r.sigla === sigla);
+        const opt  = document.createElement('option');
+        opt.value       = sigla;
+        opt.textContent = `${fila.nombre} (${sigla})`;
+        sel.appendChild(opt);
+      });
+    }
+  } catch(e) {
+    console.error('Error cargando plantas:', e);
+  }
+}
+
+function irAPlantas() {
+  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('tab-plantas').style.display = 'block';
+  // Activar sidebar
+  document.querySelectorAll('.sidebar-folder').forEach(f => f.classList.remove('active'));
+  event && event.currentTarget && event.currentTarget.classList.add('active');
+  // Cargar datos si aún no están
+  if (plantasData.length === 0) {
+    document.getElementById('plantas-ficha-container').innerHTML =
+      `<div class="loading"><div class="spinner"></div><p>Cargando plantas...</p></div>`;
+    loadPlantasData().then(() => {
+      document.getElementById('plantas-ficha-container').innerHTML = '';
+    });
+  }
+}
+
+function seleccionarPlanta(sigla) {
+  if (!sigla) {
+    document.getElementById('plantas-ficha-container').innerHTML = '';
+    return;
+  }
+  plantaActual = sigla;
+  const filas = plantasData.filter(r => r.sigla === sigla);
+  if (!filas.length) return;
+  renderFichaPlanta(filas);
+}
+
+function imgPlanta(nombre, alt) {
+  if (!nombre) return `<div style="background:#f0f4f8;border-radius:8px;padding:40px;text-align:center;color:#8f9ab5;font-size:13px;">Sin imagen cargada</div>`;
+  const ext  = ['jpg','jpeg','png','gif'];
+  // Intentar con .jpg primero, fallback a .png y .gif
+  const urls = ext.map(e => `${PD_GITHUB_BASE}${nombre}.${e}`);
+  return `<img
+    src="${urls[0]}"
+    alt="${alt}"
+    style="width:100%;border-radius:8px;object-fit:contain;max-height:420px;cursor:pointer;"
+    onclick="openLightbox(this.src)"
+    onerror="
+      if(!this._tried){this._tried=1;this.src='${urls[1]}';}
+      else if(this._tried==1){this._tried=2;this.src='${urls[2]}';}
+      else if(this._tried==2){this._tried=3;this.src='${urls[3]}';}
+      else{this.parentNode.innerHTML='<div style=background:#f0f4f8;border-radius:8px;padding:40px;text-align:center;color:#8f9ab5;font-size:13px;>Foto no disponible</div>';}
+    ">`;
+}
+
+function renderFichaPlanta(filas) {
+  const p    = filas[0]; // datos de planta (iguales en todas las filas)
+  const base = PD_GITHUB_BASE;
+
+  // ── HOJA 1: encabezado + datos técnicos + diagrama + vista ──
+  const mapsBtn = p.maps && p.maps.startsWith('http')
+    ? `<a href="${p.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:8px 14px;background:var(--aysa-teal);color:white;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Ver en Google Maps
+      </a>` : '';
+
+  const digestorColor = p.posee_digestor === 'SÍ' ? '#00b87a' : '#8f9ab5';
+  const digestorIcon  = p.posee_digestor === 'SÍ'
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="${digestorColor}" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="${digestorColor}" stroke-width="2.5" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+  // ── HOJA 2: puntos de muestreo ──
+  const puntosHTML = filas.map(f => `
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:16px;overflow:hidden;">
+      <div style="background:var(--aysa-teal);padding:10px 16px;color:white;font-weight:700;font-size:13px;letter-spacing:0.5px;">
+        ${f.tipo_punto}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;">
+        <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgPlanta(f.foto_f1, 'Foto 1 ' + f.tipo_punto)}</div>
+        <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgPlanta(f.foto_f2, 'Foto 2 ' + f.tipo_punto)}</div>
+      </div>
+      <div style="padding:0 12px 12px;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:6px 8px;font-weight:700;color:var(--aysa-blue);width:40%;background:#f7f9fc;border-radius:4px;">CÓDIGO PUNTO</td>
+            <td style="padding:6px 8px;font-weight:600;">${f.codigo_punto || '—'}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:6px 8px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">COORDENADAS</td>
+            <td style="padding:6px 8px;">
+              ${f.coord_punto
+                ? `<a href="https://maps.google.com/?q=${encodeURIComponent(f.coord_punto)}" target="_blank" style="color:var(--aysa-teal);font-weight:600;font-size:11px;">${f.coord_punto}</a>`
+                : '—'}
+            </td>
+          </tr>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:6px 8px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">TIPO DE EQUIPO</td>
+            <td style="padding:6px 8px;">${f.tipo_equipo || '—'}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:6px 8px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">ANALÍTICA PUNTUAL</td>
+            <td style="padding:6px 8px;font-family:monospace;font-size:11px;">${f.analitica_puntual || '—'}</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 8px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">ANALÍTICA COMPUESTA</td>
+            <td style="padding:6px 8px;font-family:monospace;font-size:11px;">${f.analitica_compuesta || '—'}</td>
+          </tr>
+        </table>
+      </div>
+    </div>`).join('');
+
+  const pie = `<div style="text-align:center;font-size:10px;color:var(--gray-400);padding:8px 0 16px;">
+    Fecha Última Revisión: ${p.fecha_revision} — Revisión Vigente: ${p.nro_revision}
+  </div>`;
+
+  document.getElementById('plantas-ficha-container').innerHTML = `
+
+    <!-- HOJA 1: ENCABEZADO + DATOS TÉCNICOS + IMÁGENES -->
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:16px;overflow:hidden;">
+
+      <!-- Header institucional -->
+      <div style="background:#d0d0d0;padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #bbb;">
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
+          <div style="font-size:10px;color:var(--gray-600);">Gerencia de Calidad · Ficha de Puntos de Muestreo – Plantas Depuradoras</div>
+        </div>
+        <div style="background:var(--aysa-blue);color:white;font-weight:900;font-size:14px;padding:4px 10px;border-radius:4px;">aysa</div>
+      </div>
+
+      <!-- Datos básicos de la planta -->
+      <div style="padding:12px 16px;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:7px 8px;font-weight:700;color:var(--aysa-blue);width:35%;background:#f7f9fc;">PLANTA</td>
+            <td style="padding:7px 8px;font-weight:700;font-size:14px;">${p.nombre}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:7px 8px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">LOCALIDAD</td>
+            <td style="padding:7px 8px;">${p.localidad}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eef1f7;">
+            <td style="padding:7px 8px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">DIRECCIÓN</td>
+            <td style="padding:7px 8px;">${p.direccion}</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 8px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">COORDENADAS</td>
+            <td style="padding:7px 8px;">
+              ${p.coord_planta
+                ? `<a href="https://maps.google.com/?q=${encodeURIComponent(p.coord_planta)}" target="_blank" style="color:var(--aysa-teal);font-size:11px;">${p.coord_planta}</a>`
+                : '—'}
+              ${mapsBtn}
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Datos técnicos -->
+      <div style="margin:0 16px 12px;background:#f7f9fc;border-radius:8px;padding:12px;border:1px solid #eef1f7;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--aysa-blue);margin-bottom:10px;">Datos Técnicos</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+          <div style="background:white;border-radius:6px;padding:10px 8px;border:1px solid #eef1f7;">
+            <div style="font-size:10px;color:var(--gray-400);margin-bottom:4px;">Q PROMEDIO INGRESO</div>
+            <div style="font-size:16px;font-weight:700;color:var(--aysa-blue);">${p.q_promedio || '—'}</div>
+            <div style="font-size:9px;color:var(--gray-400);">m³/s</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:10px 8px;border:1px solid #eef1f7;">
+            <div style="font-size:10px;color:var(--gray-400);margin-bottom:4px;">DBO PROM. EFLUENTE</div>
+            <div style="font-size:16px;font-weight:700;color:var(--aysa-teal);">${p.dbo || '—'}</div>
+            <div style="font-size:9px;color:var(--gray-400);">mg/L</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:10px 8px;border:1px solid #eef1f7;">
+            <div style="font-size:10px;color:var(--gray-400);margin-bottom:4px;">POSEE DIGESTOR</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:4px;">
+              ${digestorIcon}
+              <span style="font-size:13px;font-weight:700;color:${digestorColor};">${p.posee_digestor || '—'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIAGRAMA DE PROCESO -->
+      <div style="margin:0 16px 8px;">
+        <div style="background:var(--aysa-teal);color:white;text-align:center;padding:8px;font-weight:700;font-size:12px;letter-spacing:0.5px;border-radius:6px 6px 0 0;">
+          DIAGRAMA DE PROCESO
+        </div>
+        <div style="border:1px solid #eef1f7;border-top:none;border-radius:0 0 6px 6px;overflow:hidden;padding:4px;">
+          ${imgPlanta(p.foto_df, 'Diagrama de proceso ' + p.nombre)}
+        </div>
+      </div>
+
+      <!-- VISTA DE PLANTA -->
+      <div style="margin:0 16px 16px;">
+        <div style="background:var(--aysa-teal);color:white;text-align:center;padding:8px;font-weight:700;font-size:12px;letter-spacing:0.5px;border-radius:6px 6px 0 0;">
+          VISTA DE PLANTA
+        </div>
+        <div style="border:1px solid #eef1f7;border-top:none;border-radius:0 0 6px 6px;overflow:hidden;padding:4px;">
+          ${imgPlanta(p.foto_vp, 'Vista de planta ' + p.nombre)}
+        </div>
+      </div>
+
+      ${pie}
+    </div>
+
+    <!-- HOJA 2: PUNTOS DE MUESTREO -->
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:16px;overflow:hidden;">
+      <div style="background:var(--aysa-blue);padding:12px 16px;color:white;font-weight:700;font-size:13px;">
+        PUNTOS DE MUESTREO — ${p.nombre}
+      </div>
+      <div style="padding:12px;">
+        ${puntosHTML}
+      </div>
+      ${pie}
+    </div>
+
+    <!-- BOTÓN DESCARGAR PDF -->
+    <button onclick="descargarPDFPlanta()" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Descargar ficha PDF
+    </button>
+  `;
+}
+
+function descargarPDFPlanta() {
+  if (!plantaActual) return;
+  const filas = plantasData.filter(r => r.sigla === plantaActual);
+  if (!filas.length) return;
+  const p = filas[0];
+  const logoB64 = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
+  const val = v => (v && v !== '---') ? v : '';
+
+  const digestorStr = val(p.posee_digestor) || '—';
+
+  const puntosRows = filas.map(f => `
+    <tr>
+      <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">${val(f.tipo_punto)}</td>
+      <td style="padding:5px 8px;font-weight:600;border-right:1px solid #888;border-bottom:1px solid #888;">${val(f.codigo_punto)}</td>
+      <td style="padding:5px 8px;font-size:8pt;border-right:1px solid #888;border-bottom:1px solid #888;">${val(f.coord_punto)}</td>
+      <td style="padding:5px 8px;border-right:1px solid #888;border-bottom:1px solid #888;">${val(f.tipo_equipo)}</td>
+      <td style="padding:5px 8px;font-family:monospace;font-size:8pt;border-right:1px solid #888;border-bottom:1px solid #888;">${val(f.analitica_puntual)}</td>
+      <td style="padding:5px 8px;font-family:monospace;font-size:8pt;border-bottom:1px solid #888;">${val(f.analitica_compuesta)}</td>
+    </tr>`).join('');
+
+  const fotoDF = `${PD_GITHUB_BASE}${p.foto_df}.jpg`;
+  const fotoVP = `${PD_GITHUB_BASE}${p.foto_vp}.jpg`;
+
+  document.getElementById('print-area').innerHTML = `
+    <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
+
+      <!-- ENCABEZADO -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr>
+          <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px 10px;border-right:1px solid #888;">
+            <div style="font-weight:700;font-size:11pt;">Dirección de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:10pt;">Gerencia de Calidad</div>
+            <div style="font-weight:700;font-size:10pt;">Ficha de Puntos de Muestreo – Plantas Depuradoras</div>
+          </td>
+          <td style="width:20%;background:#d0d0d0;text-align:center;padding:8px;">
+            ${logoB64 ? `<img src="${logoB64}" style="width:72px;height:54px;">` : '<div style="background:#1a2f7a;color:white;font-weight:900;font-size:16pt;padding:6px 10px;border-radius:6px;display:inline-block;">aysa</div>'}
+          </td>
+        </tr>
+      </table>
+
+      <!-- DATOS DE LA PLANTA -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr><td style="width:20%;padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">PLANTA:</td><td style="padding:5px 8px;border-bottom:1px solid #888;font-weight:700;text-align:center;">${val(p.nombre)}</td></tr>
+        <tr><td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">LOCALIDAD:</td><td style="padding:5px 8px;border-bottom:1px solid #888;text-align:center;">${val(p.localidad)}</td></tr>
+        <tr><td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">DIRECCIÓN:</td><td style="padding:5px 8px;border-bottom:1px solid #888;text-align:center;">${val(p.direccion)}</td></tr>
+        <tr><td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;background:#e8f4f8;">COORDENADAS:</td><td style="padding:5px 8px;text-align:center;">${val(p.coord_planta)}</td></tr>
+      </table>
+
+      <!-- DATOS TÉCNICOS -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr>
+          <td colspan="6" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #888;">DATOS TÉCNICOS</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:22%;">Q PROMEDIO INGRESO</td>
+          <td style="padding:5px 8px;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;width:12%;">${val(p.q_promedio)} m³/s</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:22%;">DBO PROM. EFLUENTE</td>
+          <td style="padding:5px 8px;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;width:12%;">${val(p.dbo) || '—'} mg/L</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:18%;">POSEE DIGESTOR</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #888;text-align:center;font-weight:700;">${digestorStr}</td>
+        </tr>
+      </table>
+
+      <!-- DIAGRAMA DE PROCESO -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr><td style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:6px;border-bottom:1px solid #888;">DIAGRAMA DE PROCESO</td></tr>
+        <tr><td style="padding:4px;text-align:center;line-height:0;border-bottom:1px solid #888;">
+          <img src="${fotoDF}" style="width:100%;max-height:320px;object-fit:contain;" onerror="this.style.display='none'">
+        </td></tr>
+      </table>
+
+      <!-- VISTA DE PLANTA -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr><td style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:6px;border-bottom:1px solid #888;">VISTA DE PLANTA</td></tr>
+        <tr><td style="padding:4px;text-align:center;line-height:0;">
+          <img src="${fotoVP}" style="width:100%;max-height:320px;object-fit:contain;" onerror="this.style.display='none'">
+        </td></tr>
+      </table>
+
+      <div style="text-align:center;font-size:8pt;color:#666;padding:6px 0;">
+        Fecha Última Revisión: ${val(p.fecha_revision)} — Revisión Vigente: ${val(p.nro_revision)}
+      </div>
+
+      <!-- PÁGINA 2: PUNTOS DE MUESTREO -->
+      <div style="page-break-before:always;"></div>
+
+      <!-- Encabezado repetido -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr>
+          <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px 10px;border-right:1px solid #888;">
+            <div style="font-weight:700;font-size:11pt;">Dirección de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:10pt;">Gerencia de Calidad · Ficha de Puntos de Muestreo – Plantas Depuradoras</div>
+          </td>
+          <td style="width:20%;background:#d0d0d0;text-align:center;padding:8px;">
+            ${logoB64 ? `<img src="${logoB64}" style="width:72px;height:54px;">` : '<div style="background:#1a2f7a;color:white;font-weight:900;font-size:16pt;padding:6px 10px;border-radius:6px;display:inline-block;">aysa</div>'}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Datos básicos en hoja 2 -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:20%;">PLANTA:</td><td style="padding:5px 8px;border-right:1px solid #888;border-bottom:1px solid #888;font-weight:700;">${val(p.nombre)}</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:20%;">LOCALIDAD:</td><td style="padding:5px 8px;border-right:1px solid #888;border-bottom:1px solid #888;">${val(p.localidad)}</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:20%;">DIRECCIÓN:</td><td style="padding:5px 8px;border-bottom:1px solid #888;">${val(p.direccion)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;background:#e8f4f8;" colspan="1">COORDENADAS:</td>
+          <td colspan="5" style="padding:5px 8px;">${val(p.coord_planta)}</td>
+        </tr>
+      </table>
+
+      <!-- PUNTOS DE MUESTREO -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
+        <tr>
+          <td colspan="6" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:6px;border-bottom:1px solid #888;">PUNTOS DE MUESTREO</td>
+        </tr>
+        <tr style="background:#d0d0d0;">
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">TIPO PUNTO</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">CÓDIGO</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">COORDENADAS</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">EQUIPO</td>
+          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">AN. PUNTUAL</td>
+          <td style="padding:5px 8px;font-weight:700;border-bottom:1px solid #888;">AN. COMPUESTA</td>
+        </tr>
+        ${puntosRows}
+      </table>
+
+      <div style="text-align:center;font-size:8pt;color:#666;padding:6px 0;margin-top:8px;">
+        Fecha Última Revisión: ${val(p.fecha_revision)} — Revisión Vigente: ${val(p.nro_revision)}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('print-area').style.display = 'block';
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => { document.getElementById('print-area').style.display = 'none'; }, 1500);
+  }, 800);
 }
 
 // ===== CHECK SESSION =====
