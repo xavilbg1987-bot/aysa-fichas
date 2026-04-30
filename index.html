@@ -2515,19 +2515,21 @@ function seleccionarPlanta(sigla) {
 
 function imgPlanta(nombre, alt) {
   if (!nombre) return `<div style="background:#f0f4f8;border-radius:8px;padding:40px;text-align:center;color:#8f9ab5;font-size:13px;">Sin imagen cargada</div>`;
-  const ext  = ['jpg','jpeg','png','gif'];
-  // Intentar con .jpg primero, fallback a .png y .gif
-  const urls = ext.map(e => `${PD_GITHUB_BASE}${nombre}.${e}`);
+  const exts = ['PNG', 'png', 'jpg', 'JPG', 'jpeg', 'gif', 'GIF'];
+  const urls = exts.map(e => `${PD_GITHUB_BASE}${nombre}.${e}`);
   return `<img
     src="${urls[0]}"
     alt="${alt}"
     style="width:100%;border-radius:8px;object-fit:contain;max-height:420px;cursor:pointer;"
     onclick="openLightbox(this.src)"
     onerror="
-      if(!this._tried){this._tried=1;this.src='${urls[1]}';}
-      else if(this._tried==1){this._tried=2;this.src='${urls[2]}';}
-      else if(this._tried==2){this._tried=3;this.src='${urls[3]}';}
-      else{this.parentNode.innerHTML='<div style=background:#f0f4f8;border-radius:8px;padding:40px;text-align:center;color:#8f9ab5;font-size:13px;>Foto no disponible</div>';}
+      if(this._t===undefined)this._t=0;
+      this._t++;
+      if(this._t < ${exts.length}){
+        this.src='${PD_GITHUB_BASE}${nombre}.' + ['PNG','png','jpg','JPG','jpeg','gif','GIF'][this._t];
+      } else {
+        this.parentNode.innerHTML='<div style=background:#f0f4f8;border-radius:8px;padding:40px;text-align:center;color:#8f9ab5;font-size:13px;>Foto no disponible</div>';
+      }
     ">`;
 }
 
