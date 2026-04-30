@@ -1413,27 +1413,133 @@
     </div>
   </div>
 
-  <!-- TAB PLANTAS DEPURADORAS (dentro del main-panel) -->
+  <!-- TAB PLANTAS DEPURADORAS — DASHBOARD -->
   <div id="tab-plantas" style="display:none;flex-direction:column;flex:1;min-height:0;">
-    <!-- HEADER + BUSCADOR FIJO -->
-    <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
-          Volver
-        </button>
-        <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">PLANTAS DEPURADORAS</span>
-      </div>
-      <div style="position:relative;">
-        <select id="plantas-select" onchange="seleccionarPlanta(this.value)"
-          style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;appearance:none;cursor:pointer;box-shadow:var(--shadow-sm);">
-          <option value="">— Seleccioná una planta —</option>
-        </select>
-        <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+
+    <!-- SUB-PANTALLA: DASHBOARD PLANTAS -->
+    <div id="pd-dashboard" class="content">
+      <div class="dashboard-grid">
+        <div class="dash-section">
+          <div class="dash-section-title">🏭 Plantas Depuradoras</div>
+
+          <div class="dash-card action-card" onclick="irAPDBuscar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <div>
+              <div class="dash-card-title">Fichas de Plantas</div>
+              <div class="dash-card-sub">Buscá una planta depuradora</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="dash-card action-card" onclick="irAPDRecorrido()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+            <div>
+              <div class="dash-card-title">Armar recorrido</div>
+              <div class="dash-card-sub">Planificá tu visita a las plantas</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="dash-card action-card" onclick="irASugerencias()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div>
+              <div class="dash-card-title">Sugerencias</div>
+              <div class="dash-card-sub">Reportá información incorrecta</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="dash-card action-card" onclick="irAPDMapa()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+            <div>
+              <div class="dash-card-title">Mapa de plantas</div>
+              <div class="dash-card-sub">Ver ubicación de todas las plantas</div>
+            </div>
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+        </div>
       </div>
     </div>
-    <!-- FICHA PLANTA -->
-    <div id="plantas-ficha-container" style="padding:16px 20px 80px;max-width:680px;margin:0 auto;width:100%;"></div>
+
+    <!-- SUB-PANTALLA: BUSCAR PLANTA -->
+    <div id="pd-buscar" style="display:none;flex-direction:column;flex:1;min-height:0;">
+      <div style="background:var(--aysa-blue);padding:12px 20px 14px;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <button onclick="irAPDDashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+            Volver
+          </button>
+          <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">FICHAS DE PLANTAS</span>
+        </div>
+        <div style="position:relative;">
+          <select id="plantas-select" onchange="seleccionarPlanta(this.value)"
+            style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;appearance:none;cursor:pointer;box-shadow:var(--shadow-sm);">
+            <option value="">— Seleccioná una planta —</option>
+          </select>
+          <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div id="plantas-ficha-container" style="padding:16px 20px 80px;max-width:680px;margin:0 auto;width:100%;overflow-y:auto;flex:1;"></div>
+    </div>
+
+    <!-- SUB-PANTALLA: RECORRIDO PLANTAS -->
+    <div id="pd-recorrido" style="display:none;" class="content">
+      <button class="back-btn" onclick="irAPDDashboard()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Menú Plantas
+      </button>
+      <div class="search-header">
+        <h2>Armar recorrido</h2>
+        <p>Agregá puntos de plantas para planificar tu visita</p>
+      </div>
+      <div class="recorrido-card">
+        <div style="padding:16px;">
+          <div style="margin-bottom:16px;">
+            <label style="display:block;font-size:12px;font-weight:700;color:var(--gray-600);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;">Punto de partida</label>
+            <select id="pd-partida-select" style="width:100%;padding:11px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;background:white;">
+              <option value="">— Seleccioná el punto de partida —</option>
+              <option value="-34.55709212168997,-58.429911126843876">🏢 Laboratorio Central</option>
+              <option value="-34.55697400416435,-58.42486058884896">🌿 Medio Ambiente</option>
+              <option value="-34.647837378177556,-58.44865426971511">🔧 Talleres Varela</option>
+            </select>
+          </div>
+          <div style="margin-bottom:12px;">
+            <label style="display:block;font-size:12px;font-weight:700;color:var(--gray-600);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;">Plantas a visitar</label>
+            <div style="display:flex;gap:8px;position:relative;">
+              <select id="pd-planta-add" style="flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;background:white;">
+                <option value="">— Elegí una planta —</option>
+              </select>
+              <button onclick="agregarPlantaRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;font-size:18px;">+</button>
+            </div>
+          </div>
+          <div id="pd-recorrido-lista" style="margin-bottom:14px;"></div>
+          <div style="display:flex;gap:8px;margin-bottom:14px;">
+            <button onclick="abrirRecorridoPlantas()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+              Ver recorrido en Maps
+            </button>
+            <button onclick="limpiarRecorridoPlantas()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB-PANTALLA: MAPA PLANTAS -->
+    <div id="pd-mapa" style="display:none;" class="content">
+      <button class="back-btn" onclick="irAPDDashboard()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Menú Plantas
+      </button>
+      <div class="search-header">
+        <h2>Mapa de plantas</h2>
+        <p>Ubicación de todas las plantas depuradoras</p>
+      </div>
+      <div id="pd-mapa-container" style="border-radius:12px;overflow:hidden;border:1px solid var(--gray-200);">
+        <div style="padding:20px;text-align:center;color:var(--gray-400);font-size:13px;">Cargando mapa...</div>
+      </div>
+    </div>
+
   </div>
 
     </div> <!-- /main-panel -->
@@ -2489,17 +2595,120 @@ function irAPlantas() {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
-  const tabPlantas = document.getElementById('tab-plantas');
-  tabPlantas.style.display = 'flex';
-  document.querySelectorAll('.sidebar-folder').forEach(f => f.classList.remove('active'));
-  // Cargar datos si aún no están
-  if (plantasData.length === 0) {
-    document.getElementById('plantas-ficha-container').innerHTML =
-      `<div class="loading"><div class="spinner"></div><p>Cargando plantas...</p></div>`;
-    loadPlantasData().then(() => {
-      document.getElementById('plantas-ficha-container').innerHTML = '';
+  const tp = document.getElementById('tab-plantas');
+  tp.style.display = 'flex';
+  irAPDDashboard();
+  if (plantasData.length === 0) loadPlantasData();
+}
+
+function irAPDDashboard() {
+  ['pd-dashboard','pd-buscar','pd-recorrido','pd-mapa'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('pd-dashboard').style.display = 'block';
+}
+
+function irAPDBuscar() {
+  ['pd-dashboard','pd-buscar','pd-recorrido','pd-mapa'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('pd-buscar').style.display = 'flex';
+}
+
+function irAPDRecorrido() {
+  ['pd-dashboard','pd-buscar','pd-recorrido','pd-mapa'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  // Popular select de plantas para recorrido
+  const sel = document.getElementById('pd-planta-add');
+  if (sel && plantasData.length > 0) {
+    const unicas = [...new Set(plantasData.map(r => r.sigla))].filter(s => s && /^[A-Z0-9]+$/.test(s));
+    sel.innerHTML = '<option value="">— Elegí una planta —</option>';
+    unicas.forEach(sigla => {
+      const f = plantasData.find(r => r.sigla === sigla);
+      const opt = document.createElement('option');
+      opt.value = sigla;
+      opt.textContent = f.nombre;
+      sel.appendChild(opt);
     });
   }
+  document.getElementById('pd-recorrido').style.display = 'block';
+}
+
+function irAPDMapa() {
+  ['pd-dashboard','pd-buscar','pd-recorrido','pd-mapa'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('pd-mapa').style.display = 'block';
+  renderMapaPlantas();
+}
+
+// Recorrido de plantas
+let pdRecorridoPuntos = [];
+
+function agregarPlantaRecorrido() {
+  const sel = document.getElementById('pd-planta-add');
+  const sigla = sel.value;
+  if (!sigla) return;
+  if (pdRecorridoPuntos.find(p => p.sigla === sigla)) { alert('Esa planta ya está en el recorrido.'); return; }
+  const fila = plantasData.find(r => r.sigla === sigla);
+  if (!fila || !fila.coord_planta) { alert('Esa planta no tiene coordenadas.'); return; }
+  pdRecorridoPuntos.push({ sigla, nombre: fila.nombre, coordenadas: fila.coord_planta, localidad: fila.localidad });
+  sel.value = '';
+  renderRecorridoPlantas();
+}
+
+function renderRecorridoPlantas() {
+  const lista = document.getElementById('pd-recorrido-lista');
+  if (pdRecorridoPuntos.length === 0) { lista.innerHTML = ''; return; }
+  lista.innerHTML = pdRecorridoPuntos.map((p, i) => `
+    <div class="recorrido-punto">
+      <div>
+        <div class="recorrido-punto-codigo">${i+1}. ${p.nombre}</div>
+        <div class="recorrido-punto-dir">${p.localidad || ''}</div>
+      </div>
+      <button onclick="quitarPlantaRecorrido(${i})">×</button>
+    </div>`).join('');
+}
+
+function quitarPlantaRecorrido(i) {
+  pdRecorridoPuntos.splice(i, 1);
+  renderRecorridoPlantas();
+}
+
+function limpiarRecorridoPlantas() {
+  pdRecorridoPuntos = [];
+  renderRecorridoPlantas();
+  document.getElementById('pd-partida-select').value = '';
+}
+
+function abrirRecorridoPlantas() {
+  if (pdRecorridoPuntos.length === 0) { alert('Agregá al menos una planta al recorrido.'); return; }
+  const partida = document.getElementById('pd-partida-select').value;
+  const coords = pdRecorridoPuntos.map(p => p.coordenadas.trim());
+  const todos = partida ? [partida, ...coords] : coords;
+  const segmentos = todos.map(c => encodeURIComponent(c)).join('/');
+  window.open(`https://www.google.com/maps/dir/${segmentos}`, '_blank');
+}
+
+function renderMapaPlantas() {
+  if (plantasData.length === 0) return;
+  const unicas = [...new Set(plantasData.map(r => r.sigla))].filter(s => s && /^[A-Z0-9]+$/.test(s));
+  const markers = unicas.map(sigla => {
+    const f = plantasData.find(r => r.sigla === sigla);
+    return f.coord_planta ? encodeURIComponent(f.coord_planta) : null;
+  }).filter(Boolean);
+  if (markers.length === 0) return;
+  const base = markers[0];
+  const url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyD-9tSrke72SousFqewGwaa_ajAYsEBMkY&q=${base}&zoom=10`;
+  // Usar iframe con todos los marcadores como waypoints
+  const waypointsUrl = `https://maps.google.com/maps?q=${markers.join('|')}&output=embed`;
+  document.getElementById('pd-mapa-container').innerHTML = `
+    <iframe src="${waypointsUrl}" width="100%" height="420" frameborder="0" style="border:0;display:block;" allowfullscreen></iframe>`;
 }
 
 function seleccionarPlanta(sigla) {
@@ -2699,7 +2908,11 @@ function renderFichaPlanta(filas) {
       ${pie(p.fecha_revision, p.nro_revision)}
     </div>
 
-    <!-- BOTÓN DESCARGAR PDF -->
+    <!-- BOTÓN SUGERENCIA + DESCARGAR PDF -->
+    <button onclick="openModal()" class="btn-sugerencia" style="width:100%;margin-bottom:10px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Reportar información incorrecta
+    </button>
     <button onclick="descargarPDFPlanta()" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(--shadow-md);">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Descargar ficha PDF
@@ -2727,8 +2940,13 @@ function descargarPDFPlanta() {
       <td style="padding:5px 8px;font-family:monospace;font-size:8pt;border-bottom:1px solid #888;">${val(f.analitica_compuesta)}</td>
     </tr>`).join('');
 
-  const fotoDF = `${PD_GITHUB_BASE}${p.foto_df}.jpg`;
-  const fotoVP = `${PD_GITHUB_BASE}${p.foto_vp}.jpg`;
+  const fotoDF = `${PD_GITHUB_BASE}${p.foto_df}.PNG`;
+  const fotoVP = `${PD_GITHUB_BASE}${p.foto_vp}.PNG`;
+
+  // Fotos de puntos con fallback PNG
+  const fotoPunto = (nombre) => nombre
+    ? `<img src="${PD_GITHUB_BASE}${nombre}.PNG" style="width:100%;max-height:200px;object-fit:contain;" onerror="this.src='${PD_GITHUB_BASE}${nombre}.jpg';this.onerror=null;">`
+    : '';
 
   document.getElementById('print-area').innerHTML = `
     <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
@@ -2819,21 +3037,25 @@ function descargarPDFPlanta() {
         </tr>
       </table>
 
-      <!-- PUNTOS DE MUESTREO -->
-      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
-        <tr>
-          <td colspan="6" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:6px;border-bottom:1px solid #888;">PUNTOS DE MUESTREO</td>
-        </tr>
-        <tr style="background:#d0d0d0;">
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">TIPO PUNTO</td>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">CÓDIGO</td>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">COORDENADAS</td>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">EQUIPO</td>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">AN. PUNTUAL</td>
-          <td style="padding:5px 8px;font-weight:700;border-bottom:1px solid #888;">AN. COMPUESTA</td>
-        </tr>
-        ${puntosRows}
-      </table>
+      <!-- PUNTOS DE MUESTREO CON FOTOS -->
+      ${filas.map(f => `
+        <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:10px;">
+          <tr><td colspan="2" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:6px;border-bottom:1px solid #888;">${val(f.tipo_punto)}</td></tr>
+          <tr>
+            <td style="width:40%;padding:4px;border-right:1px solid #888;text-align:center;vertical-align:middle;">
+              ${fotoPunto(f.foto_f1)}
+            </td>
+            <td style="width:60%;padding:0;vertical-align:top;">
+              <table style="width:100%;border-collapse:collapse;font-size:8.5pt;">
+                <tr style="border-bottom:1px solid #ddd;"><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;width:45%;">CÓDIGO</td><td style="padding:5px 8px;">${val(f.codigo_punto)}</td></tr>
+                <tr style="border-bottom:1px solid #ddd;"><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;">COORDENADAS</td><td style="padding:5px 8px;font-size:7.5pt;">${val(f.coord_punto)}</td></tr>
+                <tr style="border-bottom:1px solid #ddd;"><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;">TIPO EQUIPO</td><td style="padding:5px 8px;">${val(f.tipo_equipo)}</td></tr>
+                <tr style="border-bottom:1px solid #ddd;"><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;">AN. PUNTUAL</td><td style="padding:5px 8px;font-family:monospace;">${val(f.analitica_puntual)}</td></tr>
+                <tr><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;">AN. COMPUESTA</td><td style="padding:5px 8px;font-family:monospace;">${val(f.analitica_compuesta) || '—'}</td></tr>
+              </table>
+            </td>
+          </tr>
+        </table>`).join('')}
 
       <div style="text-align:center;font-size:8pt;color:#666;padding:6px 0;margin-top:8px;">
         Fecha Última Revisión: ${val(p.fecha_revision)} — Revisión Vigente: ${val(p.nro_revision)}
