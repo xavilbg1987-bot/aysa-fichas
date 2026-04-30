@@ -1413,13 +1413,10 @@
     </div>
   </div>
 
-    </div> <!-- /main-panel -->
-  </div> <!-- /app-layout -->
-
-  <!-- TAB PLANTAS DEPURADORAS -->
-  <div id="tab-plantas" class="content" style="display:none;padding:0;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;background:var(--gray-50);">
+  <!-- TAB PLANTAS DEPURADORAS (dentro del main-panel) -->
+  <div id="tab-plantas" style="display:none;flex-direction:column;flex:1;min-height:0;">
     <!-- HEADER + BUSCADOR FIJO -->
-    <div style="background:var(--aysa-blue);padding:12px 20px 14px;flex-shrink:0;">
+    <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
@@ -1435,9 +1432,12 @@
         <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
     </div>
-    <!-- FICHA PLANTA (scrolleable) -->
-    <div id="plantas-ficha-container" style="flex:1;overflow-y:auto;padding:16px 20px 80px;"></div>
+    <!-- FICHA PLANTA -->
+    <div id="plantas-ficha-container" style="padding:16px 20px 80px;max-width:680px;margin:0 auto;width:100%;"></div>
   </div>
+
+    </div> <!-- /main-panel -->
+  </div> <!-- /app-layout -->
 
   <!-- HOME BUTTON (fixed) -->
   <button onclick="irADashboard()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:var(--aysa-blue);color:white;border:none;border-radius:50%;width:50px;height:50px;box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Menú principal">
@@ -1681,6 +1681,8 @@ function irADashboard() {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
+  const tp = document.getElementById('tab-plantas');
+  if (tp) tp.style.display = 'none';
   document.getElementById('tab-dashboard').style.display = 'block';
 }
 
@@ -2460,7 +2462,7 @@ async function loadPlantasData() {
       }));
 
     // Actualizar badge con cantidad de plantas únicas
-    const plantasUnicas = [...new Set(plantasData.map(r => r.sigla))];
+    const plantasUnicas = [...new Set(plantasData.map(r => r.sigla))].filter(s => s && s.trim() !== '');
     const badge = document.getElementById('badge-plantas');
     if (badge) badge.textContent = plantasUnicas.length;
 
@@ -2487,10 +2489,9 @@ function irAPlantas() {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
-  document.getElementById('tab-plantas').style.display = 'block';
-  // Activar sidebar
+  const tabPlantas = document.getElementById('tab-plantas');
+  tabPlantas.style.display = 'flex';
   document.querySelectorAll('.sidebar-folder').forEach(f => f.classList.remove('active'));
-  event && event.currentTarget && event.currentTarget.classList.add('active');
   // Cargar datos si aún no están
   if (plantasData.length === 0) {
     document.getElementById('plantas-ficha-container').innerHTML =
