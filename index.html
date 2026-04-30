@@ -2473,8 +2473,13 @@ function descargarPDF() {
   document.getElementById('print-area').style.display = 'block';
   setTimeout(() => {
     window.print();
-    setTimeout(() => { document.getElementById('print-area').style.display = 'none'; }, 1500);
   }, 600);
+  window.addEventListener('afterprint', function handler() {
+    const pa = document.getElementById('print-area');
+    pa.style.display = 'none';
+    pa.innerHTML = '';
+    window.removeEventListener('afterprint', handler);
+  });
 }
 function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
@@ -3066,6 +3071,7 @@ function descargarPDFPlanta() {
   window.addEventListener('afterprint', function handler() {
     printArea.style.display = 'none';
     printArea.classList.add('hidden-print');
+    printArea.innerHTML = '';
     window.removeEventListener('afterprint', handler);
   });
 }
