@@ -1417,7 +1417,7 @@
   </div> <!-- /app-layout -->
 
   <!-- TAB PLANTAS DEPURADORAS -->
-  <div id="tab-plantas" class="content" style="display:none;padding:0;flex-direction:column;">
+  <div id="tab-plantas" class="content" style="display:none;padding:0;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;background:var(--gray-50);">
     <!-- HEADER + BUSCADOR FIJO -->
     <div style="background:var(--aysa-blue);padding:12px 20px 14px;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
@@ -1724,14 +1724,26 @@ function toggleRecorrido() {
 
 function mostrarSugerenciasRecorrido(query) {
   const list = document.getElementById('autocomplete-recorrido');
-  if (!query || query.length < 2 || sheetData.length === 0) { list.style.display = 'none'; return; }
+  if (!query || query.length < 2) { list.style.display = 'none'; return; }
   const q = query.toUpperCase();
-  const matches = sheetData.filter(p => p.codigo.includes(q)).slice(0, 6);
-  if (matches.length === 0) { list.style.display = 'none'; return; }
-  list.innerHTML = matches.map(p => `
-    <div class="autocomplete-item" onmousedown="seleccionarRecorrido('${p.codigo}')">
-      ${p.codigo}<span>${p.direccion || ''}</span>
-    </div>`).join('');
+
+  // Buscar en MI-MAC
+  const matchesMac = sheetData.filter(p => p.codigo.includes(q)).slice(0, 4);
+
+  // Buscar en plantas (por código de punto o nombre de planta)
+  const matchesPlantas = plantasData.filter(p =>
+    p.codigo_punto.includes(q) || p.nombre.includes(q)
+  ).slice(0, 4);
+
+  const allMatches = [...matchesMac, ...matchesPlantas];
+  if (allMatches.length === 0) { list.style.display = 'none'; return; }
+
+  list.innerHTML = [
+    ...matchesMac.map(p => `<div class="autocomplete-item" onmousedown="seleccionarRecorrido('${p.codigo}','mac')">
+      ${p.codigo}<span>${p.direccion || ''}</span></div>`),
+    ...matchesPlantas.map(f => `<div class="autocomplete-item" onmousedown="seleccionarRecorrido('${f.codigo_punto}','planta')">
+      🏭 ${f.codigo_punto}<span>${f.nombre} · ${f.tipo_punto}</span></div>`)
+  ].join('');
   list.style.display = 'block';
 }
 
@@ -1740,8 +1752,9 @@ function ocultarSugerenciasRecorrido() {
   if (list) list.style.display = 'none';
 }
 
-function seleccionarRecorrido(codigo) {
+function seleccionarRecorrido(codigo, tipo) {
   document.getElementById('recorrido-input').value = codigo;
+  document.getElementById('recorrido-input').dataset.tipo = tipo || 'mac';
   ocultarSugerenciasRecorrido();
   agregarPuntoRecorrido();
 }
@@ -1750,13 +1763,30 @@ function agregarPuntoRecorrido() {
   const input = document.getElementById('recorrido-input');
   const codigo = input.value.trim().toUpperCase();
   if (!codigo) return;
-  const punto = sheetData.find(p => p.codigo === codigo);
-  if (!punto) { alert(`Código ${codigo} no encontrado.`); return; }
-  if (recorridoPuntos.find(p => p.codigo === codigo)) { alert('Ese punto ya está en el recorrido.'); return; }
-  if (!punto.coordenadas || punto.coordenadas === '---') { alert(`El punto ${codigo} no tiene coordenadas.`); return; }
-  recorridoPuntos.push(punto);
-  input.value = '';
-  renderRecorrido();
+
+  // Buscar primero en MI-MAC
+  let punto = sheetData.find(p => p.codigo === codigo);
+  if (punto) {
+    if (!punto.coordenadas || punto.coordenadas === '---') { alert(`El punto ${codigo} no tiene coordenadas.`); return; }
+    if (recorridoPuntos.find(p => p.codigo === codigo)) { alert('Ese punto ya está en el recorrido.'); return; }
+    recorridoPuntos.push({ codigo, coordenadas: punto.coordenadas, direccion: punto.direccion, localidad: punto.localidad });
+    input.value = '';
+    renderRecorrido();
+    return;
+  }
+
+  // Buscar en plantas
+  const fila = plantasData.find(f => f.codigo_punto === codigo);
+  if (fila) {
+    if (!fila.coord_punto) { alert(`El punto ${codigo} no tiene coordenadas.`); return; }
+    if (recorridoPuntos.find(p => p.codigo === codigo)) { alert('Ese punto ya está en el recorrido.'); return; }
+    recorridoPuntos.push({ codigo, coordenadas: fila.coord_punto, direccion: fila.nombre + ' · ' + fila.tipo_punto, localidad: fila.localidad });
+    input.value = '';
+    renderRecorrido();
+    return;
+  }
+
+  alert(`Código ${codigo} no encontrado.`);
 }
 
 function renderRecorrido() {
@@ -2439,6 +2469,7 @@ async function loadPlantasData() {
     if (sel) {
       sel.innerHTML = '<option value="">— Elegí una planta —</option>';
       plantasUnicas.forEach(sigla => {
+        if (!sigla) return; // ignorar siglas vacías
         const fila = plantasData.find(r => r.sigla === sigla);
         const opt  = document.createElement('option');
         opt.value       = sigla;
@@ -2504,11 +2535,7 @@ function renderFichaPlanta(filas) {
   const base = PD_GITHUB_BASE;
 
   // ── HOJA 1: encabezado + datos técnicos + diagrama + vista ──
-  const mapsBtn = p.maps && p.maps.startsWith('http')
-    ? `<a href="${p.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:8px 14px;background:var(--aysa-teal);color:white;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Ver en Google Maps
-      </a>` : '';
+  const mapsBtn = ''; // coordinadas solo como texto, sin botón Maps en la ficha
 
   const digestorColor = p.posee_digestor === 'SÍ' ? '#00b87a' : '#8f9ab5';
   const digestorIcon  = p.posee_digestor === 'SÍ'
