@@ -1134,12 +1134,12 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-title">Fichas</div>
-      <a class="sidebar-folder active" onclick="irADashboard()">
+      <a class="sidebar-folder" id="sidebar-micromac" onclick="irADashboard()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         MICRO / MACRO
         <span class="folder-badge">254</span>
       </a>
-      <a class="sidebar-folder" onclick="irAPlantas()">
+      <a class="sidebar-folder" id="sidebar-plantas" onclick="irAPlantas()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         PLANTAS DEPURADORAS
         <span class="folder-badge" id="badge-plantas">—</span>
@@ -1782,6 +1782,12 @@ async function loadFotos() {
 }
 
 // ===== DASHBOARD NAVIGATION =====
+function setSidebarActive(id) {
+  document.querySelectorAll('.sidebar-folder').forEach(f => f.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
 function irADashboard() {
   ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
     const el = document.getElementById(`tab-${t}`);
@@ -1790,6 +1796,7 @@ function irADashboard() {
   const tp = document.getElementById('tab-plantas');
   if (tp) tp.style.display = 'none';
   document.getElementById('tab-dashboard').style.display = 'block';
+  setSidebarActive('sidebar-micromac');
 }
 
 function irABuscar() {
@@ -2597,6 +2604,7 @@ function irAPlantas() {
   });
   const tp = document.getElementById('tab-plantas');
   tp.style.display = 'flex';
+  setSidebarActive('sidebar-plantas');
   irAPDDashboard();
   if (plantasData.length === 0) loadPlantasData();
 }
@@ -3019,19 +3027,6 @@ function descargarPDFPlanta() {
           <td style="width:20%;background:#d0d0d0;text-align:center;padding:8px;">
             ${logoB64 ? `<img src="${logoB64}" style="width:72px;height:54px;">` : '<div style="background:#1a2f7a;color:white;font-weight:900;font-size:16pt;padding:6px 10px;border-radius:6px;display:inline-block;">aysa</div>'}
           </td>
-        </tr>
-      </table>
-
-      <!-- Datos básicos en hoja 2 -->
-      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
-        <tr>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:20%;">PLANTA:</td><td style="padding:5px 8px;border-right:1px solid #888;border-bottom:1px solid #888;font-weight:700;">${val(p.nombre)}</td>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:20%;">LOCALIDAD:</td><td style="padding:5px 8px;border-right:1px solid #888;border-bottom:1px solid #888;">${val(p.localidad)}</td>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:20%;">DIRECCIÓN:</td><td style="padding:5px 8px;border-bottom:1px solid #888;">${val(p.direccion)}</td>
-        </tr>
-        <tr>
-          <td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;background:#e8f4f8;" colspan="1">COORDENADAS:</td>
-          <td colspan="5" style="padding:5px 8px;">${val(p.coord_planta)}</td>
         </tr>
       </table>
 
