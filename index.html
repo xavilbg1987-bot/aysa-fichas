@@ -1605,8 +1605,8 @@ const USERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz177cG37OltyE
 
 // ===== CONFIG PLANTAS DEPURADORAS =====
 const PD_SHEET_ID   = '1KFiroa8I401biLedDauWT324jLeXSQBE';
-const PD_SHEET_NAME = 'PLANTAS DEPURADORAS 2026';
-const PD_SHEET_URL  = `https://docs.google.com/spreadsheets/d/${PD_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(PD_SHEET_NAME)}`;
+const PD_SHEET_NAME = 'PD2026';
+const PD_SHEET_URL  = `https://docs.google.com/spreadsheets/d/${PD_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(PD_SHEET_NAME)}&cache=${Date.now()}`;
 const PD_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
 
 // ===== STATE =====
@@ -2541,7 +2541,8 @@ let plantaActual = null; // sigla de la planta seleccionada
 async function loadPlantasData() {
   if (plantasData.length > 0) return;
   try {
-    const res  = await fetch(PD_SHEET_URL);
+    const url = `https://docs.google.com/spreadsheets/d/${PD_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(PD_SHEET_NAME)}&_=${Date.now()}`;
+    const res  = await fetch(url);
     const text = await res.text();
     const json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
     const rows = json.table.rows;
