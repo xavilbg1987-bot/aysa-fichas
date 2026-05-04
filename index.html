@@ -1604,9 +1604,9 @@ const FOTOS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzhsKX9V6ixc_
 const USERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz177cG37OltyEZZmNvVbVh472QVUgIGhfAcxNGcGZHrcXqPZZofb-vkO43T0wV-AAZ/exec';
 
 // ===== CONFIG PLANTAS DEPURADORAS =====
-const PD_SHEET_ID   = '1KFiroa8I401biLedDauWT324jLeXSQBE';
-const PD_SHEET_NAME = 'PD2026';
-const PD_SHEET_URL  = `https://docs.google.com/spreadsheets/d/${PD_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(PD_SHEET_NAME)}&cache=${Date.now()}`;
+const PD_SHEET_ID   = '1vnvzoh4P7uv34AbootxmbtT-balS3amze2RYKux2krM';
+const PD_SHEET_NAME = 'Hoja 1';
+const PD_SHEET_URL  = `https://docs.google.com/spreadsheets/d/${PD_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(PD_SHEET_NAME)}&_=${Date.now()}`;
 const PD_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
 
 // ===== STATE =====
@@ -2546,40 +2546,41 @@ async function loadPlantasData() {
     const text = await res.text();
     const json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
     const rows = json.table.rows;
-    // Mapeo de columnas según plantilla:
-    // A=sigla B=nombre C=localidad D=direccion E=coord_planta F=maps G=fecha_rev H=nro_rev
-    // I=tipo_punto J=codigo_punto K=coord_punto L=tipo_equipo M=analitica_puntual
-    // N=q_promedio O=dbo P=posee_digestor Q=analitica_compuesta
-    // R=foto_df S=foto_vp T=foto_f1 U=foto_f2
     plantasData = rows
-      .slice(4) // saltear filas 1-4: título, instrucciones, grupo y encabezados
-      .filter(r => {
-        const v = r.c[0]?.v?.toString().trim().toUpperCase() || '';
-        return v.length >= 2 && v.length <= 10;
-      })
-      .map(r => ({
-        sigla:               r.c[0]?.v?.toString().trim().toUpperCase() || '',
-        nombre:              r.c[1]?.v?.toString().trim().toUpperCase() || '',
-        localidad:           r.c[2]?.v?.toString().trim() || '',
-        direccion:           r.c[3]?.v?.toString().trim() || '',
-        coord_planta:        r.c[4]?.v?.toString().trim() || '',
-        maps:                r.c[5]?.v?.toString().trim() || '',
-        fecha_revision:      r.c[6]?.v?.toString().trim() || '',
-        nro_revision:        r.c[7]?.v?.toString().trim() || '',
-        tipo_punto:          r.c[8]?.v?.toString().trim().toUpperCase() || '',
-        codigo_punto:        r.c[9]?.v?.toString().trim().toUpperCase() || '',
-        coord_punto:         r.c[10]?.v?.toString().trim() || '',
-        tipo_equipo:         r.c[11]?.v?.toString().trim() || '',
-        analitica_puntual:   r.c[12]?.v?.toString().trim() || '',
-        q_promedio:          r.c[13]?.v?.toString().trim() || '',
-        dbo:                 r.c[14]?.v?.toString().trim() || '',
-        posee_digestor:      r.c[15]?.v?.toString().trim() || '',
-        analitica_compuesta: r.c[16]?.v?.toString().trim() || '',
-        foto_df:             r.c[17]?.v?.toString().trim() || '',
-        foto_vp:             r.c[18]?.v?.toString().trim() || '',
-        foto_f1:             r.c[19]?.v?.toString().trim() || '',
-        foto_f2:             r.c[20]?.v?.toString().trim() || '',
-      }));
+      .filter(r => r.c[0]?.v?.toString().trim())
+      .map(r => {
+        // Formatear fecha si viene como Date(yyyy,m,d)
+        const fechaRaw = r.c[6]?.v?.toString().trim() || '';
+        let fecha = fechaRaw;
+        const matchFecha = fechaRaw.match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (matchFecha) {
+          const d = new Date(parseInt(matchFecha[1]), parseInt(matchFecha[2]), parseInt(matchFecha[3]));
+          fecha = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        }
+        return {
+          sigla:               r.c[0]?.v?.toString().trim().toUpperCase() || '',
+          nombre:              r.c[1]?.v?.toString().trim().toUpperCase() || '',
+          localidad:           r.c[2]?.v?.toString().trim() || '',
+          direccion:           r.c[3]?.v?.toString().trim() || '',
+          coord_planta:        r.c[4]?.v?.toString().trim() || '',
+          maps:                r.c[5]?.v?.toString().trim() || '',
+          fecha_revision:      fecha,
+          nro_revision:        r.c[7]?.v?.toString().trim() || '',
+          tipo_punto:          r.c[8]?.v?.toString().trim().toUpperCase() || '',
+          codigo_punto:        r.c[9]?.v?.toString().trim().toUpperCase() || '',
+          coord_punto:         r.c[10]?.v?.toString().trim() || '',
+          tipo_equipo:         r.c[11]?.v?.toString().trim() || '',
+          analitica_puntual:   r.c[12]?.v?.toString().trim() || '',
+          q_promedio:          r.c[13]?.v?.toString().trim() || '',
+          dbo:                 r.c[14]?.v?.toString().trim() || '',
+          posee_digestor:      r.c[15]?.v?.toString().trim() || '',
+          analitica_compuesta: r.c[16]?.v?.toString().trim() || '',
+          foto_df:             r.c[17]?.v?.toString().trim() || '',
+          foto_vp:             r.c[18]?.v?.toString().trim() || '',
+          foto_f1:             r.c[19]?.v?.toString().trim() || '',
+          foto_f2:             '',
+        };
+      });
 
     // Actualizar badge con cantidad de plantas únicas
     const plantasUnicas = [...new Set(plantasData.map(r => r.sigla))].filter(s => s && s.trim() !== '');
