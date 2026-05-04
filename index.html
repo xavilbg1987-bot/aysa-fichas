@@ -2553,8 +2553,8 @@ async function loadPlantasData() {
     plantasData = rows
       .filter(r => {
         const v = r.c[0]?.v?.toString().trim().toUpperCase() || '';
-        // Solo filas donde la sigla tiene entre 2 y 6 caracteres uppercase sin espacios
-        return v && v.length >= 2 && v.length <= 6 && /^[A-Z0-9]+$/.test(v);
+        // Solo excluir filas vacías y encabezados conocidos
+        return v.length >= 2 && v.length <= 10 && v !== 'SIGLA_PLANTA' && !v.startsWith('GRUPO') && !v.startsWith('←');
       })
       .map(r => ({
         sigla:               r.c[0]?.v?.toString().trim().toUpperCase() || '',
