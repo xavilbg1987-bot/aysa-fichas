@@ -2551,10 +2551,10 @@ async function loadPlantasData() {
     // N=q_promedio O=dbo P=posee_digestor Q=analitica_compuesta
     // R=foto_df S=foto_vp T=foto_f1 U=foto_f2
     plantasData = rows
+      .slice(4) // saltear filas 1-4: título, instrucciones, grupo y encabezados
       .filter(r => {
         const v = r.c[0]?.v?.toString().trim().toUpperCase() || '';
-        // Solo excluir filas vacías y encabezados conocidos
-        return v.length >= 2 && v.length <= 10 && v !== 'SIGLA_PLANTA' && !v.startsWith('GRUPO') && !v.startsWith('←');
+        return v.length >= 2 && v.length <= 10;
       })
       .map(r => ({
         sigla:               r.c[0]?.v?.toString().trim().toUpperCase() || '',
