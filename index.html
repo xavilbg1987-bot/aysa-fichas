@@ -2547,7 +2547,7 @@ async function loadPlantasData() {
     const json = JSON.parse(text.substring(text.indexOf('(') + 1, text.lastIndexOf(')')));
     const rows = json.table.rows;
     plantasData = rows
-      .filter(r => r.c[0]?.v?.toString().trim())
+      .filter(r => r.c[0]?.v)
       .map(r => {
         // Formatear fecha si viene como Date(yyyy,m,d)
         const fechaRaw = r.c[6]?.v?.toString().trim() || '';
@@ -2557,8 +2557,10 @@ async function loadPlantasData() {
           const d = new Date(parseInt(matchFecha[1]), parseInt(matchFecha[2]), parseInt(matchFecha[3]));
           fecha = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
         }
+        // Limpiar sigla de espacios y caracteres invisibles
+        const sigla = r.c[0]?.v?.toString().trim().replace(/\s+/g, '').toUpperCase();
         return {
-          sigla:               r.c[0]?.v?.toString().trim().toUpperCase() || '',
+          sigla,
           nombre:              r.c[1]?.v?.toString().trim().toUpperCase() || '',
           localidad:           r.c[2]?.v?.toString().trim() || '',
           direccion:           r.c[3]?.v?.toString().trim() || '',
