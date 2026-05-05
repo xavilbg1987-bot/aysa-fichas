@@ -1518,21 +1518,6 @@
       </div>
     </div>
 
-    <!-- SUB-PANTALLA: MAPA PLANTAS -->
-    <div id="pd-mapa" style="display:none;" class="content">
-      <button class="back-btn" onclick="irAPDDashboard()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Menú Plantas
-      </button>
-      <div class="search-header">
-        <h2>Mapa de plantas</h2>
-        <p>Ubicación de todas las plantas depuradoras</p>
-      </div>
-      <div id="pd-mapa-container" style="border-radius:12px;overflow:hidden;border:1px solid var(--gray-200);">
-        <div style="padding:20px;text-align:center;color:var(--gray-400);font-size:13px;">Cargando mapa...</div>
-      </div>
-    </div>
-
   </div>
 
     </div> <!-- /main-panel -->
@@ -2648,15 +2633,6 @@ function irAPDRecorrido() {
   document.getElementById('pd-recorrido').style.display = 'block';
 }
 
-function irAPDMapa() {
-  ['pd-dashboard','pd-buscar','pd-recorrido','pd-mapa'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  document.getElementById('pd-mapa').style.display = 'block';
-  renderMapaPlantas();
-}
-
 // Recorrido de plantas
 let pdRecorridoPuntos = [];
 
@@ -2703,22 +2679,6 @@ function abrirRecorridoPlantas() {
   const todos = partida ? [partida, ...coords] : coords;
   const segmentos = todos.map(c => encodeURIComponent(c)).join('/');
   window.open(`https://www.google.com/maps/dir/${segmentos}`, '_blank');
-}
-
-function renderMapaPlantas() {
-  if (plantasData.length === 0) return;
-  const unicas = [...new Set(plantasData.map(r => r.sigla))].filter(s => s && /^[A-Z0-9]+$/.test(s));
-  const markers = unicas.map(sigla => {
-    const f = plantasData.find(r => r.sigla === sigla);
-    return f.coord_planta ? encodeURIComponent(f.coord_planta) : null;
-  }).filter(Boolean);
-  if (markers.length === 0) return;
-  const base = markers[0];
-  const url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyD-9tSrke72SousFqewGwaa_ajAYsEBMkY&q=${base}&zoom=10`;
-  // Usar iframe con todos los marcadores como waypoints
-  const waypointsUrl = `https://maps.google.com/maps?q=${markers.join('|')}&output=embed`;
-  document.getElementById('pd-mapa-container').innerHTML = `
-    <iframe src="${waypointsUrl}" width="100%" height="420" frameborder="0" style="border:0;display:block;" allowfullscreen></iframe>`;
 }
 
 function seleccionarPlanta(sigla) {
