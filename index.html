@@ -1588,7 +1588,8 @@ async function fetchAndCacheUsers() {
       pass: r.c[3]?.v?.toString().trim() || '',
       fecha: r.c[4]?.v?.toString().trim() || '',
       estado: r.c[5]?.v?.toString().trim() || '',
-      isAdmin: r.c[6]?.v === true || r.c[6]?.v === 'TRUE'
+      isAdmin: r.c[6]?.v === true || r.c[6]?.v === 'TRUE',
+      carpetas: r.c[7]?.v?.toString().trim().toUpperCase() || 'TODAS'
     })).filter(u => u.email);
     saveUsers(users);
     return users;
@@ -1673,12 +1674,8 @@ function enterApp(user) {
   document.getElementById('nav-username').textContent = user.nombre;
   document.getElementById('nav-organismo').textContent = user.organismo;
 
-  // Primero ocultar todos los elementos admin-only
-  document.querySelectorAll('.admin-only').forEach(el => {
-    el.style.display = 'none';
-  });
-
-  // Mostrar solo si es admin
+  // Admin-only elements
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
   if (isAdmin(user.email)) {
     document.querySelectorAll('.admin-only').forEach(el => {
       el.style.display = el.tagName === 'BUTTON' ? 'flex' : 'block';
@@ -1686,11 +1683,44 @@ function enterApp(user) {
     refreshAdminPanel();
   }
 
+  // Permisos de carpetas
+  aplicarPermisosCarpetas(user);
+
   refreshAdminBadge();
   loadSheetData();
   loadFotos();
   loadPlantasData();
   irADashboard();
+}
+
+function aplicarPermisosCarpetas(user) {
+  const carpetas = user.carpetas || 'TODAS';
+  const tieneTodas = carpetas === 'TODAS' || isAdmin(user.email);
+  const lista = carpetas.split(',').map(c => c.trim());
+
+  // MICRO/MACRO
+  const elMicro = document.getElementById('sidebar-micromac');
+  if (elMicro) {
+    const acceso = tieneTodas || lista.includes('MICROMAC');
+    elMicro.classList.toggle('coming-soon', !acceso);
+    elMicro.style.pointerEvents = acceso ? 'auto' : 'none';
+    elMicro.style.opacity = acceso ? '1' : '0.4';
+    if (!acceso) elMicro.onclick = null;
+    else elMicro.onclick = irADashboard;
+  }
+
+  // PLANTAS DEPURADORAS
+  const elPlantas = document.getElementById('sidebar-plantas');
+  if (elPlantas) {
+    const acceso = tieneTodas || lista.includes('PLANTAS');
+    elPlantas.style.pointerEvents = acceso ? 'auto' : 'none';
+    elPlantas.style.opacity = acceso ? '1' : '0.4';
+    if (!acceso) elPlantas.onclick = null;
+    else elPlantas.onclick = irAPlantas;
+    // Mostrar badge solo si tiene acceso
+    const badge = document.getElementById('badge-plantas');
+    if (badge) badge.style.display = acceso ? '' : 'none';
+  }
 }
 
 // ===== GOOGLE SHEETS DATA =====
