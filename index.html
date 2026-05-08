@@ -2445,14 +2445,16 @@ function descargarPDF() {
     </div>
   `;
 
-  document.getElementById('print-area').style.display = 'block';
+  const printArea = document.getElementById('print-area');
+  printArea.classList.remove('hidden-print');
+  printArea.style.display = 'block';
   setTimeout(() => {
     window.print();
   }, 600);
   window.addEventListener('afterprint', function handler() {
-    const pa = document.getElementById('print-area');
-    pa.style.display = 'none';
-    pa.innerHTML = '';
+    printArea.style.display = 'none';
+    printArea.classList.add('hidden-print');
+    printArea.innerHTML = '';
     window.removeEventListener('afterprint', handler);
   });
 }
