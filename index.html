@@ -1743,15 +1743,15 @@ function enterApp(user) {
   loadSheetData();
   loadFotos();
   loadPlantasData();
-  loadEBCData();
+  loadEBCData().catch(e => console.warn('EBC no disponible:', e));
   loadEBCData();
   irADashboard();
 }
 
 function aplicarPermisosCarpetas(user) {
-  const carpetas = user.carpetas || 'TODAS';
-  const tieneTodas = carpetas === 'TODAS' || isAdmin(user.email);
-  const lista = carpetas.split(',').map(c => c.trim());
+  const carpetas = (user.carpetas || 'TODAS').toString().trim().toUpperCase();
+  const tieneTodas = carpetas === 'TODAS' || carpetas === '' || isAdmin(user.email);
+  const lista = carpetas.split(',').map(c => c.trim()).filter(Boolean);
 
   // MICRO/MACRO
   const elMicro = document.getElementById('sidebar-micromac');
