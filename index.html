@@ -1528,7 +1528,7 @@
         <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">EBC</span>
       </div>
       <div style="position:relative;">
-        <input type="text" id="ebc-search" placeholder="Buscar por zona, punto o EBC..." oninput="buscarEBC(this.value)"
+        <input type="text" id="ebc-search" placeholder="Buscar por zona, punto o EBC..." oninput="buscarEBC(this.value)" onfocus="buscarEBC(this.value)"
           style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;box-sizing:border-box;">
         <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
@@ -3143,14 +3143,16 @@ function irAEBC() {
 
 function buscarEBC(q) {
   const list = document.getElementById('ebc-autocomplete');
-  if (!q || q.length < 2) { list.style.display = 'none'; return; }
-  const qU = q.toUpperCase();
-  const matches = ebcData.filter(e =>
-    e.zona.toUpperCase().includes(qU) ||
-    e.punto.toUpperCase().includes(qU) ||
-    e.ebc.toUpperCase().includes(qU) ||
-    e.localidad.toUpperCase().includes(qU)
-  ).slice(0, 8);
+  if (q === undefined || q === null) { list.style.display = 'none'; return; }
+  const qU = q.toUpperCase().trim();
+  const matches = qU.length === 0
+    ? ebcData.slice(0, 10)
+    : ebcData.filter(e =>
+        e.zona.toUpperCase().includes(qU) ||
+        e.punto.toUpperCase().includes(qU) ||
+        e.ebc.toUpperCase().includes(qU) ||
+        e.localidad.toUpperCase().includes(qU)
+      ).slice(0, 10);
   if (!matches.length) { list.style.display = 'none'; return; }
   list.innerHTML = matches.map((e) => `
     <div style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #eef1f7;font-size:13px;"
@@ -3238,12 +3240,12 @@ function renderFichaEBC(e) {
       </div>
       <div style="padding:0 14px 14px;">
         <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Fotografías</div>
-        <div style="display:grid;grid-template-columns:2fr 1fr;grid-template-rows:160px 80px;gap:6px;">
-          <div style="grid-row:span 2;border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto1)}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:160px 160px;gap:6px;">
+          <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto1)}</div>
           <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto2)}</div>
           <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto3)}</div>
+          <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto4)}</div>
         </div>
-        ${e.foto4 ? `<div style="margin-top:6px;border-radius:8px;overflow:hidden;line-height:0;height:120px;">${imgEBC(e.foto4)}</div>` : ''}
       </div>
     </div>
     <button onclick="openModal()" class="btn-sugerencia" style="width:100%;margin-bottom:10px;">
