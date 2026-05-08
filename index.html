@@ -1151,10 +1151,10 @@
         PLANTAS DEPURADORAS
         <span class="folder-badge" id="badge-plantas">—</span>
       </a>
-      <a class="sidebar-folder coming-soon">
+      <a class="sidebar-folder" id="sidebar-ebc" onclick="irAEBC()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         EBC
-        <span class="sidebar-coming">Próx.</span>
+        <span class="folder-badge" id="badge-ebc">—</span>
       </a>
       <a class="sidebar-folder coming-soon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -1494,6 +1494,49 @@
 
   </div>
 
+  <!-- TAB EBC -->
+  <div id="tab-ebc" style="display:none;flex-direction:column;flex:1;min-height:0;">
+    <!-- HEADER + BUSCADOR -->
+    <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </button>
+        <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">EBC</span>
+      </div>
+      <div style="position:relative;">
+        <input id="ebc-search" type="text" placeholder="Buscá por zona, punto o nombre EBC..."
+          oninput="buscarEBC(this.value)"
+          style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;outline:none;box-shadow:var(--shadow-sm);">
+        <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div id="ebc-autocomplete" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border-radius:0 0 var(--radius-sm) var(--radius-sm);box-shadow:var(--shadow-md);z-index:100;max-height:220px;overflow-y:auto;"></div>
+      </div>
+    </div>
+    <!-- FICHA EBC -->
+    <div id="ebc-ficha-container" style="padding:16px 20px 80px;max-width:680px;margin:0 auto;width:100%;"></div>
+  </div>
+
+  <!-- TAB EBC -->
+  <div id="tab-ebc" style="display:none;flex-direction:column;flex:1;min-height:0;">
+    <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </button>
+        <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">EBC</span>
+      </div>
+      <div style="position:relative;">
+        <input type="text" id="ebc-search" placeholder="Buscar por zona, punto o EBC..." oninput="buscarEBC(this.value)"
+          style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;box-sizing:border-box;">
+        <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div id="ebc-autocomplete" style="background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;max-height:200px;overflow-y:auto;position:absolute;left:20px;right:20px;z-index:100;"></div>
+    </div>
+    <div id="ebc-ficha-container" style="padding:16px 20px 80px;overflow-y:auto;"></div>
+  </div>
+
     </div> <!-- /main-panel -->
   </div> <!-- /app-layout -->
 
@@ -1559,6 +1602,16 @@ const PD_SHEET_ID   = '1vnvzoh4P7uv34AbootxmbtT-balS3amze2RYKux2krM';
 const PD_SHEET_NAME = 'Hoja 1';
 const PD_SHEET_URL  = `https://docs.google.com/spreadsheets/d/${PD_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(PD_SHEET_NAME)}&_=${Date.now()}`;
 const PD_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
+
+// ===== CONFIG EBC =====
+const EBC_SHEET_ID   = '1Bbo7CYjtjB2u7lEKBL4eqgmauehQXLmR9DYlZDooNUM';
+const EBC_SHEET_NAME = 'LISTADO EBC';
+const EBC_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
+
+// ===== CONFIG EBC =====
+const EBC_SHEET_ID   = '1Bbo7CYjtjB2u7lEKBL4eqgmauehQXLmR9DYlZDooNUM';
+const EBC_SHEET_NAME = 'LISTADO EBC';
+const EBC_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
 
 // ===== STATE =====
 let currentUser = null;
@@ -1690,6 +1743,8 @@ function enterApp(user) {
   loadSheetData();
   loadFotos();
   loadPlantasData();
+  loadEBCData();
+  loadEBCData();
   irADashboard();
 }
 
@@ -1720,6 +1775,16 @@ function aplicarPermisosCarpetas(user) {
     // Mostrar badge solo si tiene acceso
     const badge = document.getElementById('badge-plantas');
     if (badge) badge.style.display = acceso ? '' : 'none';
+  }
+
+  // EBC
+  const elEBC = document.getElementById('sidebar-ebc');
+  if (elEBC) {
+    const acceso = tieneTodas || lista.includes('EBC');
+    elEBC.style.pointerEvents = acceso ? 'auto' : 'none';
+    elEBC.style.opacity = acceso ? '1' : '0.4';
+    if (!acceso) elEBC.onclick = null;
+    else elEBC.onclick = irAEBC;
   }
 }
 
@@ -1777,6 +1842,8 @@ function irADashboard() {
   });
   const tp = document.getElementById('tab-plantas');
   if (tp) tp.style.display = 'none';
+  const te = document.getElementById('tab-ebc');
+  if (te) te.style.display = 'none';
   document.getElementById('tab-dashboard').style.display = 'block';
   setSidebarActive('sidebar-micromac');
 }
@@ -3031,6 +3098,478 @@ function descargarPDFPlanta() {
     window.removeEventListener('afterprint', handler);
   });
 }
+// ===== EBC =====
+let ebcData = [];
+let ebcActual = null;
+
+async function loadEBCData() {
+  if (ebcData.length > 0) return;
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${EBC_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(EBC_SHEET_NAME)}&_=${Date.now()}`;
+    const res  = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf('(')+1, text.lastIndexOf(')')));
+    const rows = json.table.rows;
+    ebcData = rows
+      .filter(r => r.c[0]?.v || r.c[1]?.v)
+      .map(r => ({
+        zona:      r.c[0]?.v?.toString().trim() || '',
+        punto:     r.c[1]?.v?.toString().trim() || '',
+        ebc:       r.c[2]?.v?.toString().trim() || '',
+        direccion: r.c[3]?.v?.toString().trim() || '',
+        localidad: r.c[4]?.v?.toString().trim() || '',
+        maps:      r.c[5]?.v?.toString().trim() || '',
+        hab:       r.c[6]?.v?.toString().trim() || '',
+        foto1:     r.c[7]?.v?.toString().trim() || '',
+        foto2:     r.c[8]?.v?.toString().trim() || '',
+        foto3:     r.c[9]?.v?.toString().trim() || '',
+        foto4:     r.c[10]?.v?.toString().trim() || '',
+      }));
+    const badge = document.getElementById('badge-ebc');
+    if (badge) badge.textContent = ebcData.length;
+  } catch(e) { console.error('Error cargando EBC:', e); }
+}
+
+function irAEBC() {
+  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.style.display = 'none';
+  });
+  const tp = document.getElementById('tab-plantas');
+  if (tp) tp.style.display = 'none';
+  document.getElementById('tab-ebc').style.display = 'flex';
+  setSidebarActive('sidebar-ebc');
+  if (ebcData.length === 0) {
+    document.getElementById('ebc-ficha-container').innerHTML =
+      `<div class="loading"><div class="spinner"></div><p>Cargando EBC...</p></div>`;
+    loadEBCData().then(() => {
+      document.getElementById('ebc-ficha-container').innerHTML = '';
+    });
+  }
+}
+
+function buscarEBC(q) {
+  const list = document.getElementById('ebc-autocomplete');
+  if (!q || q.length < 2) { list.style.display = 'none'; return; }
+  const query = q.toUpperCase();
+  const matches = ebcData.filter(e =>
+    e.zona.toUpperCase().includes(query) ||
+    e.punto.toUpperCase().includes(query) ||
+    e.ebc.toUpperCase().includes(query) ||
+    e.localidad.toUpperCase().includes(query)
+  ).slice(0, 8);
+  if (!matches.length) { list.style.display = 'none'; return; }
+  list.innerHTML = matches.map((e) => `
+    <div class="autocomplete-item" onmousedown="seleccionarEBC(${ebcData.indexOf(e)})">
+      <strong>${e.punto}</strong> — ${e.ebc}
+      <span>${e.localidad}</span>
+    </div>`).join('');
+  list.style.display = 'block';
+}
+
+function seleccionarEBC(idx) {
+  ebcActual = idx;
+  document.getElementById('ebc-autocomplete').style.display = 'none';
+  document.getElementById('ebc-search').value = `${ebcData[idx].punto} — ${ebcData[idx].ebc}`;
+  renderFichaEBC(ebcData[idx]);
+}
+
+function imgEBC(nombre) {
+  if (!nombre) return `<div style="background:#f0f4f8;border-radius:8px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8f9ab5;font-size:11px;">Sin foto</div>`;
+  return `<img src="${EBC_GITHUB_BASE}${nombre}.PNG" alt="${nombre}"
+    style="width:100%;height:100%;object-fit:cover;border-radius:8px;cursor:pointer;"
+    onclick="openLightbox(this.src)"
+    onerror="
+      if(this._t===undefined)this._t=0;
+      this._t++;
+      const e=['PNG','png','jpg','JPG','jpeg'];
+      if(this._t<e.length){this.src='${EBC_GITHUB_BASE}${nombre}.'+e[this._t];}
+      else{this.parentNode.innerHTML='<div style=background:#f0f4f8;border-radius:8px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8f9ab5;font-size:11px;>Sin foto</div>';}
+    ">`;
+}
+
+function renderFichaEBC(e) {
+  const logoImg = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
+  const logoHTML = logoImg
+    ? `<img src="${logoImg}" style="height:44px;width:auto;display:block;margin:auto;">`
+    : `<div style="background:var(--aysa-blue);color:white;font-weight:900;font-size:14px;padding:6px 10px;border-radius:4px;">aysa</div>`;
+
+  const mapsBtn = e.maps && e.maps.startsWith('http')
+    ? `<a href="${e.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--aysa-teal);color:white;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;margin-top:6px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="12" height="12"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Ver en Google Maps
+      </a>` : '';
+
+  document.getElementById('ebc-ficha-container').innerHTML = `
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-md);overflow:hidden;margin-bottom:12px;">
+
+      <!-- Header institucional -->
+      <div style="background:#d0d0d0;padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #bbb;">
+        <div style="flex:1;text-align:center;">
+          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
+          <div style="font-size:10px;color:var(--gray-600);margin-top:1px;">Gerencia de Calidad · Ficha EBC – Estación de Bombeo Cloacal</div>
+        </div>
+        <div style="flex-shrink:0;">${logoHTML}</div>
+      </div>
+
+      <!-- Banda de identificación -->
+      <div style="background:linear-gradient(135deg, var(--aysa-blue) 0%, var(--aysa-blue-light) 100%);padding:16px 18px;color:white;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;opacity:0.7;text-transform:uppercase;margin-bottom:4px;">Zona ${e.zona}</div>
+        <div style="font-size:20px;font-weight:800;letter-spacing:0.5px;">${e.ebc || '—'}</div>
+        <div style="font-size:12px;opacity:0.8;margin-top:2px;">${e.punto}</div>
+      </div>
+
+      <!-- Datos en tarjetas -->
+      <div style="padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:var(--gray-50);border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-teal);">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Dirección</div>
+          <div style="font-size:13px;font-weight:600;margin-top:3px;">${e.direccion || '—'}</div>
+        </div>
+        <div style="background:var(--gray-50);border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-teal);">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Localidad</div>
+          <div style="font-size:13px;font-weight:600;margin-top:3px;">${e.localidad || '—'}</div>
+        </div>
+        <div style="background:var(--gray-50);border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-blue);">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Aprox. Habitantes</div>
+          <div style="font-size:18px;font-weight:800;color:var(--aysa-blue);margin-top:2px;">${e.hab || '—'}</div>
+        </div>
+        <div style="background:var(--gray-50);border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-blue);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Ubicación</div>
+          ${mapsBtn || '<div style="font-size:12px;color:var(--gray-400);margin-top:3px;">Sin link</div>'}
+        </div>
+      </div>
+
+      <!-- Fotos: 1 grande + 3 miniaturas -->
+      <div style="padding:0 14px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Fotografías</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:200px 100px;gap:6px;">
+          <div style="grid-row:1/3;border-radius:10px;overflow:hidden;background:#f0f4f8;">
+            ${imgEBC(e.foto1)}
+          </div>
+          <div style="border-radius:10px;overflow:hidden;background:#f0f4f8;">
+            ${imgEBC(e.foto2)}
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <div style="border-radius:10px;overflow:hidden;background:#f0f4f8;">${imgEBC(e.foto3)}</div>
+            <div style="border-radius:10px;overflow:hidden;background:#f0f4f8;">${imgEBC(e.foto4)}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <button onclick="openModal()" class="btn-sugerencia" style="width:100%;margin-bottom:10px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Reportar información incorrecta
+    </button>
+    <button onclick="descargarPDFEBC()" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(--shadow-md);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Descargar ficha PDF
+    </button>
+  `;
+}
+
+function descargarPDFEBC() {
+  if (ebcActual === null) return;
+  const e = ebcData[ebcActual];
+  const logoB64 = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
+  const val = v => (v && v !== '---') ? v : '—';
+  const fotoTag = (nombre, h) => nombre
+    ? `<img src="${EBC_GITHUB_BASE}${nombre}.PNG" style="width:100%;height:${h}px;object-fit:cover;border-radius:6px;" onerror="this.src='${EBC_GITHUB_BASE}${nombre}.jpg';this.onerror=null;">`
+    : `<div style="width:100%;height:${h}px;background:#f0f4f8;border-radius:6px;"></div>`;
+
+  const printArea = document.getElementById('print-area');
+  printArea.innerHTML = `
+    <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr>
+          <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px 10px;border-right:1px solid #888;vertical-align:middle;">
+            <div style="font-weight:700;font-size:11pt;">Dirección de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:10pt;margin-top:2px;">Gerencia de Calidad · Ficha EBC</div>
+          </td>
+          <td style="width:20%;background:#d0d0d0;text-align:center;padding:8px;vertical-align:middle;">
+            ${logoB64 ? `<img src="${logoB64}" style="width:72px;height:54px;">` : '<div style="background:#1a2f7a;color:white;font-weight:900;font-size:16pt;padding:6px 10px;border-radius:6px;display:inline-block;">aysa</div>'}
+          </td>
+        </tr>
+      </table>
+      <div style="background:#1a2f7a;color:white;padding:12px 14px;margin-bottom:8px;">
+        <div style="font-size:8pt;opacity:0.7;letter-spacing:1px;text-transform:uppercase;">Zona ${val(e.zona)}</div>
+        <div style="font-size:16pt;font-weight:700;margin-top:2px;">${val(e.ebc)}</div>
+        <div style="font-size:9pt;opacity:0.8;margin-top:2px;">${val(e.punto)}</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;margin-bottom:8px;">
+        <tr>
+          <td style="width:20%;padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">DIRECCIÓN</td>
+          <td style="padding:6px 8px;border-right:1px solid #888;border-bottom:1px solid #888;">${val(e.direccion)}</td>
+          <td style="width:20%;padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">LOCALIDAD</td>
+          <td style="padding:6px 8px;border-bottom:1px solid #888;">${val(e.localidad)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;background:#e8f4f8;">APROX. HAB.</td>
+          <td style="padding:6px 8px;border-right:1px solid #888;font-weight:700;color:#1a2f7a;">${val(e.hab)}</td>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;background:#e8f4f8;">MAPS</td>
+          <td style="padding:6px 8px;font-size:7.5pt;">${val(e.maps)}</td>
+        </tr>
+      </table>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr>
+          <td style="width:50%;padding:4px;border-right:1px solid #888;vertical-align:top;" rowspan="2">${fotoTag(e.foto1, 280)}</td>
+          <td style="padding:4px;border-bottom:1px solid #888;">${fotoTag(e.foto2, 135)}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:0 2px 0 0;width:50%;">${fotoTag(e.foto3, 135)}</td>
+                <td style="padding:0 0 0 2px;width:50%;">${fotoTag(e.foto4, 135)}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
+  printArea.classList.remove('hidden-print');
+  printArea.style.display = 'block';
+  setTimeout(() => window.print(), 800);
+  window.addEventListener('afterprint', function handler() {
+    printArea.style.display = 'none';
+    printArea.classList.add('hidden-print');
+    printArea.innerHTML = '';
+    window.removeEventListener('afterprint', handler);
+  });
+}
+
+// ===== EBC =====
+let ebcData = [];
+
+async function loadEBCData() {
+  if (ebcData.length > 0) return;
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${EBC_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(EBC_SHEET_NAME)}&_=${Date.now()}`;
+    const res  = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf('(')+1, text.lastIndexOf(')')));
+    ebcData = json.table.rows
+      .filter(r => r.c[0]?.v || r.c[1]?.v)
+      .map(r => ({
+        zona:      r.c[0]?.v?.toString().trim() || '',
+        punto:     r.c[1]?.v?.toString().trim() || '',
+        ebc:       r.c[2]?.v?.toString().trim() || '',
+        direccion: r.c[3]?.v?.toString().trim() || '',
+        localidad: r.c[4]?.v?.toString().trim() || '',
+        maps:      r.c[5]?.v?.toString().trim() || '',
+        hab:       r.c[6]?.v?.toString().trim() || '',
+        foto1:     r.c[7]?.v?.toString().trim() || '',
+        foto2:     r.c[8]?.v?.toString().trim() || '',
+        foto3:     r.c[9]?.v?.toString().trim() || '',
+        foto4:     r.c[10]?.v?.toString().trim() || '',
+      }));
+    const badge = document.getElementById('badge-ebc');
+    if (badge) badge.textContent = ebcData.length;
+  } catch(e) { console.error('Error cargando EBC:', e); }
+}
+
+function irAEBC() {
+  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.style.display = 'none';
+  });
+  const tp = document.getElementById('tab-plantas');
+  if (tp) tp.style.display = 'none';
+  document.getElementById('tab-ebc').style.display = 'flex';
+  setSidebarActive('sidebar-ebc');
+  if (ebcData.length === 0) {
+    document.getElementById('ebc-ficha-container').innerHTML =
+      `<div class="loading"><div class="spinner"></div><p>Cargando EBC...</p></div>`;
+    loadEBCData().then(() => {
+      document.getElementById('ebc-ficha-container').innerHTML = '';
+    });
+  }
+}
+
+function buscarEBC(q) {
+  const list = document.getElementById('ebc-autocomplete');
+  if (!q || q.length < 2) { list.style.display = 'none'; return; }
+  const qU = q.toUpperCase();
+  const matches = ebcData.filter(e =>
+    e.zona.toUpperCase().includes(qU) ||
+    e.punto.toUpperCase().includes(qU) ||
+    e.ebc.toUpperCase().includes(qU) ||
+    e.localidad.toUpperCase().includes(qU)
+  ).slice(0, 8);
+  if (!matches.length) { list.style.display = 'none'; return; }
+  list.innerHTML = matches.map((e) => `
+    <div style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #eef1f7;font-size:13px;"
+      onmousedown="seleccionarEBC(${ebcData.indexOf(e)})"
+      onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='white'">
+      <div style="font-weight:700;color:var(--aysa-blue);">${e.punto} — ${e.zona}</div>
+      <div style="color:var(--gray-400);font-size:11px;">${e.ebc} · ${e.localidad}</div>
+    </div>`).join('');
+  list.style.display = 'block';
+}
+
+function seleccionarEBC(idx) {
+  const e = ebcData[idx];
+  if (!e) return;
+  document.getElementById('ebc-search').value = `${e.punto} — ${e.zona}`;
+  document.getElementById('ebc-autocomplete').style.display = 'none';
+  renderFichaEBC(e);
+}
+
+function imgEBC(nombre) {
+  if (!nombre) return `<div style="background:#f0f4f8;border-radius:8px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8f9ab5;font-size:11px;">Sin foto</div>`;
+  const exts = ['jpg','JPG','jpeg','png','PNG'];
+  return `<img src="${EBC_GITHUB_BASE}${nombre}.jpg" alt="${nombre}"
+    style="width:100%;height:100%;object-fit:cover;border-radius:8px;cursor:pointer;"
+    onclick="openLightbox(this.src)"
+    onerror="
+      if(!this._t)this._t=0; this._t++;
+      const ex=['JPG','jpeg','png','PNG'];
+      if(this._t<=ex.length){this.src='${EBC_GITHUB_BASE}${nombre}.'+ex[this._t-1];}
+      else{this.parentNode.innerHTML='<div style=background:#f0f4f8;border-radius:8px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8f9ab5;font-size:11px;>Sin foto</div>';}
+    ">`;
+}
+
+function renderFichaEBC(e) {
+  const mapsBtn = e.maps
+    ? `<a href="${e.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(--aysa-teal);font-size:11px;font-weight:700;text-decoration:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Ver en Google Maps
+      </a>` : '<div style="color:#ccc;font-size:11px;">Sin link Maps</div>';
+
+  const logoImg = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
+  const logoHTML = logoImg
+    ? `<img src="${logoImg}" style="height:40px;width:auto;display:block;margin:auto;">`
+    : `<div style="background:var(--aysa-blue);color:white;font-weight:900;font-size:13px;padding:5px 8px;border-radius:4px;">aysa</div>`;
+
+  const eJson = JSON.stringify(e).replace(/"/g, '&quot;');
+
+  document.getElementById('ebc-ficha-container').innerHTML = `
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-md);overflow:hidden;margin-bottom:16px;">
+      <div style="background:#d0d0d0;padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #bbb;">
+        <div style="flex:1;text-align:center;">
+          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
+          <div style="font-size:10px;color:var(--gray-600);margin-top:1px;">Gerencia de Calidad · Ficha EBC</div>
+        </div>
+        <div style="flex-shrink:0;">${logoHTML}</div>
+      </div>
+      <div style="background:var(--aysa-teal);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="color:rgba(255,255,255,0.75);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">EBC</div>
+          <div style="color:white;font-size:17px;font-weight:800;margin-top:2px;">${e.ebc || '—'}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="color:rgba(255,255,255,0.75);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">ZONA</div>
+          <div style="color:white;font-size:15px;font-weight:700;margin-top:2px;">${e.zona || '—'}</div>
+        </div>
+      </div>
+      <div style="padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-blue);">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Punto</div>
+          <div style="font-size:14px;font-weight:800;color:var(--aysa-blue);margin-top:3px;">${e.punto || '—'}</div>
+        </div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-teal);">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Aprox. habitantes</div>
+          <div style="font-size:14px;font-weight:800;color:var(--aysa-teal);margin-top:3px;">${e.hab || '—'}</div>
+        </div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;grid-column:span 2;">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Dirección</div>
+          <div style="font-size:13px;font-weight:600;color:var(--gray-800);margin-top:3px;">${e.direccion || '—'}</div>
+        </div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Localidad</div>
+          <div style="font-size:13px;font-weight:600;color:var(--gray-800);margin-top:3px;">${e.localidad || '—'}</div>
+        </div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;display:flex;align-items:center;">${mapsBtn}</div>
+      </div>
+      <div style="padding:0 14px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Fotografías</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;grid-template-rows:160px 80px;gap:6px;">
+          <div style="grid-row:span 2;border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto1)}</div>
+          <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto2)}</div>
+          <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto3)}</div>
+        </div>
+        ${e.foto4 ? `<div style="margin-top:6px;border-radius:8px;overflow:hidden;line-height:0;height:120px;">${imgEBC(e.foto4)}</div>` : ''}
+      </div>
+    </div>
+    <button onclick="openModal()" class="btn-sugerencia" style="width:100%;margin-bottom:10px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Reportar información incorrecta
+    </button>
+    <button onclick="descargarPDFEBC(${eJson})" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(--shadow-md);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Descargar ficha PDF
+    </button>
+  `;
+}
+
+function descargarPDFEBC(e) {
+  const logoB64 = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
+  const val = v => v || '—';
+  const fotoUrl = n => n ? `${EBC_GITHUB_BASE}${n}.jpg` : '';
+  document.getElementById('print-area').innerHTML = `
+    <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr>
+          <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px 10px;border-right:1px solid #888;vertical-align:middle;">
+            <div style="font-weight:700;font-size:11pt;">Dirección de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:10pt;">Gerencia de Calidad · Ficha EBC</div>
+          </td>
+          <td style="width:20%;background:#d0d0d0;text-align:center;padding:8px;vertical-align:middle;">
+            ${logoB64 ? `<img src="${logoB64}" style="width:72px;height:54px;">` : '<div style="background:#1a2f7a;color:white;font-weight:900;font-size:16pt;padding:6px 10px;border-radius:6px;display:inline-block;">aysa</div>'}
+          </td>
+        </tr>
+      </table>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr style="background:#00a8b5;">
+          <td colspan="4" style="padding:10px 14px;">
+            <div style="color:white;font-size:14pt;font-weight:800;">${val(e.ebc)}</div>
+            <div style="color:rgba(255,255,255,0.8);font-size:10pt;">ZONA: ${val(e.zona)}</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:18%;">PUNTO:</td>
+          <td style="padding:6px 8px;border-right:1px solid #888;border-bottom:1px solid #888;">${val(e.punto)}</td>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;width:18%;">APROX. HAB.:</td>
+          <td style="padding:6px 8px;border-bottom:1px solid #888;">${val(e.hab)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">DIRECCIÓN:</td>
+          <td colspan="3" style="padding:6px 8px;border-bottom:1px solid #888;">${val(e.direccion)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;background:#e8f4f8;">LOCALIDAD:</td>
+          <td colspan="3" style="padding:6px 8px;">${val(e.localidad)}</td>
+        </tr>
+      </table>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
+        <tr><td colspan="2" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:6px;border-bottom:1px solid #888;">FOTOGRAFÍAS</td></tr>
+        <tr>
+          <td style="width:60%;padding:4px;border-right:1px solid #888;vertical-align:top;">
+            ${fotoUrl(e.foto1) ? `<img src="${fotoUrl(e.foto1)}" style="width:100%;max-height:280px;object-fit:contain;" onerror="this.style.display='none'">` : ''}
+          </td>
+          <td style="width:40%;padding:4px;vertical-align:top;">
+            ${fotoUrl(e.foto2) ? `<img src="${fotoUrl(e.foto2)}" style="width:100%;max-height:130px;object-fit:contain;display:block;margin-bottom:4px;" onerror="this.style.display='none'">` : ''}
+            ${fotoUrl(e.foto3) ? `<img src="${fotoUrl(e.foto3)}" style="width:100%;max-height:130px;object-fit:contain;display:block;" onerror="this.style.display='none'">` : ''}
+          </td>
+        </tr>
+        ${fotoUrl(e.foto4) ? `<tr><td colspan="2" style="padding:4px;border-top:1px solid #888;"><img src="${fotoUrl(e.foto4)}" style="width:100%;max-height:150px;object-fit:contain;" onerror="this.style.display='none'"></td></tr>` : ''}
+      </table>
+    </div>
+  `;
+  const printArea = document.getElementById('print-area');
+  printArea.classList.remove('hidden-print');
+  printArea.style.display = 'block';
+  setTimeout(() => window.print(), 800);
+  window.addEventListener('afterprint', function handler() {
+    printArea.style.display = 'none';
+    printArea.classList.add('hidden-print');
+    printArea.innerHTML = '';
+    window.removeEventListener('afterprint', handler);
+  });
+}
+
 window.addEventListener('load', async () => {
   const session = localStorage.getItem('aysa_session');
   if (session) {
