@@ -1808,41 +1808,28 @@ function setSidebarActive(id) {
 }
 
 function irADashboard() {
-  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
-    const el = document.getElementById(`tab-${t}`);
-    if (el) el.style.display = 'none';
-  });
-  const tp = document.getElementById('tab-plantas');
-  if (tp) tp.style.display = 'none';
-  const te = document.getElementById('tab-ebc');
-  if (te) te.style.display = 'none';
+  ocultarTodos();
   document.getElementById('tab-dashboard').style.display = 'block';
   setSidebarActive('sidebar-micromac');
 }
 
 function irABuscar() {
-  irADashboard();
-  document.getElementById('tab-dashboard').style.display = 'none';
+  ocultarTodos();
   document.getElementById('tab-buscar').style.display = 'block';
 }
 
 function irARecorrido() {
-  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
-    const el = document.getElementById(`tab-${t}`);
-    if (el) el.style.display = 'none';
-  });
+  ocultarTodos();
   document.getElementById('tab-recorrido').style.display = 'block';
 }
 
 function irASugerencias() {
-  irADashboard();
-  document.getElementById('tab-dashboard').style.display = 'none';
+  ocultarTodos();
   document.getElementById('tab-sugerencias').style.display = 'block';
 }
 
 function irAAdmin() {
-  irADashboard();
-  document.getElementById('tab-dashboard').style.display = 'none';
+  ocultarTodos();
   document.getElementById('tab-admin').style.display = 'block';
   setSidebarActive('sidebar-admin');
   refreshAdminPanel();
@@ -2623,11 +2610,19 @@ async function loadPlantasData() {
   }
 }
 
-function irAPlantas() {
+function ocultarTodos() {
   ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
+  ['tab-plantas','tab-ebc'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function irAPlantas() {
+  ocultarTodos();
   const tp = document.getElementById('tab-plantas');
   tp.style.display = 'flex';
   setSidebarActive('sidebar-plantas');
@@ -3102,12 +3097,7 @@ async function loadEBCData() {
 }
 
 function irAEBC() {
-  ['dashboard','buscar','sugerencias','admin','recorrido'].forEach(t => {
-    const el = document.getElementById(`tab-${t}`);
-    if (el) el.style.display = 'none';
-  });
-  const tp = document.getElementById('tab-plantas');
-  if (tp) tp.style.display = 'none';
+  ocultarTodos();
   document.getElementById('tab-ebc').style.display = 'flex';
   setSidebarActive('sidebar-ebc');
   if (ebcData.length === 0) {
