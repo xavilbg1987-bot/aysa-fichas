@@ -1166,6 +1166,11 @@
         INDUSTRIAS
         <span class="sidebar-coming">Próx.</span>
       </a>
+      <a class="sidebar-folder" id="sidebar-operativos" onclick="irAOperativos()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        OPERATIVOS
+        <span class="folder-badge" id="badge-operativos">—</span>
+      </a>
     </aside>
 
     <!-- MAIN PANEL -->
@@ -1514,6 +1519,26 @@
     <div id="ebc-ficha-container" style="padding:16px 20px 80px;overflow-y:auto;"></div>
   </div>
 
+  <!-- TAB OPERATIVOS -->
+  <div id="tab-ops" style="display:none;flex-direction:column;flex:1;min-height:0;">
+    <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </button>
+        <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">OPERATIVOS</span>
+      </div>
+      <div style="position:relative;">
+        <input type="text" id="ops-search" placeholder="Buscar por código o nombre..." oninput="buscarOPS(this.value)" onfocus="buscarOPS(this.value)"
+          style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;box-sizing:border-box;outline:none;box-shadow:var(--shadow-sm);">
+        <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div id="ops-autocomplete" style="background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;max-height:220px;overflow-y:auto;position:absolute;left:0;right:0;top:100%;z-index:100;"></div>
+      </div>
+    </div>
+    <div id="ops-ficha-container" style="padding:16px 20px 80px;overflow-y:auto;"></div>
+  </div>
+
     </div> <!-- /main-panel -->
   </div> <!-- /app-layout -->
 
@@ -1584,6 +1609,11 @@ const PD_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-f
 const EBC_SHEET_ID   = '1Bbo7CYjtjB2u7lEKBL4eqgmauehQXLmR9DYlZDooNUM';
 const EBC_SHEET_NAME = 'LISTADO EBC';
 const EBC_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
+
+// ===== CONFIG OPERATIVOS =====
+const OPS_SHEET_ID   = '1ZWycnXszVKcn5fkvXyMDBz6IsjO0DdKoPKUYeH46PnU';
+const OPS_SHEET_NAME = 'DETALLE OPS';
+const OPS_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
 
 // ===== STATE =====
 let currentUser = null;
@@ -1716,6 +1746,7 @@ function enterApp(user) {
   loadFotos();
   loadPlantasData();
   loadEBCData().catch(e => console.warn('EBC no disponible:', e));
+  loadOPSData().catch(e => console.warn('OPS no disponible:', e));
   loadEBCData();
   irADashboard();
 }
@@ -2615,7 +2646,7 @@ function ocultarTodos() {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
-  ['tab-plantas','tab-ebc'].forEach(id => {
+  ['tab-plantas','tab-ebc','tab-ops'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -3295,6 +3326,311 @@ function descargarPDFEBC(e) {
       </table>
     </div>
   `;
+  const printArea = document.getElementById('print-area');
+  printArea.classList.remove('hidden-print');
+  printArea.style.display = 'block';
+  setTimeout(() => window.print(), 800);
+  window.addEventListener('afterprint', function handler() {
+    printArea.style.display = 'none';
+    printArea.classList.add('hidden-print');
+    printArea.innerHTML = '';
+    window.removeEventListener('afterprint', handler);
+  });
+}
+
+// ===== OPERATIVOS =====
+let opsData = [];
+
+async function loadOPSData() {
+  if (opsData.length > 0) return;
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${OPS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(OPS_SHEET_NAME)}&_=${Date.now()}`;
+    const res  = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf('(')+1, text.lastIndexOf(')')));
+    opsData = json.table.rows
+      .filter(r => r.c[0]?.v)
+      .map(r => {
+        const fechaRaw = r.c[2]?.v?.toString().trim() || '';
+        let fecha = fechaRaw;
+        const m = fechaRaw.match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (m) {
+          const d = new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
+          fecha = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        }
+        return {
+          cod:         r.c[0]?.v?.toString().trim() || '',
+          nombre:      r.c[1]?.v?.toString().trim() || '',
+          fecha,
+          tipo:        r.c[3]?.v?.toString().trim() || '',
+          descripcion: r.c[4]?.v?.toString().trim() || '',
+          punto:       r.c[5]?.v?.toString().trim() || '',
+          coordenadas: r.c[6]?.v?.toString().trim() || '',
+          foto1:       r.c[7]?.v?.toString().trim() || '',
+          foto2:       r.c[8]?.v?.toString().trim() || '',
+          foto3:       r.c[9]?.v?.toString().trim() || '',
+          foto4:       r.c[10]?.v?.toString().trim() || '',
+          foto_mapa:   r.c[11]?.v?.toString().trim() || '',
+          obs_punto:   r.c[12]?.v?.toString().trim() || '',
+        };
+      });
+    // Badge con operativos únicos
+    const unicos = [...new Set(opsData.map(r => r.cod))].filter(Boolean);
+    const badge = document.getElementById('badge-operativos');
+    if (badge) badge.textContent = unicos.length;
+  } catch(e) { console.error('Error cargando OPERATIVOS:', e); }
+}
+
+function irAOperativos() {
+  ocultarTodos();
+  document.getElementById('tab-ops').style.display = 'flex';
+  setSidebarActive('sidebar-operativos');
+  if (opsData.length === 0) {
+    document.getElementById('ops-ficha-container').innerHTML =
+      `<div class="loading"><div class="spinner"></div><p>Cargando operativos...</p></div>`;
+    loadOPSData().then(() => {
+      document.getElementById('ops-ficha-container').innerHTML = '';
+    });
+  }
+}
+
+function buscarOPS(q) {
+  const list = document.getElementById('ops-autocomplete');
+  const qU = (q || '').toUpperCase().trim();
+  // Operativos únicos
+  const unicos = [...new Map(opsData.map(r => [r.cod, r])).values()];
+  const matches = qU.length === 0
+    ? unicos.slice(0, 10)
+    : unicos.filter(r =>
+        r.cod.toUpperCase().includes(qU) ||
+        r.nombre.toUpperCase().includes(qU) ||
+        r.tipo.toUpperCase().includes(qU)
+      ).slice(0, 10);
+  if (!matches.length) { list.style.display = 'none'; return; }
+  list.innerHTML = matches.map(r => `
+    <div style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #eef1f7;font-size:13px;"
+      onmousedown="seleccionarOPS('${r.cod}')"
+      onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='white'">
+      <div style="font-weight:700;color:var(--aysa-blue);">${r.cod}</div>
+      <div style="color:var(--gray-400);font-size:11px;">${r.nombre} · ${r.tipo} · ${r.fecha}</div>
+    </div>`).join('');
+  list.style.display = 'block';
+}
+
+function seleccionarOPS(cod) {
+  document.getElementById('ops-search').value = cod;
+  document.getElementById('ops-autocomplete').style.display = 'none';
+  const filas = opsData.filter(r => r.cod === cod);
+  if (filas.length) renderFichaOPS(filas);
+}
+
+function imgOPS(nombre) {
+  if (!nombre) return `<div style="background:#f0f4f8;border-radius:8px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8f9ab5;font-size:11px;">Sin foto</div>`;
+  return `<img src="${OPS_GITHUB_BASE}${nombre}.jpg" alt="${nombre}"
+    style="width:100%;height:100%;object-fit:cover;border-radius:8px;cursor:pointer;"
+    onclick="openLightbox(this.src)"
+    onerror="
+      if(!this._t)this._t=0; this._t++;
+      const ex=['JPG','jpeg','png','PNG'];
+      if(this._t<=ex.length){this.src='${OPS_GITHUB_BASE}${nombre}.'+ex[this._t-1];}
+      else{this.parentNode.innerHTML='<div style=background:#f0f4f8;border-radius:8px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#8f9ab5;font-size:11px;>Sin foto</div>';}
+    ">`;
+}
+
+function renderFichaOPS(filas) {
+  const p = filas[0];
+  const logoImg = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
+  const logoHTML = logoImg
+    ? `<img src="${logoImg}" style="height:40px;width:auto;display:block;margin:auto;">`
+    : `<div style="background:var(--aysa-blue);color:white;font-weight:900;font-size:13px;padding:5px 8px;border-radius:4px;">aysa</div>`;
+
+  // Puntos HTML
+  const puntosHTML = filas.map(f => `
+    <div style="background:white;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,0.08);margin-bottom:14px;overflow:hidden;border:1px solid #eef1f7;">
+      <div style="background:var(--aysa-blue);padding:10px 14px;color:white;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="14" height="14"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+        ${f.punto || '—'}
+      </div>
+      ${f.coordenadas ? `
+      <div style="padding:8px 14px 0;display:flex;align-items:center;gap:6px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="12" height="12"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+        <a href="https://maps.google.com/?q=${encodeURIComponent(f.coordenadas)}" target="_blank"
+          style="font-size:11px;color:var(--aysa-teal);font-weight:600;">${f.coordenadas}</a>
+      </div>` : ''}
+      ${f.obs_punto ? `
+      <div style="padding:8px 14px;background:#fffbf0;border-top:1px solid #fef3c7;margin-top:8px;">
+        <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Observaciones</div>
+        <div style="font-size:12px;color:var(--gray-700);">${f.obs_punto}</div>
+      </div>` : ''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:140px 140px;gap:4px;padding:8px;">
+        <div style="border-radius:6px;overflow:hidden;line-height:0;">${imgOPS(f.foto1)}</div>
+        <div style="border-radius:6px;overflow:hidden;line-height:0;">${imgOPS(f.foto2)}</div>
+        <div style="border-radius:6px;overflow:hidden;line-height:0;">${imgOPS(f.foto3)}</div>
+        <div style="border-radius:6px;overflow:hidden;line-height:0;">${imgOPS(f.foto4)}</div>
+      </div>
+    </div>`).join('');
+
+  const opsCodJson = JSON.stringify(p.cod).replace(/"/g, '&quot;');
+
+  document.getElementById('ops-ficha-container').innerHTML = `
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-md);overflow:hidden;margin-bottom:14px;">
+
+      <!-- Header institucional -->
+      <div style="background:#d0d0d0;padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #bbb;">
+        <div style="flex:1;text-align:center;">
+          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
+          <div style="font-size:10px;color:var(--gray-600);margin-top:1px;">Gerencia de Calidad · Operativo de Muestreo</div>
+        </div>
+        <div style="flex-shrink:0;">${logoHTML}</div>
+      </div>
+
+      <!-- Banda con código -->
+      <div style="background:var(--aysa-blue);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="color:rgba(255,255,255,0.7);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Operativo</div>
+          <div style="color:white;font-size:18px;font-weight:800;margin-top:2px;">${p.cod}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="color:rgba(255,255,255,0.7);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Fecha</div>
+          <div style="color:white;font-size:13px;font-weight:700;margin-top:2px;">${p.fecha || '—'}</div>
+        </div>
+      </div>
+
+      <!-- Datos encabezado -->
+      <div style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-teal);grid-column:span 2;">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Nombre / Punto asociado</div>
+          <div style="font-size:14px;font-weight:700;color:var(--aysa-blue);margin-top:3px;">${p.nombre || '—'}</div>
+        </div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Tipo</div>
+          <div style="font-size:13px;font-weight:600;color:var(--gray-800);margin-top:3px;">${p.tipo || '—'}</div>
+        </div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Puntos de muestreo</div>
+          <div style="font-size:16px;font-weight:800;color:var(--aysa-teal);margin-top:3px;">${filas.length}</div>
+        </div>
+        ${p.descripcion ? `
+        <div style="background:#fffbf0;border-radius:8px;padding:10px 12px;border-left:3px solid #f59e0b;grid-column:span 2;">
+          <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.5px;">Descripción del Operativo</div>
+          <div style="font-size:12px;color:var(--gray-700);margin-top:4px;line-height:1.5;">${p.descripcion}</div>
+        </div>` : ''}
+      </div>
+
+      <!-- Mapa de zona -->
+      ${p.foto_mapa ? `
+      <div style="padding:0 14px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mapa de zona</div>
+        <div style="border-radius:8px;overflow:hidden;line-height:0;height:220px;">${imgOPS(p.foto_mapa)}</div>
+      </div>` : ''}
+
+    </div>
+
+    <!-- Puntos de muestreo -->
+    <div style="font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">
+      Puntos de muestreo (${filas.length})
+    </div>
+    ${puntosHTML}
+
+    <!-- Botones -->
+    <button onclick="openModal()" class="btn-sugerencia" style="width:100%;margin-bottom:10px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Reportar información incorrecta
+    </button>
+    <button onclick="descargarPDFOPS(${opsCodJson})" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(--shadow-md);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Descargar ficha PDF
+    </button>
+  `;
+}
+
+function descargarPDFOPS(cod) {
+  const filas = opsData.filter(r => r.cod === cod);
+  if (!filas.length) return;
+  const p = filas[0];
+  const logoB64 = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
+  const val = v => v || '—';
+  const fotoUrl = n => n ? `${OPS_GITHUB_BASE}${n}.jpg` : '';
+
+  const puntosRows = filas.map(f => `
+    <div style="page-break-inside:avoid;margin-bottom:12px;">
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr style="background:#1a2f7a;">
+          <td colspan="2" style="padding:6px 10px;color:white;font-weight:700;font-size:10pt;">${val(f.punto)}</td>
+        </tr>
+        ${f.coordenadas ? `<tr><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;width:25%;">COORDENADAS</td><td style="padding:5px 8px;border-bottom:1px solid #888;">${val(f.coordenadas)}</td></tr>` : ''}
+        ${f.obs_punto ? `<tr><td style="padding:5px 8px;font-weight:700;background:#fff9e6;border-right:1px solid #888;width:25%;">OBSERVACIONES</td><td style="padding:5px 8px;">${val(f.obs_punto)}</td></tr>` : ''}
+      </table>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr>
+          <td style="width:50%;padding:3px;border-right:1px solid #888;border-bottom:1px solid #888;height:160px;vertical-align:middle;">
+            ${fotoUrl(f.foto1) ? `<img src="${fotoUrl(f.foto1)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
+          </td>
+          <td style="width:50%;padding:3px;border-bottom:1px solid #888;height:160px;vertical-align:middle;">
+            ${fotoUrl(f.foto2) ? `<img src="${fotoUrl(f.foto2)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
+          </td>
+        </tr>
+        <tr>
+          <td style="width:50%;padding:3px;border-right:1px solid #888;height:160px;vertical-align:middle;">
+            ${fotoUrl(f.foto3) ? `<img src="${fotoUrl(f.foto3)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
+          </td>
+          <td style="width:50%;padding:3px;height:160px;vertical-align:middle;">
+            ${fotoUrl(f.foto4) ? `<img src="${fotoUrl(f.foto4)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
+          </td>
+        </tr>
+      </table>
+    </div>`).join('');
+
+  document.getElementById('print-area').innerHTML = `
+    <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
+      <!-- Header -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr>
+          <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px;border-right:1px solid #888;vertical-align:middle;">
+            <div style="font-weight:700;font-size:11pt;">Dirección de Medio Ambiente y Calidad</div>
+            <div style="font-weight:700;font-size:10pt;">Gerencia de Calidad · Operativo de Muestreo</div>
+          </td>
+          <td style="width:20%;background:#d0d0d0;text-align:center;padding:8px;vertical-align:middle;">
+            ${logoB64 ? `<img src="${logoB64}" style="width:72px;height:54px;">` : '<div style="background:#1a2f7a;color:white;font-weight:900;font-size:14pt;padding:6px 10px;border-radius:6px;display:inline-block;">aysa</div>'}
+          </td>
+        </tr>
+      </table>
+      <!-- Datos operativo -->
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr style="background:#1a2f7a;">
+          <td style="padding:8px 12px;color:white;font-size:14pt;font-weight:800;">${val(p.cod)}</td>
+          <td style="padding:8px 12px;color:rgba(255,255,255,0.8);text-align:right;">${val(p.fecha)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;width:20%;">NOMBRE:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #888;font-weight:700;">${val(p.nombre)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;">TIPO:</td>
+          <td style="padding:5px 8px;border-bottom:1px solid #888;">${val(p.tipo)}</td>
+        </tr>
+        ${p.descripcion ? `<tr><td style="padding:5px 8px;font-weight:700;background:#fff9e6;border-right:1px solid #888;">DESCRIPCIÓN:</td><td style="padding:5px 8px;">${val(p.descripcion)}</td></tr>` : ''}
+      </table>
+      <!-- Mapa de zona -->
+      ${fotoUrl(p.foto_mapa) ? `
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
+        <tr><td style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #888;">MAPA DE ZONA</td></tr>
+        <tr><td style="padding:4px;text-align:center;">
+          <img src="${fotoUrl(p.foto_mapa)}" style="width:100%;max-height:220px;object-fit:contain;" onerror="this.style.display='none'">
+        </td></tr>
+      </table>` : ''}
+      <!-- Puntos -->
+      <div style="page-break-before:always;">
+        <table style="width:100%;border-collapse:collapse;border:1px solid #888;margin-bottom:10px;">
+          <tr style="background:#00a8b5;">
+            <td colspan="2" style="padding:6px 10px;color:white;font-weight:700;font-size:11pt;">PUNTOS DE MUESTREO (${filas.length})</td>
+          </tr>
+        </table>
+        ${puntosRows}
+      </div>
+    </div>
+  `;
+
   const printArea = document.getElementById('print-area');
   printArea.classList.remove('hidden-print');
   printArea.style.display = 'block';
