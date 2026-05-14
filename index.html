@@ -2505,9 +2505,12 @@ function descargarPDF() {
   const printArea = document.getElementById('print-area');
   printArea.classList.remove('hidden-print');
   printArea.style.display = 'block';
-  setTimeout(() => {
-    window.print();
-  }, 600);
+  const imgs1 = Array.from(printArea.querySelectorAll('img'));
+  const promises1 = imgs1.map(img => {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; setTimeout(resolve, 10000); });
+  });
+  Promise.all(promises1).then(() => setTimeout(() => window.print(), 300));
   window.addEventListener('afterprint', function handler() {
     printArea.style.display = 'none';
     printArea.classList.add('hidden-print');
@@ -3086,9 +3089,12 @@ function descargarPDFPlanta() {
   const printArea = document.getElementById('print-area');
   printArea.classList.remove('hidden-print');
   printArea.style.display = 'block';
-  setTimeout(() => {
-    window.print();
-  }, 800);
+  const imgs2 = Array.from(printArea.querySelectorAll('img'));
+  const promises2 = imgs2.map(img => {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; setTimeout(resolve, 10000); });
+  });
+  Promise.all(promises2).then(() => setTimeout(() => window.print(), 300));
   window.addEventListener('afterprint', function handler() {
     printArea.style.display = 'none';
     printArea.classList.add('hidden-print');
@@ -3329,7 +3335,18 @@ function descargarPDFEBC(e) {
   const printArea = document.getElementById('print-area');
   printArea.classList.remove('hidden-print');
   printArea.style.display = 'block';
-  setTimeout(() => window.print(), 800);
+
+  const imgs = Array.from(printArea.querySelectorAll('img'));
+  const promises = imgs.map(img => {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = resolve;
+      img.onerror = resolve;
+      setTimeout(resolve, 10000);
+    });
+  });
+  Promise.all(promises).then(() => setTimeout(() => window.print(), 300));
+
   window.addEventListener('afterprint', function handler() {
     printArea.style.display = 'none';
     printArea.classList.add('hidden-print');
@@ -3634,7 +3651,19 @@ function descargarPDFOPS(cod) {
   const printArea = document.getElementById('print-area');
   printArea.classList.remove('hidden-print');
   printArea.style.display = 'block';
-  setTimeout(() => window.print(), 800);
+
+  // Esperar que todas las imágenes carguen antes de imprimir
+  const imgs = Array.from(printArea.querySelectorAll('img'));
+  const promises = imgs.map(img => {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      img.onload = resolve;
+      img.onerror = resolve;
+      setTimeout(resolve, 10000);
+    });
+  });
+  Promise.all(promises).then(() => setTimeout(() => window.print(), 300));
+
   window.addEventListener('afterprint', function handler() {
     printArea.style.display = 'none';
     printArea.classList.add('hidden-print');
