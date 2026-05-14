@@ -3357,6 +3357,7 @@ function descargarPDFEBC(e) {
 
 // ===== OPERATIVOS =====
 let opsData = [];
+let cronologiaData = [];
 
 async function loadOPSData() {
   if (opsData.length > 0) return;
@@ -3389,12 +3390,43 @@ async function loadOPSData() {
           foto4:       r.c[10]?.v?.toString().trim() || '',
           foto_mapa:   r.c[11]?.v?.toString().trim() || '',
           obs_punto:   r.c[12]?.v?.toString().trim() || '',
+          solicitante: r.c[13]?.v?.toString().trim() || '',
+          motivo:      r.c[14]?.v?.toString().trim() || '',
+          fecha_sol:   (() => {
+            const raw = r.c[15]?.v?.toString().trim() || '';
+            const m2 = raw.match(/Date\((\d+),(\d+),(\d+)\)/);
+            if (m2) { const d2 = new Date(parseInt(m2[1]),parseInt(m2[2]),parseInt(m2[3])); return `${String(d2.getDate()).padStart(2,'0')}/${String(d2.getMonth()+1).padStart(2,'0')}/${d2.getFullYear()}`; }
+            return raw;
+          })(),
+          siseme:      r.c[16]?.v?.toString().trim() || '',
         };
       });
     // Badge con operativos únicos
     const unicos = [...new Set(opsData.map(r => r.cod))].filter(Boolean);
     const badge = document.getElementById('badge-operativos');
     if (badge) badge.textContent = unicos.length;
+
+    // Cargar cronología
+    const urlCron = `https://docs.google.com/spreadsheets/d/${OPS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('CRONOLOGIA')}&_=${Date.now()}`;
+    const resCron = await fetch(urlCron);
+    const textCron = await resCron.text();
+    const jsonCron = JSON.parse(textCron.substring(textCron.indexOf('(')+1, textCron.lastIndexOf(')')));
+    cronologiaData = jsonCron.table.rows
+      .filter(r => r.c[0]?.v)
+      .map(r => {
+        const fechaRaw = r.c[1]?.v?.toString().trim() || '';
+        let fecha = fechaRaw;
+        const m = fechaRaw.match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (m) {
+          const d = new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
+          fecha = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        }
+        return {
+          cod:     r.c[0]?.v?.toString().trim() || '',
+          fecha,
+          resumen: r.c[2]?.v?.toString().trim() || '',
+        };
+      });
   } catch(e) { console.error('Error cargando OPERATIVOS:', e); }
 }
 
@@ -3532,6 +3564,16 @@ function renderFichaOPS(filas) {
           <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.5px;">Descripción del Operativo</div>
           <div style="font-size:12px;color:var(--gray-700);margin-top:4px;line-height:1.5;">${p.descripcion}</div>
         </div>` : ''}
+        ${(p.solicitante || p.motivo || p.fecha_sol || p.siseme) ? `
+        <div style="background:#f0f6fb;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-blue);grid-column:span 2;">
+          <div style="font-size:9px;font-weight:700;color:var(--aysa-blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Origen del Operativo</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            ${p.solicitante ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);width:40%;">Solicitante</td><td style="padding:4px 6px;">${p.solicitante}</td></tr>` : ''}
+            ${p.motivo ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);">Motivo</td><td style="padding:4px 6px;">${p.motivo}</td></tr>` : ''}
+            ${p.fecha_sol ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);">Fecha solicitud</td><td style="padding:4px 6px;">${p.fecha_sol}</td></tr>` : ''}
+            ${p.siseme ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);">SISEME asociada</td><td style="padding:4px 6px;font-family:monospace;">${p.siseme}</td></tr>` : ''}
+          </table>
+        </div>` : ''}
       </div>
 
       <!-- Mapa de zona -->
@@ -3540,6 +3582,20 @@ function renderFichaOPS(filas) {
         <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mapa de zona</div>
         <div style="border-radius:8px;overflow:hidden;line-height:0;height:220px;">${imgOPS(p.foto_mapa)}</div>
       </div>` : ''}
+
+      ${(() => {
+        const cron = cronologiaData.filter(c => c.cod === p.cod);
+        if (!cron.length) return '';
+        return `
+        <div style="margin:0 14px 14px;background:#f7f9fc;border-radius:8px;padding:12px;border:1px solid #eef1f7;">
+          <div style="font-size:10px;font-weight:700;color:var(--aysa-blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Cronología de intervenciones</div>
+          ${cron.map(c => `
+            <div style="display:flex;gap:10px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #eef1f7;">
+              <div style="flex-shrink:0;background:var(--aysa-teal);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;">${c.fecha}</div>
+              <div style="font-size:12px;color:var(--gray-700);line-height:1.5;">${c.resumen}</div>
+            </div>`).join('')}
+        </div>`;
+      })()}
 
     </div>
 
@@ -3660,6 +3716,27 @@ async function descargarPDFOPS(cod) {
           <img src="${fotoMapa}" style="width:100%;max-height:520px;object-fit:contain;">
         </td></tr>
       </table>` : ''}
+      ${(p.solicitante || p.motivo || p.fecha_sol || p.siseme) ? `
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
+        <tr><td colspan="2" style="background:#1a2f7a;color:white;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #888;">ORIGEN DEL OPERATIVO</td></tr>
+        ${p.solicitante ? `<tr><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;width:25%;">SOLICITANTE</td><td style="padding:5px 8px;border-bottom:1px solid #888;">${val(p.solicitante)}</td></tr>` : ''}
+        ${p.motivo ? `<tr><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;">MOTIVO</td><td style="padding:5px 8px;border-bottom:1px solid #888;">${val(p.motivo)}</td></tr>` : ''}
+        ${p.fecha_sol ? `<tr><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;">FECHA SOLICITUD</td><td style="padding:5px 8px;border-bottom:1px solid #888;">${val(p.fecha_sol)}</td></tr>` : ''}
+        ${p.siseme ? `<tr><td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;">SISEME ASOCIADA</td><td style="padding:5px 8px;font-family:monospace;">${val(p.siseme)}</td></tr>` : ''}
+      </table>` : ''}
+      ${(() => {
+        const cron = cronologiaData.filter(c => c.cod === p.cod);
+        if (!cron.length) return '';
+        return `
+        <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
+          <tr><td colspan="2" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #888;">CRONOLOGÍA DE INTERVENCIONES</td></tr>
+          ${cron.map(c => `
+          <tr>
+            <td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #ccc;width:18%;white-space:nowrap;">${c.fecha}</td>
+            <td style="padding:5px 8px;border-bottom:1px solid #ccc;">${c.resumen}</td>
+          </tr>`).join('')}
+        </table>`;
+      })()}
       <div style="page-break-before:always;">
         ${puntosRows}
       </div>
