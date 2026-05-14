@@ -3561,15 +3561,55 @@ function renderFichaOPS(filas) {
   `;
 }
 
-function descargarPDFOPS(cod) {
+async function descargarPDFOPS(cod) {
   const filas = opsData.filter(r => r.cod === cod);
   if (!filas.length) return;
   const p = filas[0];
   const logoB64 = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
   const val = v => v || '—';
-  const fotoUrl = n => n ? `${OPS_GITHUB_BASE}${n}.jpg` : '';
 
-  const puntosRows = filas.map(f => `
+  // Función para convertir imagen a base64
+  async function toBase64(nombre) {
+    if (!nombre) return '';
+    const exts = ['jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF','webp','WEBP'];
+    for (const ext of exts) {
+      try {
+        const url = `${OPS_GITHUB_BASE}${nombre}.${ext}`;
+        const res = await fetch(url);
+        if (!res.ok) continue;
+        const blob = await res.blob();
+        return await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(blob);
+        });
+      } catch(e) { continue; }
+    }
+    return '';
+  }
+
+  // Mostrar indicador de carga
+  const btn = document.querySelector('button[onclick*="descargarPDFOPS"]');
+  if (btn) { btn.textContent = '⏳ Preparando PDF...'; btn.disabled = true; }
+
+  // Precargar todas las imágenes como base64
+  const fotoMapa = await toBase64(p.foto_mapa);
+  const fotosFilas = await Promise.all(filas.map(async f => ({
+    ...f,
+    b64_1: await toBase64(f.foto1),
+    b64_2: await toBase64(f.foto2),
+    b64_3: await toBase64(f.foto3),
+    b64_4: await toBase64(f.foto4),
+  })));
+
+  if (btn) { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descargar ficha PDF'; btn.disabled = false; }
+
+  const imgTag = (b64, h) => b64
+    ? `<img src="${b64}" style="width:100%;height:${h}px;object-fit:cover;display:block;">`
+    : `<div style="height:${h}px;background:#f5f5f5;"></div>`;
+
+  const puntosRows = fotosFilas.map(f => `
     <div style="page-break-inside:avoid;margin-bottom:12px;">
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
         <tr style="background:#1a2f7a;">
@@ -3580,27 +3620,18 @@ function descargarPDFOPS(cod) {
       </table>
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
         <tr>
-          <td style="width:50%;padding:3px;border-right:1px solid #888;border-bottom:1px solid #888;height:160px;vertical-align:middle;">
-            ${fotoUrl(f.foto1) ? `<img src="${fotoUrl(f.foto1)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
-          </td>
-          <td style="width:50%;padding:3px;border-bottom:1px solid #888;height:160px;vertical-align:middle;">
-            ${fotoUrl(f.foto2) ? `<img src="${fotoUrl(f.foto2)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
-          </td>
+          <td style="width:50%;padding:3px;border-right:1px solid #888;border-bottom:1px solid #888;height:160px;">${imgTag(f.b64_1, 154)}</td>
+          <td style="width:50%;padding:3px;border-bottom:1px solid #888;height:160px;">${imgTag(f.b64_2, 154)}</td>
         </tr>
         <tr>
-          <td style="width:50%;padding:3px;border-right:1px solid #888;height:160px;vertical-align:middle;">
-            ${fotoUrl(f.foto3) ? `<img src="${fotoUrl(f.foto3)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
-          </td>
-          <td style="width:50%;padding:3px;height:160px;vertical-align:middle;">
-            ${fotoUrl(f.foto4) ? `<img src="${fotoUrl(f.foto4)}" style="width:100%;height:154px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="height:154px;background:#f5f5f5;"></div>'}
-          </td>
+          <td style="width:50%;padding:3px;border-right:1px solid #888;height:160px;">${imgTag(f.b64_3, 154)}</td>
+          <td style="width:50%;padding:3px;height:160px;">${imgTag(f.b64_4, 154)}</td>
         </tr>
       </table>
     </div>`).join('');
 
   document.getElementById('print-area').innerHTML = `
     <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
-      <!-- Header -->
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
         <tr>
           <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px;border-right:1px solid #888;vertical-align:middle;">
@@ -3612,7 +3643,6 @@ function descargarPDFOPS(cod) {
           </td>
         </tr>
       </table>
-      <!-- Datos operativo -->
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
         <tr style="background:#1a2f7a;">
           <td style="padding:8px 12px;color:white;font-size:14pt;font-weight:800;">${val(p.cod)}</td>
@@ -3628,19 +3658,17 @@ function descargarPDFOPS(cod) {
         </tr>
         ${p.descripcion ? `<tr><td style="padding:5px 8px;font-weight:700;background:#fff9e6;border-right:1px solid #888;">DESCRIPCIÓN:</td><td style="padding:5px 8px;">${val(p.descripcion)}</td></tr>` : ''}
       </table>
-      <!-- Mapa de zona -->
-      ${fotoUrl(p.foto_mapa) ? `
+      ${fotoMapa ? `
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
         <tr><td style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #888;">MAPA DE ZONA</td></tr>
         <tr><td style="padding:4px;text-align:center;">
-          <img src="${fotoUrl(p.foto_mapa)}" style="width:100%;max-height:220px;object-fit:contain;" onerror="this.style.display='none'">
+          <img src="${fotoMapa}" style="width:100%;max-height:220px;object-fit:contain;">
         </td></tr>
       </table>` : ''}
-      <!-- Puntos -->
       <div style="page-break-before:always;">
         <table style="width:100%;border-collapse:collapse;border:1px solid #888;margin-bottom:10px;">
           <tr style="background:#00a8b5;">
-            <td colspan="2" style="padding:6px 10px;color:white;font-weight:700;font-size:11pt;">PUNTOS DE MUESTREO (${filas.length})</td>
+            <td style="padding:6px 10px;color:white;font-weight:700;font-size:11pt;">PUNTOS DE MUESTREO (${filas.length})</td>
           </tr>
         </table>
         ${puntosRows}
@@ -3651,19 +3679,7 @@ function descargarPDFOPS(cod) {
   const printArea = document.getElementById('print-area');
   printArea.classList.remove('hidden-print');
   printArea.style.display = 'block';
-
-  // Esperar que todas las imágenes carguen antes de imprimir
-  const imgs = Array.from(printArea.querySelectorAll('img'));
-  const promises = imgs.map(img => {
-    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
-    return new Promise(resolve => {
-      img.onload = resolve;
-      img.onerror = resolve;
-      setTimeout(resolve, 10000);
-    });
-  });
-  Promise.all(promises).then(() => setTimeout(() => window.print(), 300));
-
+  setTimeout(() => window.print(), 300);
   window.addEventListener('afterprint', function handler() {
     printArea.style.display = 'none';
     printArea.classList.add('hidden-print');
