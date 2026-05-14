@@ -3620,12 +3620,12 @@ async function descargarPDFOPS(cod) {
       </table>
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
         <tr>
-          <td style="width:50%;padding:3px;border-right:1px solid #888;border-bottom:1px solid #888;height:160px;">${imgTag(f.b64_1, 154)}</td>
-          <td style="width:50%;padding:3px;border-bottom:1px solid #888;height:160px;">${imgTag(f.b64_2, 154)}</td>
+          <td style="width:50%;padding:3px;border-right:1px solid #888;border-bottom:1px solid #888;height:210px;">${imgTag(f.b64_1, 204)}</td>
+          <td style="width:50%;padding:3px;border-bottom:1px solid #888;height:210px;">${imgTag(f.b64_2, 204)}</td>
         </tr>
         <tr>
-          <td style="width:50%;padding:3px;border-right:1px solid #888;height:160px;">${imgTag(f.b64_3, 154)}</td>
-          <td style="width:50%;padding:3px;height:160px;">${imgTag(f.b64_4, 154)}</td>
+          <td style="width:50%;padding:3px;border-right:1px solid #888;height:210px;">${imgTag(f.b64_3, 204)}</td>
+          <td style="width:50%;padding:3px;height:210px;">${imgTag(f.b64_4, 204)}</td>
         </tr>
       </table>
     </div>`).join('');
@@ -3649,20 +3649,15 @@ async function descargarPDFOPS(cod) {
           <td style="padding:8px 12px;color:rgba(255,255,255,0.8);text-align:right;">${val(p.fecha)}</td>
         </tr>
         <tr>
-          <td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;width:20%;">NOMBRE:</td>
-          <td style="padding:5px 8px;border-bottom:1px solid #888;font-weight:700;">${val(p.nombre)}</td>
+          <td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;width:20%;">NOMBRE:</td>
+          <td style="padding:5px 8px;font-weight:700;">${val(p.nombre)}</td>
         </tr>
-        <tr>
-          <td style="padding:5px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;border-bottom:1px solid #888;">TIPO:</td>
-          <td style="padding:5px 8px;border-bottom:1px solid #888;">${val(p.tipo)}</td>
-        </tr>
-        ${p.descripcion ? `<tr><td style="padding:5px 8px;font-weight:700;background:#fff9e6;border-right:1px solid #888;">DESCRIPCIÓN:</td><td style="padding:5px 8px;">${val(p.descripcion)}</td></tr>` : ''}
       </table>
       ${fotoMapa ? `
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
         <tr><td style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #888;">MAPA DE ZONA</td></tr>
         <tr><td style="padding:4px;text-align:center;">
-          <img src="${fotoMapa}" style="width:100%;max-height:380px;object-fit:contain;">
+          <img src="${fotoMapa}" style="width:100%;max-height:520px;object-fit:contain;">
         </td></tr>
       </table>` : ''}
       <div style="page-break-before:always;">
