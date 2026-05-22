@@ -1055,8 +1055,8 @@
     </div>
 
     <div class="login-tabs">
-      <button class="login-tab active" defang_onclick="switchTab('login')">Ingresar</button>
-      <button class="login-tab" defang_onclick="switchTab('register')">Registrarse</button>
+      <button class="login-tab active" onclick="switchTab('login')">Ingresar</button>
+      <button class="login-tab" onclick="switchTab('register')">Registrarse</button>
     </div>
 
     <div id="login-error" class="login-error"></div>
@@ -1071,12 +1071,12 @@
         <label>Contraseña</label>
         <div style="position:relative">
           <input type="password" id="login-pass" defang_placeholder="••••••••" style="padding-right:44px">
-          <button type="button" defang_onclick="togglePass('login-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
+          <button type="button" onclick="togglePass('login-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
             <!--defang_svg id="eye-login" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="rgba(255,255,255,0.5)" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round" width="18" height="18"--><!--defang_path defang_d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/--><!--defang_circle defang_cx="12" defang_cy="12" defang_r="3"/--><!--/defang_svg-->
           </button>
         </div>
       </div>
-      <button class="btn-primary" defang_onclick="doLogin()">Ingresar</button>
+      <button class="btn-primary" onclick="doLogin()">Ingresar</button>
     </div>
 
     <!--/*SC*/ REGISTER FORM /*EC*/-->
@@ -1097,12 +1097,12 @@
         <label>Contraseña</label>
         <div style="position:relative">
           <input type="password" id="reg-pass" defang_placeholder="Mínimo 6 caracteres" style="padding-right:44px">
-          <button type="button" defang_onclick="togglePass('reg-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
+          <button type="button" onclick="togglePass('reg-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
             <!--defang_svg id="eye-reg" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="rgba(255,255,255,0.5)" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round" width="18" height="18"--><!--defang_path defang_d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/--><!--defang_circle defang_cx="12" defang_cy="12" defang_r="3"/--><!--/defang_svg-->
           </button>
         </div>
       </div>
-      <button class="btn-primary" defang_onclick="doRegister()">Crear cuenta</button>
+      <button class="btn-primary" onclick="doRegister()">Crear cuenta</button>
     </div>
   </div>
 </div>
@@ -1113,7 +1113,7 @@
   <!--/*SC*/ TOP NAV /*EC*/-->
   <!--defang_nav class="topnav"-->
     <div class="topnav-left">
-      <button class="sidebar-toggle" defang_onclick="toggleSidebar()">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2" width="22" height="22"--><!--defang_line defang_x1="3" defang_y1="6" defang_x2="21" defang_y2="6"/--><!--defang_line defang_x1="3" defang_y1="12" defang_x2="21" defang_y2="12"/--><!--defang_line defang_x1="3" defang_y1="18" defang_x2="21" defang_y2="18"/--><!--/defang_svg-->
       </button>
       <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABJAEkDASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBQgBAwQC/8QANRAAAQMEAQIDBAkEAwAAAAAAAQIDBAAFBhEHITESE0EIUWFxFBUiMjRCU4GRFiQ1UnKx0f/EABoBAAIDAQEAAAAAAAAAAAAAAAACAQMFBAb/xAAmEQACAgICAQMEAwAAAAAAAAAAAQIDBBESITEFUXETQWGxgaHR/9oADAMBAAIRAxEAPwDWfGbEwzGRKlNhx5Y8SQobCR6fvUhAAGgAB8KAAAADQFc17zHx4UQUIIzpScntilKVeKKUpQAriuaUAYa/WONOYUtptLcgDaVJGvF8DUJ+hSv0F/xVn11eQz+mn+Ky8z0uvIlyXTLoXOK0dtKUrUKRSlKAFKUoAUpSgBSlKAFKVY/H+BYhecdRecm5Gt1g811TaIvlea8PD6kbGgd96SyyNa3L/f0Sk2VxSrO5S4mVhca03qNfmLxjdzcShu4MI+5vrsp2QemyNH01XRzTxa/x03aJTd2RdYN0aUtqQhrwAEaIHc9wQaqhlVT4pPzvX8eSXBorilWlkPD0u0YLjV9VdQ7dMhdaaiWwM6VtwbG1b9ARvp61ILxwfi+PAW7JeUbbbr8Y/nfQzH2gdNgeIqHfXu60rzaff+n9ifpyKNpUz43xCxZK9PcvmZ2/HYcLw7ckIJW8FE68CdjfbtUszPhiJEwWRmeF5fGyi2RDqV4GfLW2BrZ1s9tgkHXTrTzyq4T4Sffw/wB+CFBtbKgpSlXiith7di2GcccK2jO71i6cqu138Cm0PqPkMBaSpII7dh6gkn3VrvVvcbcn8k2LEU2e0twZ9sa2I6ZjQWWuu9J69t+hrmyqbrklV332t62vkWeRTjx5XSUV7ssvnCYq5eypZJ67FHsfnSmVpgMIKUMpKl6CQewI6/vXVgsIcyez9Ax9xYXdcfuLLZKj1LIUBv8AdsqHzTVP5vyZyFkeLv4/kroegmSH1qXGCVJWCSAFDsPcPdVvcQWtXCXHl1zrJ7kwJN1jI+r7c06FeadeJBPvUd+nYbrMtonj08X1PluJ0V2wtfKL2tEV9pzMZZ5ftVsx5ZP9MBpEVDafF/cbCiNDueiU6+GqmmOXDB/aBkP2rJMXlWnKo0TZnMEgfZ6d/gT91QPro1rXHyS7MZcMqQ+FXQSzMDjiQseYVeLZB79asa6+0RyHNtrsRldsgOPJ8LkmLFCXSPmSdGr7MKarhGtdped617/KBWLbbJBxRxtjNvxDLM3yqCvIEWGS9HYgtLIQ4Wu6la772PgBvvVg8f3+NkvAOeTYWG2/GoKYcpLLcRBCX9MHaj0GyOg38K14415Ty3AVSk2aSy9Glq8b8eUjzELV/t7wf+6y9y515BuEO6QX5kL6Fco5jORkxUhttspKSED8uwo7Pypb8O+2T332mnt+PbXgmM4pFYCuaV8+JP8AsP5rXKDEY1dmZ0RDS1gSUDSkn83xFSWHdLhDaS1GluNISrxBKT03VSW/8a1/yqyo34dHyrL9KzZ3w1LyvuNlY9cuppNfkzlzyO5XCEYkktFs62QjROq8U+43CellM6dIkpYQG2Q64VBtI7BIPYV5aVrSk5vcuzmx8arGjwpior8ClKUpeKUr5X9w/KgDw3q5sW6Kpa1AukfYRvqT/wCVCPred+saZB/k3Kx9eQz8+223S6SO2utJH//Z" style="height:34px;border-radius:6px;" alt="AySA">
@@ -1127,7 +1127,7 @@
         <strong id="nav-username">Usuario</strong>
         <span id="nav-organismo">Organismo</span>
       </div>
-      <button class="btn-logout" defang_onclick="doLogout()">Salir</button>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
   <!--/defang_nav-->
 
@@ -1137,23 +1137,23 @@
     <!--/*SC*/ SIDEBAR /*EC*/-->
     <!--defang_aside class="sidebar" id="sidebar"-->
       <!--/*SC*/ PANEL ADMIN — solo visible para admins /*EC*/-->
-      <a class="sidebar-folder admin-only" id="sidebar-admin" defang_onclick="irAAdmin()" style="background:rgba(255,255,255,0.06);border-left:3px solid var(--aysa-teal);margin-bottom:4px;">
+      <a class="sidebar-folder admin-only" id="sidebar-admin" onclick="irAAdmin()" style="background:rgba(255,255,255,0.06);border-left:3px solid var(--aysa-teal);margin-bottom:4px;">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M12 20h9"/--><!--defang_path defang_d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/--><!--/defang_svg-->
         PANEL ADMIN
       </a>
       <div class="sidebar-divider admin-only"></div>
       <div class="sidebar-title">Fichas</div>
-      <a class="sidebar-folder" id="sidebar-micromac" defang_onclick="irADashboard()">
+      <a class="sidebar-folder" id="sidebar-micromac" onclick="irADashboard()">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
         MICRO / MACRO
         <span class="folder-badge">254</span>
       </a>
-      <a class="sidebar-folder" id="sidebar-plantas" defang_onclick="irAPlantas()">
+      <a class="sidebar-folder" id="sidebar-plantas" onclick="irAPlantas()">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
         PLANTAS DEPURADORAS
         <span class="folder-badge" id="badge-plantas">—</span>
       </a>
-      <a class="sidebar-folder" id="sidebar-ebc" defang_onclick="irAEBC()">
+      <a class="sidebar-folder" id="sidebar-ebc" onclick="irAEBC()">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
         EBC
         <span class="folder-badge" id="badge-ebc">—</span>
@@ -1168,7 +1168,7 @@
         INDUSTRIAS
         <span class="sidebar-coming">Próx.</span>
       </a>
-      <a class="sidebar-folder" id="sidebar-operativos" defang_onclick="irAOperativos()">
+      <a class="sidebar-folder" id="sidebar-operativos" onclick="irAOperativos()">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/--><!--defang_rect defang_x="9" defang_y="3" width="6" height="4" defang_rx="2"/--><!--defang_line defang_x1="9" defang_y1="12" defang_x2="15" defang_y2="12"/--><!--defang_line defang_x1="9" defang_y1="16" defang_x2="13" defang_y2="16"/--><!--/defang_svg-->
         OPERATIVOS
         <span class="folder-badge" id="badge-operativos">—</span>
@@ -1191,7 +1191,7 @@
         <!--/*SC*/ ACCIONES /*EC*/-->
         <div class="dash-section">
           <div class="dash-section-title">⚡ Acciones</div>
-          <div class="dash-card action-card" defang_onclick="irABuscar()">
+          <div class="dash-card action-card" onclick="irABuscar()">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/--><!--defang_polyline defang_points="14 2 14 8 20 8"/--><!--/defang_svg-->
             <div>
               <div class="dash-card-title">Fichas</div>
@@ -1199,7 +1199,7 @@
             </div>
             <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
           </div>
-          <div class="dash-card action-card" defang_onclick="irARecorrido()">
+          <div class="dash-card action-card" onclick="irARecorrido()">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
             <div>
               <div class="dash-card-title">Armar recorrido</div>
@@ -1207,7 +1207,7 @@
             </div>
             <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
           </div>
-          <div class="dash-card action-card" defang_onclick="irASugerencias()">
+          <div class="dash-card action-card" onclick="irASugerencias()">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
             <div>
               <div class="dash-card-title">Sugerencias</div>
@@ -1222,7 +1222,7 @@
 
     <!--/*SC*/ TAB: BUSCAR /*EC*/-->
   <div id="tab-buscar" class="content" style="display:none">
-    <button class="back-btn" defang_onclick="irADashboard()">
+    <button class="back-btn" onclick="irADashboard()">
       <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
       Menú principal
     </button>
@@ -1236,13 +1236,13 @@
           <!--defang_circle defang_cx="11" defang_cy="11" defang_r="8"/--><!--defang_path defang_d="m21 21-4.35-4.35"/-->
         <!--/defang_svg-->
         <input type="text" class="search-input" id="search-input" defang_placeholder="Ej: MAB001 o MCA018"
-               defang_onkeydown="if(event.key==='Enter') buscarPunto()"
-               defang_oninput="mostrarSugerencias(this.value)"
-               defang_onblur="setTimeout(()=&gt;ocultarSugerencias(),200)"
+               onkeydown="if(event.key==='Enter') buscarPunto()"
+               oninput="mostrarSugerencias(this.value)"
+               onblur="setTimeout(()=&gt;ocultarSugerencias(),200)"
                defang_autocomplete="off">
         <div class="autocomplete-list" id="autocomplete-list" style="display:none"></div>
       </div>
-      <button class="btn-search" defang_onclick="buscarPunto()">Buscar</button>
+      <button class="btn-search" onclick="buscarPunto()">Buscar</button>
     </div>
 
     <div id="search-result"></div>
@@ -1250,7 +1250,7 @@
 
   <!--/*SC*/ TAB: RECORRIDO /*EC*/-->
   <div id="tab-recorrido" class="content" style="display:none">
-    <button class="back-btn" defang_onclick="irADashboard()">
+    <button class="back-btn" onclick="irADashboard()">
       <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
       Menú principal
     </button>
@@ -1279,23 +1279,23 @@
           <div style="display:flex;gap:8px;position:relative;">
             <input type="text" id="recorrido-input" defang_placeholder="Ej: MAB001"
                    style="flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;outline:none;"
-                   defang_onkeydown="if(event.key==='Enter') agregarPuntoRecorrido()"
-                   defang_oninput="mostrarSugerenciasRecorrido(this.value)"
-                   defang_onblur="setTimeout(()=&gt;ocultarSugerenciasRecorrido(),200)"
+                   onkeydown="if(event.key==='Enter') agregarPuntoRecorrido()"
+                   oninput="mostrarSugerenciasRecorrido(this.value)"
+                   onblur="setTimeout(()=&gt;ocultarSugerenciasRecorrido(),200)"
                    defang_autocomplete="off">
             <div class="autocomplete-list" id="autocomplete-recorrido" style="display:none;top:100%;left:0;right:60px;"></div>
-            <button defang_onclick="agregarPuntoRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;font-size:18px;">+</button>
+            <button onclick="agregarPuntoRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;font-size:18px;">+</button>
           </div>
         </div>
 
         <div id="recorrido-lista" style="margin-bottom:14px;"></div>
 
         <div style="display:flex;gap:8px;margin-bottom:14px;">
-          <button defang_onclick="abrirRecorrido()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <button onclick="abrirRecorrido()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" width="16" height="16"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
             Ver recorrido en Maps
           </button>
-          <button defang_onclick="limpiarRecorrido()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
+          <button onclick="limpiarRecorrido()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
         </div>
 
         <div id="mapa-recorrido" style="display:none;border-radius:10px;overflow:hidden;border:1px solid var(--gray-200);">
@@ -1308,7 +1308,7 @@
 
   <!--/*SC*/ TAB: SUGERENCIAS (campo) /*EC*/-->
   <div id="tab-sugerencias" class="content admin-only" style="display:none">
-    <button class="back-btn" defang_onclick="irADashboard()">
+    <button class="back-btn" onclick="irADashboard()">
       <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
       Menú principal
     </button>
@@ -1325,8 +1325,8 @@
         <label>Código del punto</label>
         <div style="position:relative;">
           <input type="text" id="sug-codigo" defang_placeholder="Ej: MAB001" style="text-transform:uppercase;width:100%;padding:11px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;box-sizing:border-box;"
-                 defang_oninput="mostrarSugerenciasSug(this.value)"
-                 defang_onblur="setTimeout(()=&gt;ocultarSugerenciasSug(),200)"
+                 oninput="mostrarSugerenciasSug(this.value)"
+                 onblur="setTimeout(()=&gt;ocultarSugerenciasSug(),200)"
                  defang_autocomplete="off">
           <div class="autocomplete-list" id="autocomplete-sug" style="display:none;"></div>
         </div>
@@ -1353,7 +1353,7 @@
         <textarea id="sug-desc" defang_placeholder="Describí qué información está incorrecta y cuál debería ser la correcta..."></textarea>
       </div>
 
-      <button class="btn-enviar" defang_onclick="enviarSugerencia()">Enviar sugerencia</button>
+      <button class="btn-enviar" onclick="enviarSugerencia()">Enviar sugerencia</button>
 
       <div class="sug-success" id="sug-success">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" width="20" height="20"--><!--defang_path defang_d="M20 6L9 17l-5-5"/--><!--/defang_svg-->
@@ -1364,7 +1364,7 @@
 
   <!--/*SC*/ TAB: ADMIN /*EC*/-->
   <div id="tab-admin" class="content admin-only" style="display:none">
-    <button class="back-btn" defang_onclick="irADashboard()">
+    <button class="back-btn" onclick="irADashboard()">
       <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
       Menú principal
     </button>
@@ -1394,7 +1394,7 @@
         <div id="notif-emails-list"></div>
         <div style="display:flex;gap:8px;margin-top:8px;">
           <input defang_type="email" id="new-notif-email" defang_placeholder="email@organismo.com" style="flex:1;padding:10px 12px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;">
-          <button defang_onclick="agregarNotifEmail()" style="padding:10px 16px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Agregar</button>
+          <button onclick="agregarNotifEmail()" style="padding:10px 16px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Agregar</button>
         </div>
       </div>
     </div>
@@ -1410,7 +1410,7 @@
         <div class="dash-section">
           <div class="dash-section-title">🏭 Plantas Depuradoras</div>
 
-          <div class="dash-card action-card" defang_onclick="irAPDBuscar()">
+          <div class="dash-card action-card" onclick="irAPDBuscar()">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/--><!--defang_polyline defang_points="14 2 14 8 20 8"/--><!--/defang_svg-->
             <div>
               <div class="dash-card-title">Fichas de Plantas</div>
@@ -1419,7 +1419,7 @@
             <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
           </div>
 
-          <div class="dash-card action-card" defang_onclick="irAPDRecorrido()">
+          <div class="dash-card action-card" onclick="irAPDRecorrido()">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
             <div>
               <div class="dash-card-title">Armar recorrido</div>
@@ -1428,7 +1428,7 @@
             <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
           </div>
 
-          <div class="dash-card action-card" defang_onclick="irASugerencias()">
+          <div class="dash-card action-card" onclick="irASugerencias()">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
             <div>
               <div class="dash-card-title">Sugerencias</div>
@@ -1446,14 +1446,14 @@
     <div id="pd-buscar" style="display:none;flex-direction:column;flex:1;min-height:0;">
       <div style="background:var(--aysa-blue);padding:12px 20px 14px;flex-shrink:0;">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-          <button defang_onclick="irAPDDashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+          <button onclick="irAPDDashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
             <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" width="16" height="16"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
             Volver
           </button>
           <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">FICHAS DE PLANTAS</span>
         </div>
         <div style="position:relative;">
-          <select id="plantas-select" defang_onchange="seleccionarPlanta(this.value)"
+          <select id="plantas-select" onchange="seleccionarPlanta(this.value)"
             style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;appearance:none;cursor:pointer;box-shadow:var(--shadow-sm);">
             <option value="">— Seleccioná una planta —</option>
           </select>
@@ -1465,7 +1465,7 @@
 
     <!--/*SC*/ SUB-PANTALLA: RECORRIDO PLANTAS /*EC*/-->
     <div id="pd-recorrido" style="display:none;" class="content">
-      <button class="back-btn" defang_onclick="irAPDDashboard()">
+      <button class="back-btn" onclick="irAPDDashboard()">
         <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
         Menú Plantas
       </button>
@@ -1490,16 +1490,16 @@
               <select id="pd-planta-add" style="flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;background:white;">
                 <option value="">— Elegí una planta —</option>
               </select>
-              <button defang_onclick="agregarPlantaRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;font-size:18px;">+</button>
+              <button onclick="agregarPlantaRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;font-size:18px;">+</button>
             </div>
           </div>
           <div id="pd-recorrido-lista" style="margin-bottom:14px;"></div>
           <div style="display:flex;gap:8px;margin-bottom:14px;">
-            <button defang_onclick="abrirRecorridoPlantas()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <button onclick="abrirRecorridoPlantas()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
               <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" width="16" height="16"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
               Ver recorrido en Maps
             </button>
-            <button defang_onclick="limpiarRecorridoPlantas()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
+            <button onclick="limpiarRecorridoPlantas()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
           </div>
         </div>
       </div>
@@ -1511,14 +1511,14 @@
   <div id="tab-ebc" style="display:none;flex-direction:column;flex:1;min-height:0;">
     <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <button defang_onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+        <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
           <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" width="16" height="16"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
           Volver
         </button>
         <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">EBC</span>
       </div>
       <div style="position:relative;">
-        <input type="text" id="ebc-search" defang_placeholder="Buscar por zona, punto o EBC..." defang_oninput="buscarEBC(this.value)" defang_onfocus="buscarEBC(this.value)"
+        <input type="text" id="ebc-search" defang_placeholder="Buscar por zona, punto o EBC..." oninput="buscarEBC(this.value)" onfocus="buscarEBC(this.value)"
           style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;box-sizing:border-box;outline:none;box-shadow:var(--shadow-sm);">
         <!--defang_svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="var(gray-400)" defang_stroke-width="2" width="18" height="18"--><!--defang_circle defang_cx="11" defang_cy="11" defang_r="8"/--><!--defang_line defang_x1="21" defang_y1="21" defang_x2="16.65" defang_y2="16.65"/--><!--/defang_svg-->
         <div id="ebc-autocomplete" style="background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;max-height:220px;overflow-y:auto;position:absolute;left:0;right:0;top:100%;z-index:100;"></div>
@@ -1543,14 +1543,14 @@
   <div id="tab-ops" style="display:none;flex-direction:column;flex:1;min-height:0;">
     <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <button defang_onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+        <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
           <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" width="16" height="16"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
           Volver
         </button>
         <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">OPERATIVOS</span>
       </div>
       <div style="position:relative;">
-        <input type="text" id="ops-search" defang_placeholder="Buscar por código o nombre..." defang_oninput="buscarOPS(this.value)" defang_onfocus="buscarOPS(this.value)"
+        <input type="text" id="ops-search" defang_placeholder="Buscar por código o nombre..." oninput="buscarOPS(this.value)" onfocus="buscarOPS(this.value)"
           style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;box-sizing:border-box;outline:none;box-shadow:var(--shadow-sm);">
         <!--defang_svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="var(gray-400)" defang_stroke-width="2" width="18" height="18"--><!--defang_circle defang_cx="11" defang_cy="11" defang_r="8"/--><!--defang_line defang_x1="21" defang_y1="21" defang_x2="16.65" defang_y2="16.65"/--><!--/defang_svg-->
         <div id="ops-autocomplete" style="background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;max-height:220px;overflow-y:auto;position:absolute;left:0;right:0;top:100%;z-index:100;"></div>
@@ -1563,7 +1563,7 @@
   </div> <!--/*SC*/ /app-layout /*EC*/-->
 
   <!--/*SC*/ HOME BUTTON (fixed) /*EC*/-->
-  <button defang_onclick="irADashboard()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:var(--aysa-blue);color:white;border:none;border-radius:50%;width:50px;height:50px;box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Menú principal">
+  <button onclick="irADashboard()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:var(--aysa-blue);color:white;border:none;border-radius:50%;width:50px;height:50px;box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Menú principal">
     <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round" width="22" height="22"--><!--defang_path defang_d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/--><!--defang_polyline defang_points="9 22 9 12 15 12 15 22"/--><!--/defang_svg-->
   </button>
 </div>
@@ -1572,7 +1572,7 @@
 <div class="modal-overlay" id="modal-sug">
   <div class="modal" style="position:relative">
     <div class="modal-handle"></div>
-    <button class="modal-close" defang_onclick="closeModal()">×</button>
+    <button class="modal-close" onclick="closeModal()">×</button>
     <h3>Reportar un error</h3>
     <p>Indicá qué información está incorrecta en este punto</p>
 
@@ -1597,7 +1597,7 @@
       <label>Descripción del problema</label>
       <textarea id="modal-sug-desc" defang_placeholder="Describí qué está mal y cuál sería la información correcta..."></textarea>
     </div>
-    <button class="btn-enviar" defang_onclick="enviarSugerenciaModal()">Enviar reporte</button>
+    <button class="btn-enviar" onclick="enviarSugerenciaModal()">Enviar reporte</button>
   </div>
 </div>
 
@@ -1605,8 +1605,8 @@
 <div id="print-area" class="hidden-print"></div>
 
 <!--/*SC*/ LIGHTBOX /*EC*/-->
-<div class="lightbox" id="lightbox" defang_onclick="closeLightbox()">
-  <button class="lightbox-close" defang_onclick="closeLightbox()">×</button>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
   <img id="lightbox-img" src="" alt="Foto completa">
 </div>
 
