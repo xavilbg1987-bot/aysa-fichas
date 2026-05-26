@@ -1,11 +1,11 @@
-<!--/*SC*/DOCTYPE html/*EC*/-->
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta defang_name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AySA - Fichas de Puntos de Muestreo v2</title>
-<!--defang_link defang_href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&amp;family=Barlow+Condensed:wght@600;700&amp;display=swap" defang_rel="stylesheet"-->
-<style><!-- 
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
   :root {
     --aysa-blue: #1a2f7a;
     --aysa-blue-dark: #111f55;
@@ -38,11 +38,11 @@
     min-height: 100vh;
   }
 
-  
+  /* ===== SCREENS ===== */
   .screen { display: none; min-height: 100vh; }
-  .screen.active { display: flex; flex-direction:column}
+  .screen.active { display: flex; flex-direction: column; }
 
-  
+  /* ===== LOGIN SCREEN ===== */
   #screen-login {
     background: linear-gradient(160deg, var(--aysa-blue-dark) 0%, var(--aysa-blue) 50%, var(--aysa-blue-light) 100%);
     align-items: center;
@@ -188,7 +188,7 @@
     display: none;
   }
 
-  
+  /* ===== TOP NAV ===== */
   .topnav {
     background: #2a45a8;
     padding: 0 20px;
@@ -241,7 +241,7 @@
   }
   .btn-logout:hover { background: rgba(255,255,255,0.18); }
 
-  
+  /* ===== BOTTOM NAV ===== */
   .bottomnav {
     background: white;
     border-top: 1px solid var(--gray-200);
@@ -287,24 +287,17 @@
     padding: 0 4px;
   }
 
-  
+  /* ===== MAIN CONTENT ===== */
   .content { flex: 1; padding: 20px 16px 90px; max-width: 680px; margin: 0 auto; width: 100%; }
 
   .screen { display: none; min-height: 100vh; flex-direction: column; }
   .screen.active { display: flex; }
 
   #screen-app { flex-direction: column; }
-  .app-layout {flex: 1;
-    
-    display: flex;
-    overflow: hidden;
-    min-height:0}
-  .main-panel {
-    flex: 1;
-    overflow-y: auto;
-    }
+  .app-layout { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+  .main-panel { flex: 1; overflow-y: auto; }
 
-  
+  /* ===== SEARCH ===== */
   .search-header {
     margin-bottom: 20px;
   }
@@ -367,7 +360,7 @@
   }
   .btn-search:hover { background: var(--aysa-blue-light); }
 
-  
+  /* ===== FICHA ===== */
   .ficha-card {
     background: white;
     border-radius: var(--radius);
@@ -375,10 +368,10 @@
     overflow: hidden;
     animation: slideUp 0.3s ease;
   }
-  
-    from {opacity:0; transform: translateY(16px); }
-    to {opacity:1; transform: translateY(0); }
-  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   .ficha-header {
     background: linear-gradient(135deg, var(--aysa-blue-dark), var(--aysa-blue-light));
@@ -445,7 +438,7 @@
     overflow: hidden;
   }
 
-  
+  /* LIGHTBOX */
   .lightbox {
     position: fixed;
     inset: 0;
@@ -511,7 +504,7 @@
     gap: 12px;
     margin-bottom: 20px;
   }
-  .ficha-field {}
+  .ficha-field { }
   .ficha-field.full { grid-column: 1 / -1; }
   .ficha-field label {
     display: block;
@@ -595,7 +588,7 @@
   .btn-sugerencia:hover { background: var(--aysa-blue); color: white; }
   .btn-sugerencia svg { width: 16px; height: 16px; }
 
-  
+  /* ===== NOT FOUND ===== */
   .not-found {
     text-align: center;
     padding: 40px 20px;
@@ -605,7 +598,7 @@
   .not-found h3 { font-size: 16px; font-weight: 700; color: var(--gray-600); margin-bottom: 6px; }
   .not-found p { font-size: 13px; }
 
-  
+  /* ===== LOADING ===== */
   .loading {
     text-align: center;
     padding: 40px 20px;
@@ -619,9 +612,9 @@
     animation: spin 0.8s linear infinite;
     margin: 0 auto 12px;
   }
-   to { transform: rotate(360deg); } 
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  
+  /* ===== SUGERENCIAS SCREEN ===== */
   .sug-form-card {
     background: white;
     border-radius: var(--radius);
@@ -692,7 +685,7 @@
     margin-top: 12px;
   }
 
-  
+  /* ===== ADMIN SCREEN ===== */
   .admin-card {
     background: white;
     border-radius: var(--radius);
@@ -775,7 +768,7 @@
     font-size: 13px;
   }
 
-  
+  /* MODAL */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -795,10 +788,10 @@
     max-width: 600px;
     animation: slideModal 0.3s ease;
   }
-  
+  @keyframes slideModal {
     from { transform: translateY(100%); }
     to { transform: translateY(0); }
-  
+  }
   .modal-handle {
     width: 40px; height: 4px;
     background: var(--gray-200);
@@ -828,9 +821,9 @@
     color: var(--gray-600);
   }
 
-  
+  /* ===== DASHBOARD ===== */
   .dashboard-grid { display: flex; flex-direction: column; gap: 20px; }
-  .dash-section {}
+  .dash-section { }
   .dash-section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--gray-400); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
   .dash-card { display: flex; align-items: center; gap: 14px; background: white; border-radius: var(--radius); padding: 16px 18px; margin-bottom: 8px; box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
   .dash-card:hover { border-color: var(--aysa-teal); transform: translateY(-1px); box-shadow: var(--shadow-md); }
@@ -842,12 +835,12 @@
   .dash-card.coming { opacity: 0.45; cursor: default; }
   .dash-card.coming:hover { border-color: transparent; transform: none; box-shadow: var(--shadow-sm); }
 
-  
+  /* BACK BUTTON */
   .back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--aysa-blue); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; padding: 0; margin-bottom: 18px; }
   .back-btn:hover { color: var(--aysa-teal); }
   .back-btn svg { width: 18px; height: 18px; }
 
-  
+  /* RECORRIDO */
   .recorrido-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
   .recorrido-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--aysa-blue); transition: background 0.15s; }
   .recorrido-header:hover { background: var(--gray-50); }
@@ -856,7 +849,7 @@
   .recorrido-punto-dir { font-size: 11px; color: var(--gray-400); }
   .recorrido-punto button { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 18px; padding: 0 4px; }
 
-  
+  /* COORDS */
   .autocomplete-list {
     position: absolute;
     top: 100%;
@@ -885,9 +878,13 @@
   .autocomplete-item:last-child { border-bottom: none; }
   .autocomplete-item:hover { background: var(--gray-50); }
   .autocomplete-item span { font-size: 11px; color: var(--gray-400); font-weight: 400; }
-    
+    font-size: 12px;
+    color: var(--aysa-teal);
+    text-decoration: none;
+    font-weight: 600;
+  }
 
-  
+  /* HEADER SECTION */
   .page-header {
     margin-bottom: 20px;
   }
@@ -902,7 +899,7 @@
 
   .admin-only { display: none; }
 
-  
+  /* ===== SIDEBAR ===== */
   .app-layout {
     display: flex;
     flex: 1;
@@ -974,7 +971,7 @@
     padding-bottom: 80px;
   }
 
-  
+  /* Hide sidebar on mobile by default, show on wider screens */
   @media (max-width: 640px) {
     .sidebar { display: none; }
     .sidebar.open { display: flex; position: fixed; top: 60px; left: 0; bottom: 60px; z-index: 50; width: 240px; box-shadow: 4px 0 20px rgba(0,0,0,0.3); }
@@ -990,7 +987,7 @@
   }
   @media (max-width: 640px) { .sidebar-toggle { display: flex; align-items: center; } }
 
-  
+  /* Notif emails */
   .notif-email-item {
     display: flex;
     align-items: center;
@@ -1014,7 +1011,7 @@
   }
   .notif-email-item button:hover { background: #fde8e8; }
 
-  
+  /* PRINT / PDF */
   @media print {
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     body * { visibility: hidden !important; }
@@ -1042,15 +1039,15 @@
   .print-field value { display: block; font-size: 10pt; font-weight: 600; color: #1e2640; }
   .print-obs { font-size: 9pt; color: #333; line-height: 1.6; background: #f7f9fc; border-left: 3px solid #00a8b5; padding: 8px 12px; border-radius: 0 4px 4px 0; }
   .print-footer { margin-top: 16px; border-top: 1px solid #eee; padding-top: 8px; font-size: 7pt; color: #aaa; display: flex; justify-content: space-between; }
- --></style>
+</style>
 </head>
 <body>
 
-<!--/*SC*/ ===== LOGIN SCREEN ===== /*EC*/-->
+<!-- ===== LOGIN SCREEN ===== -->
 <div id="screen-login" class="screen active">
   <div class="login-card">
     <div class="login-logo">
-      <img src="data:image/png;base64,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" alt="AySA">
+      <img src="data:image/png;base64,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" style="height:34px;border-radius:6px;" alt="AySA">
       <h1>Fichas de Puntos de Muestreo CIC</h1>
     </div>
 
@@ -1061,44 +1058,44 @@
 
     <div id="login-error" class="login-error"></div>
 
-    <!--/*SC*/ LOGIN FORM /*EC*/-->
+    <!-- LOGIN FORM -->
     <div id="form-login">
       <div class="form-group">
         <label>Email</label>
-        <input defang_type="email" id="login-email" defang_placeholder="tu@email.com">
+        <input type="email" id="login-email" placeholder="tu@email.com">
       </div>
       <div class="form-group">
         <label>Contraseña</label>
         <div style="position:relative">
-          <input type="password" id="login-pass" defang_placeholder="••••••••" style="padding-right:44px">
+          <input type="password" id="login-pass" placeholder="••••••••" style="padding-right:44px">
           <button type="button" onclick="togglePass('login-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
-            <!--defang_svg id="eye-login" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="rgba(255,255,255,0.5)" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round" width="18" height="18"--><!--defang_path defang_d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/--><!--defang_circle defang_cx="12" defang_cy="12" defang_r="3"/--><!--/defang_svg-->
+            <svg id="eye-login" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
       </div>
       <button class="btn-primary" onclick="doLogin()">Ingresar</button>
     </div>
 
-    <!--/*SC*/ REGISTER FORM /*EC*/-->
+    <!-- REGISTER FORM -->
     <div id="form-register" style="display:none">
       <div class="form-group">
         <label>Nombre completo</label>
-        <input type="text" id="reg-nombre" defang_placeholder="Juan Pérez">
+        <input type="text" id="reg-nombre" placeholder="Juan Pérez">
       </div>
       <div class="form-group">
         <label>Email</label>
-        <input defang_type="email" id="reg-email" defang_placeholder="tu@email.com">
+        <input type="email" id="reg-email" placeholder="tu@email.com">
       </div>
       <div class="form-group">
         <label>Organismo</label>
-        <input type="text" id="reg-organismo" defang_placeholder="AySA / Municipio de...">
+        <input type="text" id="reg-organismo" placeholder="AySA / Municipio de...">
       </div>
       <div class="form-group">
         <label>Contraseña</label>
         <div style="position:relative">
-          <input type="password" id="reg-pass" defang_placeholder="Mínimo 6 caracteres" style="padding-right:44px">
+          <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" style="padding-right:44px">
           <button type="button" onclick="togglePass('reg-pass', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center">
-            <!--defang_svg id="eye-reg" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="rgba(255,255,255,0.5)" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round" width="18" height="18"--><!--defang_path defang_d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/--><!--defang_circle defang_cx="12" defang_cy="12" defang_r="3"/--><!--/defang_svg-->
+            <svg id="eye-reg" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
         </div>
       </div>
@@ -1107,16 +1104,16 @@
   </div>
 </div>
 
-<!--/*SC*/ ===== MAIN APP ===== /*EC*/-->
+<!-- ===== MAIN APP ===== -->
 <div id="screen-app" class="screen">
 
-  <!--/*SC*/ TOP NAV /*EC*/-->
-  <!--defang_nav class="topnav"-->
+  <!-- TOP NAV -->
+  <nav class="topnav">
     <div class="topnav-left">
       <button class="sidebar-toggle" onclick="toggleSidebar()">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2" width="22" height="22"--><!--defang_line defang_x1="3" defang_y1="6" defang_x2="21" defang_y2="6"/--><!--defang_line defang_x1="3" defang_y1="12" defang_x2="21" defang_y2="12"/--><!--defang_line defang_x1="3" defang_y1="18" defang_x2="21" defang_y2="18"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="22" height="22"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <img src="data:image/png;base64,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" style="height:34px;border-radius:6px;" alt="AySA">
+      <img src="data:image/png;base64,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" style="height:34px;border-radius:6px;" alt="AySA">
       <div class="topnav-title">
         Dirección de Medio Ambiente y Calidad
         <span>AySA — Gerencia de Calidad</span>
@@ -1129,47 +1126,47 @@
       </div>
       <button class="btn-logout" onclick="doLogout()">Salir</button>
     </div>
-  <!--/defang_nav-->
+  </nav>
 
-  <!--/*SC*/ APP LAYOUT CON SIDEBAR /*EC*/-->
+  <!-- APP LAYOUT CON SIDEBAR -->
   <div class="app-layout">
 
-    <!--/*SC*/ SIDEBAR /*EC*/-->
-    <!--defang_aside class="sidebar" id="sidebar"-->
-      <!--/*SC*/ PANEL ADMIN — solo visible para admins /*EC*/-->
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <!-- PANEL ADMIN — solo visible para admins -->
       <a class="sidebar-folder admin-only" id="sidebar-admin" onclick="irAAdmin()" style="background:rgba(255,255,255,0.06);border-left:3px solid var(--aysa-teal);margin-bottom:4px;">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M12 20h9"/--><!--defang_path defang_d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         PANEL ADMIN
       </a>
       <div class="sidebar-divider admin-only"></div>
       <div class="sidebar-title">Fichas</div>
       <a class="sidebar-folder" id="sidebar-micromac" onclick="irADashboard()">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         MICRO / MACRO
         <span class="folder-badge">254</span>
       </a>
       <a class="sidebar-folder" id="sidebar-plantas" onclick="irAPlantas()">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         PLANTAS DEPURADORAS
         <span class="folder-badge" id="badge-plantas">—</span>
       </a>
       <a class="sidebar-folder" id="sidebar-ebc" onclick="irAEBC()">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         EBC
         <span class="folder-badge" id="badge-ebc">—</span>
       </a>
       <a class="sidebar-folder coming-soon">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         PMA
         <span class="sidebar-coming">Próx.</span>
       </a>
       <a class="sidebar-folder coming-soon">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         INDUSTRIAS
         <span class="sidebar-coming">Próx.</span>
       </a>
       <a class="sidebar-folder" id="sidebar-operativos" onclick="irAOperativos()">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/--><!--defang_rect defang_x="9" defang_y="3" width="6" height="4" defang_rx="2"/--><!--defang_line defang_x1="9" defang_y1="12" defang_x2="15" defang_y2="12"/--><!--defang_line defang_x1="9" defang_y1="16" defang_x2="13" defang_y2="16"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
         OPERATIVOS
         <span class="folder-badge" id="badge-operativos">—</span>
       </a>
@@ -1179,51 +1176,51 @@
         INDICADORES
         <span class="folder-badge" style="background:rgba(0,168,181,0.25);color:var(--aysa-teal);">2026</span>
       </a>
-    <!--/defang_aside-->
+    </aside>
 
-    <!--/*SC*/ MAIN PANEL /*EC*/-->
+    <!-- MAIN PANEL -->
     <div class="main-panel">
 
-    <!--/*SC*/ DASHBOARD (pantalla principal) /*EC*/-->
+    <!-- DASHBOARD (pantalla principal) -->
     <div id="tab-dashboard" class="content">
       <div class="dashboard-grid">
 
-        <!--/*SC*/ ACCIONES /*EC*/-->
+        <!-- ACCIONES -->
         <div class="dash-section">
           <div class="dash-section-title">⚡ Acciones</div>
           <div class="dash-card action-card" onclick="irABuscar()">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/--><!--defang_polyline defang_points="14 2 14 8 20 8"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <div>
               <div class="dash-card-title">Fichas</div>
               <div class="dash-card-sub">Buscá un punto de muestreo</div>
             </div>
-            <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="dash-card action-card" onclick="irARecorrido()">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
             <div>
               <div class="dash-card-title">Armar recorrido</div>
               <div class="dash-card-sub">Planificá tu visita en Maps</div>
             </div>
-            <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="dash-card action-card" onclick="irASugerencias()">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <div>
               <div class="dash-card-title">Sugerencias</div>
               <div class="dash-card-sub">Reportá información incorrecta</div>
             </div>
-            <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!--/*SC*/ TAB: BUSCAR /*EC*/-->
+    <!-- TAB: BUSCAR -->
   <div id="tab-buscar" class="content" style="display:none">
     <button class="back-btn" onclick="irADashboard()">
-      <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       Menú principal
     </button>
     <div class="search-header">
@@ -1232,14 +1229,14 @@
     </div>
     <div class="search-box">
       <div class="search-input-wrap">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"-->
-          <!--defang_circle defang_cx="11" defang_cy="11" defang_r="8"/--><!--defang_path defang_d="m21 21-4.35-4.35"/-->
-        <!--/defang_svg-->
-        <input type="text" class="search-input" id="search-input" defang_placeholder="Ej: MAB001 o MCA018"
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-input" id="search-input" placeholder="Ej: MAB001 o MCA018"
                onkeydown="if(event.key==='Enter') buscarPunto()"
                oninput="mostrarSugerencias(this.value)"
-               onblur="setTimeout(()=&gt;ocultarSugerencias(),200)"
-               defang_autocomplete="off">
+               onblur="setTimeout(()=>ocultarSugerencias(),200)"
+               autocomplete="off">
         <div class="autocomplete-list" id="autocomplete-list" style="display:none"></div>
       </div>
       <button class="btn-search" onclick="buscarPunto()">Buscar</button>
@@ -1248,10 +1245,10 @@
     <div id="search-result"></div>
   </div>
 
-  <!--/*SC*/ TAB: RECORRIDO /*EC*/-->
+  <!-- TAB: RECORRIDO -->
   <div id="tab-recorrido" class="content" style="display:none">
     <button class="back-btn" onclick="irADashboard()">
-      <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       Menú principal
     </button>
     <div class="search-header">
@@ -1262,7 +1259,7 @@
     <div class="recorrido-card" id="recorrido-section">
       <div id="recorrido-body" style="padding:16px;">
 
-        <!--/*SC*/ PUNTO DE PARTIDA /*EC*/-->
+        <!-- PUNTO DE PARTIDA -->
         <div style="margin-bottom:16px;">
           <label style="display:block;font-size:12px;font-weight:700;color:var(--gray-600);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;">Punto de partida</label>
           <select id="partida-select" style="width:100%;padding:11px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;background:white;">
@@ -1273,16 +1270,16 @@
           </select>
         </div>
 
-        <!--/*SC*/ AGREGAR PUNTOS /*EC*/-->
+        <!-- AGREGAR PUNTOS -->
         <div style="margin-bottom:12px;">
           <label style="display:block;font-size:12px;font-weight:700;color:var(--gray-600);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;">Puntos a visitar</label>
           <div style="display:flex;gap:8px;position:relative;">
-            <input type="text" id="recorrido-input" defang_placeholder="Ej: MAB001"
+            <input type="text" id="recorrido-input" placeholder="Ej: MAB001"
                    style="flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;outline:none;"
                    onkeydown="if(event.key==='Enter') agregarPuntoRecorrido()"
                    oninput="mostrarSugerenciasRecorrido(this.value)"
-                   onblur="setTimeout(()=&gt;ocultarSugerenciasRecorrido(),200)"
-                   defang_autocomplete="off">
+                   onblur="setTimeout(()=>ocultarSugerenciasRecorrido(),200)"
+                   autocomplete="off">
             <div class="autocomplete-list" id="autocomplete-recorrido" style="display:none;top:100%;left:0;right:60px;"></div>
             <button onclick="agregarPuntoRecorrido()" style="padding:10px 16px;background:var(--aysa-blue);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;font-size:18px;">+</button>
           </div>
@@ -1292,24 +1289,24 @@
 
         <div style="display:flex;gap:8px;margin-bottom:14px;">
           <button onclick="abrirRecorrido()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" width="16" height="16"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
             Ver recorrido en Maps
           </button>
           <button onclick="limpiarRecorrido()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
         </div>
 
         <div id="mapa-recorrido" style="display:none;border-radius:10px;overflow:hidden;border:1px solid var(--gray-200);">
-          <!--defang_iframe id="mapa-iframe" width="100%" height="380" defang_frameborder="0" style="border:0;display:block;" defang_allowfullscreen--><!--/defang_iframe-->
+          <iframe id="mapa-iframe" width="100%" height="380" frameborder="0" style="border:0;display:block;" allowfullscreen></iframe>
         </div>
 
       </div>
     </div>
   </div>
 
-  <!--/*SC*/ TAB: SUGERENCIAS (campo) /*EC*/-->
+  <!-- TAB: SUGERENCIAS (campo) -->
   <div id="tab-sugerencias" class="content admin-only" style="display:none">
     <button class="back-btn" onclick="irADashboard()">
-      <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       Menú principal
     </button>
     <div class="page-header">
@@ -1324,10 +1321,10 @@
       <div class="form-field">
         <label>Código del punto</label>
         <div style="position:relative;">
-          <input type="text" id="sug-codigo" defang_placeholder="Ej: MAB001" style="text-transform:uppercase;width:100%;padding:11px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;box-sizing:border-box;"
+          <input type="text" id="sug-codigo" placeholder="Ej: MAB001" style="text-transform:uppercase;width:100%;padding:11px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Barlow',sans-serif;font-size:14px;color:var(--gray-800);outline:none;box-sizing:border-box;"
                  oninput="mostrarSugerenciasSug(this.value)"
-                 onblur="setTimeout(()=&gt;ocultarSugerenciasSug(),200)"
-                 defang_autocomplete="off">
+                 onblur="setTimeout(()=>ocultarSugerenciasSug(),200)"
+                 autocomplete="off">
           <div class="autocomplete-list" id="autocomplete-sug" style="display:none;"></div>
         </div>
       </div>
@@ -1350,22 +1347,22 @@
       </div>
       <div class="form-field">
         <label>Descripción del problema</label>
-        <textarea id="sug-desc" defang_placeholder="Describí qué información está incorrecta y cuál debería ser la correcta..."></textarea>
+        <textarea id="sug-desc" placeholder="Describí qué información está incorrecta y cuál debería ser la correcta..."></textarea>
       </div>
 
       <button class="btn-enviar" onclick="enviarSugerencia()">Enviar sugerencia</button>
 
       <div class="sug-success" id="sug-success">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" width="20" height="20"--><!--defang_path defang_d="M20 6L9 17l-5-5"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><path d="M20 6L9 17l-5-5"/></svg>
         ¡Sugerencia enviada! Los administradores la revisarán.
       </div>
     </div>
   </div>
 
-  <!--/*SC*/ TAB: ADMIN /*EC*/-->
+  <!-- TAB: ADMIN -->
   <div id="tab-admin" class="content admin-only" style="display:none">
     <button class="back-btn" onclick="irADashboard()">
-      <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       Menú principal
     </button>
     <div class="page-header">
@@ -1393,7 +1390,7 @@
         <p style="font-size:13px;color:var(--gray-400);margin-bottom:14px;">Estos emails recibirán un aviso cada vez que un usuario envíe una sugerencia de modificación.</p>
         <div id="notif-emails-list"></div>
         <div style="display:flex;gap:8px;margin-top:8px;">
-          <input defang_type="email" id="new-notif-email" defang_placeholder="email@organismo.com" style="flex:1;padding:10px 12px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;">
+          <input type="email" id="new-notif-email" placeholder="email@organismo.com" style="flex:1;padding:10px 12px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;">
           <button onclick="agregarNotifEmail()" style="padding:10px 16px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Agregar</button>
         </div>
       </div>
@@ -1401,40 +1398,40 @@
 
   </div>
 
-  <!--/*SC*/ TAB PLANTAS DEPURADORAS — DASHBOARD /*EC*/-->
+  <!-- TAB PLANTAS DEPURADORAS — DASHBOARD -->
   <div id="tab-plantas" style="display:none;flex-direction:column;flex:1;min-height:0;">
 
-    <!--/*SC*/ SUB-PANTALLA: DASHBOARD PLANTAS /*EC*/-->
+    <!-- SUB-PANTALLA: DASHBOARD PLANTAS -->
     <div id="pd-dashboard" class="content">
       <div class="dashboard-grid">
         <div class="dash-section">
           <div class="dash-section-title">🏭 Plantas Depuradoras</div>
 
           <div class="dash-card action-card" onclick="irAPDBuscar()">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/--><!--defang_polyline defang_points="14 2 14 8 20 8"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <div>
               <div class="dash-card-title">Fichas de Plantas</div>
               <div class="dash-card-sub">Buscá una planta depuradora</div>
             </div>
-            <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
 
           <div class="dash-card action-card" onclick="irAPDRecorrido()">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
             <div>
               <div class="dash-card-title">Armar recorrido</div>
               <div class="dash-card-sub">Planificá tu visita a las plantas</div>
             </div>
-            <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
 
           <div class="dash-card action-card" onclick="irASugerencias()">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_path defang_d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <div>
               <div class="dash-card-title">Sugerencias</div>
               <div class="dash-card-sub">Reportá información incorrecta</div>
             </div>
-            <!--defang_svg class="dash-arrow" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5"--><!--defang_polyline defang_points="9 18 15 12 9 6"/--><!--/defang_svg-->
+            <svg class="dash-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
 
 
@@ -1442,12 +1439,12 @@
       </div>
     </div>
 
-    <!--/*SC*/ SUB-PANTALLA: BUSCAR PLANTA /*EC*/-->
+    <!-- SUB-PANTALLA: BUSCAR PLANTA -->
     <div id="pd-buscar" style="display:none;flex-direction:column;flex:1;min-height:0;">
       <div style="background:var(--aysa-blue);padding:12px 20px 14px;flex-shrink:0;">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
           <button onclick="irAPDDashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
-            <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" width="16" height="16"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
             Volver
           </button>
           <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">FICHAS DE PLANTAS</span>
@@ -1457,16 +1454,16 @@
             style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;appearance:none;cursor:pointer;box-shadow:var(--shadow-sm);">
             <option value="">— Seleccioná una planta —</option>
           </select>
-          <!--defang_svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="var(gray-400)" defang_stroke-width="2" width="18" height="18"--><!--defang_polyline defang_points="6 9 12 15 18 9"/--><!--/defang_svg-->
+          <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
       <div id="plantas-ficha-container" style="padding:16px 20px 80px;max-width:680px;margin:0 auto;width:100%;overflow-y:auto;flex:1;"></div>
     </div>
 
-    <!--/*SC*/ SUB-PANTALLA: RECORRIDO PLANTAS /*EC*/-->
+    <!-- SUB-PANTALLA: RECORRIDO PLANTAS -->
     <div id="pd-recorrido" style="display:none;" class="content">
       <button class="back-btn" onclick="irAPDDashboard()">
-        <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Menú Plantas
       </button>
       <div class="search-header">
@@ -1496,7 +1493,7 @@
           <div id="pd-recorrido-lista" style="margin-bottom:14px;"></div>
           <div style="display:flex;gap:8px;margin-bottom:14px;">
             <button onclick="abrirRecorridoPlantas()" style="flex:1;padding:12px;background:var(--aysa-teal);border:none;border-radius:8px;color:white;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-              <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="currentColor" defang_stroke-width="2.5" width="16" height="16"--><!--defang_circle defang_cx="12" defang_cy="10" defang_r="3"/--><!--defang_path defang_d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/--><!--/defang_svg-->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
               Ver recorrido en Maps
             </button>
             <button onclick="limpiarRecorridoPlantas()" style="padding:12px 16px;background:transparent;border:2px solid var(--gray-200);border-radius:8px;color:var(--gray-400);font-family:'Barlow',sans-serif;font-weight:700;cursor:pointer;">Limpiar</button>
@@ -1507,27 +1504,28 @@
 
   </div>
 
-  <!--/*SC*/ TAB EBC /*EC*/-->
+  <!-- TAB EBC -->
   <div id="tab-ebc" style="display:none;flex-direction:column;flex:1;min-height:0;">
     <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
-          <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" width="16" height="16"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
           Volver
         </button>
         <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">EBC</span>
       </div>
       <div style="position:relative;">
-        <input type="text" id="ebc-search" defang_placeholder="Buscar por zona, punto o EBC..." oninput="buscarEBC(this.value)" onfocus="buscarEBC(this.value)"
+        <input type="text" id="ebc-search" placeholder="Buscar por zona, punto o EBC..." oninput="buscarEBC(this.value)" onfocus="buscarEBC(this.value)"
           style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;box-sizing:border-box;outline:none;box-shadow:var(--shadow-sm);">
-        <!--defang_svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="var(gray-400)" defang_stroke-width="2" width="18" height="18"--><!--defang_circle defang_cx="11" defang_cy="11" defang_r="8"/--><!--defang_line defang_x1="21" defang_y1="21" defang_x2="16.65" defang_y2="16.65"/--><!--/defang_svg-->
+        <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <div id="ebc-autocomplete" style="background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;max-height:220px;overflow-y:auto;position:absolute;left:0;right:0;top:100%;z-index:100;"></div>
       </div>
     </div>
     <div id="ebc-ficha-container" style="padding:16px 20px 80px;overflow-y:auto;"></div>
   </div>
 
-  <!--/*SC*/ TAB INDICADORES /*EC*/-->
+  <!-- TAB OPERATIVOS -->
+  <!-- TAB INDICADORES -->
   <div id="tab-indicadores" style="display:none;flex-direction:column;flex:1;min-height:0;background:#0d1117;">
     <div style="background:#0d1117;padding:10px 16px 8px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:10px;flex-shrink:0;">
       <button onclick="irADashboard()" style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:12px;">
@@ -1539,36 +1537,35 @@
     <iframe id="iframe-indicadores" src="" style="flex:1;border:none;width:100%;height:100%;" frameborder="0"></iframe>
   </div>
 
-  <!--/*SC*/ TAB OPERATIVOS /*EC*/-->
   <div id="tab-ops" style="display:none;flex-direction:column;flex:1;min-height:0;">
     <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
-          <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" width="16" height="16"--><!--defang_polyline defang_points="15 18 9 12 15 6"/--><!--/defang_svg-->
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
           Volver
         </button>
         <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">OPERATIVOS</span>
       </div>
       <div style="position:relative;">
-        <input type="text" id="ops-search" defang_placeholder="Buscar por código o nombre..." oninput="buscarOPS(this.value)" onfocus="buscarOPS(this.value)"
+        <input type="text" id="ops-search" placeholder="Buscar por código o nombre..." oninput="buscarOPS(this.value)" onfocus="buscarOPS(this.value)"
           style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;color:var(--gray-800);background:white;box-sizing:border-box;outline:none;box-shadow:var(--shadow-sm);">
-        <!--defang_svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="var(gray-400)" defang_stroke-width="2" width="18" height="18"--><!--defang_circle defang_cx="11" defang_cy="11" defang_r="8"/--><!--defang_line defang_x1="21" defang_y1="21" defang_x2="16.65" defang_y2="16.65"/--><!--/defang_svg-->
+        <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <div id="ops-autocomplete" style="background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;max-height:220px;overflow-y:auto;position:absolute;left:0;right:0;top:100%;z-index:100;"></div>
       </div>
     </div>
     <div id="ops-ficha-container" style="padding:16px 20px 80px;overflow-y:auto;"></div>
   </div>
 
-    </div> <!--/*SC*/ /main-panel /*EC*/-->
-  </div> <!--/*SC*/ /app-layout /*EC*/-->
+    </div> <!-- /main-panel -->
+  </div> <!-- /app-layout -->
 
-  <!--/*SC*/ HOME BUTTON (fixed) /*EC*/-->
+  <!-- HOME BUTTON (fixed) -->
   <button onclick="irADashboard()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:var(--aysa-blue);color:white;border:none;border-radius:50%;width:50px;height:50px;box-shadow:var(--shadow-lg);cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Menú principal">
-    <!--defang_svg defang_viewBox="0 0 24 24" defang_fill="none" defang_stroke="white" defang_stroke-width="2.5" defang_stroke-linecap="round" defang_stroke-linejoin="round" width="22" height="22"--><!--defang_path defang_d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/--><!--defang_polyline defang_points="9 22 9 12 15 12 15 22"/--><!--/defang_svg-->
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
   </button>
 </div>
 
-<!--/*SC*/ MODAL SUGERENCIA DESDE FICHA /*EC*/-->
+<!-- MODAL SUGERENCIA DESDE FICHA -->
 <div class="modal-overlay" id="modal-sug">
   <div class="modal" style="position:relative">
     <div class="modal-handle"></div>
@@ -1595,22 +1592,22 @@
     </div>
     <div class="form-field">
       <label>Descripción del problema</label>
-      <textarea id="modal-sug-desc" defang_placeholder="Describí qué está mal y cuál sería la información correcta..."></textarea>
+      <textarea id="modal-sug-desc" placeholder="Describí qué está mal y cuál sería la información correcta..."></textarea>
     </div>
     <button class="btn-enviar" onclick="enviarSugerenciaModal()">Enviar reporte</button>
   </div>
 </div>
 
-<!--/*SC*/ PRINT AREA /*EC*/-->
+<!-- PRINT AREA -->
 <div id="print-area" class="hidden-print"></div>
 
-<!--/*SC*/ LIGHTBOX /*EC*/-->
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">×</button>
   <img id="lightbox-img" src="" alt="Foto completa">
 </div>
 
-<!--defang_script--><!-- 
+<script>
 // ===== CONFIG =====
 const SHEET_ID = '1xX53Bw8l2r_iOVNbpK4obQ-yXGwPy1iF2RUEcyWJHKg';
 const SHEET_NAME = 'MI-MAC 2026';
@@ -1841,26 +1838,16 @@ async function loadSheetData() {
 }
 
 // ===== FOTOS =====
-// Fotos servidas directamente desde GitHub — sin Apps Script.
 const GITHUB_FOTOS_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
 const FOTO_EXTS = ['GIF','gif','png','PNG','jpg','JPG','jpeg','JPEG','webp','WEBP'];
-
-async function loadFotos() {
-  fotosMap = {}; // URLs construidas en tiempo de render, no precargadas
-}
-
+async function loadFotos() { fotosMap = {}; }
 function buildFotoHtml(codigo, imgClass) {
   const nombre = 'FOTO' + codigo;
   const urls = FOTO_EXTS.map(e => GITHUB_FOTOS_BASE + nombre + '.' + e);
   const urlsJson = JSON.stringify(urls);
   return `<img class="${imgClass}" src="${urls[0]}" alt="Foto ${codigo}"
     onclick="openLightbox(this.src)"
-    onerror="
-      if(this._t===undefined)this._t=0; this._t++;
-      var _u=${urlsJson};
-      if(this._t<_u.length){this.src=_u[this._t];}
-      else{this.parentNode.innerHTML='<div class=\'ficha-photo-placeholder\'><svg viewBox=\'0 0 24 24\' fill=none stroke=currentColor stroke-width=1.5><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=\'21,15 16,10 5,21\'/></svg><span>Foto no disponible</span></div>';}
-    ">`;
+    onerror="if(this._t===undefined)this._t=0;this._t++;var _u=${urlsJson};if(this._t<_u.length){this.src=_u[this._t];}else{this.parentNode.innerHTML='<div class=ficha-photo-placeholder><span>Foto no disponible</span></div>';}">`;
 }
 
 // ===== DASHBOARD NAVIGATION =====
@@ -1954,7 +1941,7 @@ function agregarPuntoRecorrido() {
   // Buscar primero en MI-MAC
   let punto = sheetData.find(p => p.codigo === codigo);
   if (punto) {
-    if (!punto.coordenadas || punto.coordenadas === '-') { alert(`El punto ${codigo} no tiene coordenadas.`); return; }
+    if (!punto.coordenadas || punto.coordenadas === '---') { alert(`El punto ${codigo} no tiene coordenadas.`); return; }
     if (recorridoPuntos.find(p => p.codigo === codigo)) { alert('Ese punto ya está en el recorrido.'); return; }
     recorridoPuntos.push({ codigo, coordenadas: punto.coordenadas, direccion: punto.direccion, localidad: punto.localidad });
     input.value = '';
@@ -2120,7 +2107,7 @@ function renderFicha(p, container) {
 
   const coordsClean = p.coordenadas.replace(/\n/g,'').trim();
 
-  const obs = (p.observaciones && p.observaciones !== '-')
+  const obs = (p.observaciones && p.observaciones !== '---')
     ? `<div class="ficha-section-title">Observaciones</div><div class="ficha-obs">${p.observaciones}</div>`
     : '';
 
@@ -2134,7 +2121,7 @@ function renderFicha(p, container) {
           <div class="ficha-region">${p.region || '—'}</div>
         </div>
         <div class="ficha-dir">${p.direccion || '—'}</div>
-        <div class="ficha-localidad">${p.localidad || '—'} ${p.macrocuenca && p.macrocuenca !== '-' ? '· ' + p.macrocuenca : ''}</div>
+        <div class="ficha-localidad">${p.localidad || '—'} ${p.macrocuenca && p.macrocuenca !== '---' ? '· ' + p.macrocuenca : ''}</div>
       </div>
 
       ${fotoHTML}
@@ -2149,7 +2136,7 @@ function renderFicha(p, container) {
           </div>
           <div class="ficha-field">
             <label>Ubicación</label>
-            <value>${p.ubicacion && p.ubicacion !== '-' ? p.ubicacion : '<span class="empty">—</span>'}</value>
+            <value>${p.ubicacion && p.ubicacion !== '---' ? p.ubicacion : '<span class="empty">—</span>'}</value>
           </div>
         </div>
 
@@ -2157,23 +2144,23 @@ function renderFicha(p, container) {
         <div class="ficha-grid">
           <div class="ficha-field">
             <label>Estado</label>
-            <value>${p.estado && p.estado !== '-' ? `<span class="badge ${estadoBadge}">${p.estado}</span>` : '<span class="empty">—</span>'}</value>
+            <value>${p.estado && p.estado !== '---' ? `<span class="badge ${estadoBadge}">${p.estado}</span>` : '<span class="empty">—</span>'}</value>
           </div>
           <div class="ficha-field">
             <label>Tránsito</label>
-            <value>${p.transito && p.transito !== '-' ? `<span class="badge ${transitoBadge}">${p.transito}</span>` : '<span class="empty">—</span>'}</value>
+            <value>${p.transito && p.transito !== '---' ? `<span class="badge ${transitoBadge}">${p.transito}</span>` : '<span class="empty">—</span>'}</value>
           </div>
           <div class="ficha-field">
             <label>Riesgo</label>
-            <value>${p.riesgo && p.riesgo !== '-' ? p.riesgo : '<span class="empty">—</span>'}</value>
+            <value>${p.riesgo && p.riesgo !== '---' ? p.riesgo : '<span class="empty">—</span>'}</value>
           </div>
           <div class="ficha-field">
             <label>Diámetro</label>
-            <value>${p.diametro && p.diametro !== '-' ? p.diametro : '<span class="empty">—</span>'}</value>
+            <value>${p.diametro && p.diametro !== '---' ? p.diametro : '<span class="empty">—</span>'}</value>
           </div>
           <div class="ficha-field full">
             <label>Intradós</label>
-            <value>${p.intrados && p.intrados !== '-' ? p.intrados : '<span class="empty">—</span>'}</value>
+            <value>${p.intrados && p.intrados !== '---' ? p.intrados : '<span class="empty">—</span>'}</value>
           </div>
         </div>
 
@@ -2183,7 +2170,7 @@ function renderFicha(p, container) {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Reportar información incorrecta
         </button>
-        <button class="btn-sugerencia" onclick="descargarPDF()" style="margin-top:10px;border-color:var(aysa-teal);color:var(aysa-teal)">
+        <button class="btn-sugerencia" onclick="descargarPDF()" style="margin-top:10px;border-color:var(--aysa-teal);color:var(--aysa-teal)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Descargar ficha PDF
         </button>
@@ -2280,7 +2267,7 @@ async function refreshAdminPanel() {
 
   let html = '';
   if (pendientes.length > 0) {
-    html += `<div style="padding:10px 20px 4px;font-size:11px;font-weight:700;color:var(warning);letter-spacing:0.5px;text-transform:uppercase;">Pendientes de aprobación (${pendientes.length})</div>`;
+    html += `<div style="padding:10px 20px 4px;font-size:11px;font-weight:700;color:var(--warning);letter-spacing:0.5px;text-transform:uppercase;">Pendientes de aprobación (${pendientes.length})</div>`;
     html += pendientes.map(u => `
       <div class="sug-item">
         <div class="sug-item-header">
@@ -2295,7 +2282,7 @@ async function refreshAdminPanel() {
       </div>`).join('');
   }
   if (aprobados.length > 0) {
-    html += `<div style="padding:10px 20px 4px;font-size:11px;font-weight:700;color:var(success);letter-spacing:0.5px;text-transform:uppercase;">Aprobados (${aprobados.length})</div>`;
+    html += `<div style="padding:10px 20px 4px;font-size:11px;font-weight:700;color:var(--success);letter-spacing:0.5px;text-transform:uppercase;">Aprobados (${aprobados.length})</div>`;
     html += aprobados.map(u => `
       <div class="sug-item">
         <div class="sug-item-header">
@@ -2321,7 +2308,7 @@ async function refreshAdminPanel() {
           <span class="sug-fecha">${s.fecha}</span>
         </div>
         <div class="sug-usuario">${s.usuario} · ${s.organismo}</div>
-        <div style="font-size:11px;color:var(aysa-teal);font-weight:600;margin-bottom:4px">Campo: ${s.campo}</div>
+        <div style="font-size:11px;color:var(--aysa-teal);font-weight:600;margin-bottom:4px">Campo: ${s.campo}</div>
         <div class="sug-texto">${s.descripcion}</div>
         <div class="sug-actions">
           <button class="btn-sug-action btn-resolver" onclick="resolverSugSheets('${s.codigo}')">✓ Resolver</button>
@@ -2439,7 +2426,7 @@ function descargarPDF() {
   if (!p) return;
 
   const fotoUrl = fotosMap[`FOTO${p.codigo}`] || `https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/FOTO${p.codigo}.GIF`;
-  const val = (v) => (v && v !== '-' && v !== '') ? v : '';
+  const val = (v) => (v && v !== '---' && v !== '--') ? v : '';
   const logoB64 = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
 
   document.getElementById('print-area').innerHTML = `
@@ -2828,13 +2815,13 @@ function renderFichaPlanta(filas) {
   const logoImg = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
   const logoHTML = logoImg
     ? `<img src="${logoImg}" style="height:44px;width:auto;display:block;margin:auto;">`
-    : `<div style="background:var(aysa-blue);color:white;font-weight:900;font-size:14px;padding:6px 10px;border-radius:4px;">aysa</div>`;
+    : `<div style="background:var(--aysa-blue);color:white;font-weight:900;font-size:14px;padding:6px 10px;border-radius:4px;">aysa</div>`;
 
   const headerInstitucional = `
     <div style="background:#d0d0d0;padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #bbb;">
       <div style="flex:1;text-align:center;">
-        <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
-        <div style="font-size:10px;color:var(gray-600);margin-top:1px;">Gerencia de Calidad · Ficha de Puntos de Muestreo – Plantas Depuradoras</div>
+        <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
+        <div style="font-size:10px;color:var(--gray-600);margin-top:1px;">Gerencia de Calidad · Ficha de Puntos de Muestreo – Plantas Depuradoras</div>
       </div>
       <div style="flex-shrink:0;">${logoHTML}</div>
     </div>`;
@@ -2842,32 +2829,32 @@ function renderFichaPlanta(filas) {
   const datosPlantaHTML = `
     <table style="width:100%;border-collapse:collapse;font-size:12px;">
       <tr style="border-bottom:1px solid #eef1f7;">
-        <td style="padding:7px 10px;font-weight:700;color:var(aysa-blue);width:32%;background:#f7f9fc;">PLANTA</td>
+        <td style="padding:7px 10px;font-weight:700;color:var(--aysa-blue);width:32%;background:#f7f9fc;">PLANTA</td>
         <td style="padding:7px 10px;font-weight:700;font-size:14px;">${p.nombre}</td>
       </tr>
       <tr style="border-bottom:1px solid #eef1f7;">
-        <td style="padding:7px 10px;font-weight:700;color:var(aysa-blue);background:#f7f9fc;">LOCALIDAD</td>
+        <td style="padding:7px 10px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">LOCALIDAD</td>
         <td style="padding:7px 10px;">${p.localidad}</td>
       </tr>
       <tr style="border-bottom:1px solid #eef1f7;">
-        <td style="padding:7px 10px;font-weight:700;color:var(aysa-blue);background:#f7f9fc;">DIRECCIÓN</td>
+        <td style="padding:7px 10px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">DIRECCIÓN</td>
         <td style="padding:7px 10px;">${p.direccion}</td>
       </tr>
       <tr>
-        <td style="padding:7px 10px;font-weight:700;color:var(aysa-blue);background:#f7f9fc;">COORDENADAS</td>
+        <td style="padding:7px 10px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">COORDENADAS</td>
         <td style="padding:7px 10px;font-size:11px;">${p.coord_planta || '—'}${mapsBtn}</td>
       </tr>
     </table>`;
 
   const pie = (fecha, rev) => `
-    <div style="text-align:center;font-size:10px;color:var(gray-400);padding:10px 0 14px;border-top:1px solid #eef1f7;margin-top:8px;">
+    <div style="text-align:center;font-size:10px;color:var(--gray-400);padding:10px 0 14px;border-top:1px solid #eef1f7;margin-top:8px;">
       Fecha Última Revisión: ${fecha} — Revisión Vigente: ${rev}
     </div>`;
 
   // ── HOJA 2: puntos de muestreo ──
   const puntosHTML = filas.map(f => `
     <div style="margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid #eef1f7;">
-      <div style="background:var(aysa-teal);padding:9px 14px;color:white;font-weight:700;font-size:12px;letter-spacing:0.5px;">
+      <div style="background:var(--aysa-teal);padding:9px 14px;color:white;font-weight:700;font-size:12px;letter-spacing:0.5px;">
         ${f.tipo_punto}
       </div>
       <div style="padding:10px;background:#fafbfd;">
@@ -2881,25 +2868,25 @@ function renderFichaPlanta(filas) {
       </div>
       <table style="width:100%;border-collapse:collapse;font-size:12px;">
         <tr style="border-top:1px solid #eef1f7;border-bottom:1px solid #eef1f7;">
-          <td style="padding:6px 10px;font-weight:700;color:var(aysa-blue);width:40%;background:#f7f9fc;">CÓDIGO PUNTO</td>
+          <td style="padding:6px 10px;font-weight:700;color:var(--aysa-blue);width:40%;background:#f7f9fc;">CÓDIGO PUNTO</td>
           <td style="padding:6px 10px;font-weight:600;">${f.codigo_punto || '—'}</td>
         </tr>
         <tr style="border-bottom:1px solid #eef1f7;">
-          <td style="padding:6px 10px;font-weight:700;color:var(aysa-blue);background:#f7f9fc;">COORDENADAS</td>
+          <td style="padding:6px 10px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">COORDENADAS</td>
           <td style="padding:6px 10px;">
-            ${f.coord_punto ? `<a href="https://maps.google.com/?q=${encodeURIComponent(f.coord_punto)}" target="_blank" style="color:var(aysa-teal);font-weight:600;font-size:11px;">${f.coord_punto}</a>` : '—'}
+            ${f.coord_punto ? `<a href="https://maps.google.com/?q=${encodeURIComponent(f.coord_punto)}" target="_blank" style="color:var(--aysa-teal);font-weight:600;font-size:11px;">${f.coord_punto}</a>` : '—'}
           </td>
         </tr>
         <tr style="border-bottom:1px solid #eef1f7;">
-          <td style="padding:6px 10px;font-weight:700;color:var(aysa-blue);background:#f7f9fc;">TIPO DE EQUIPO</td>
+          <td style="padding:6px 10px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">TIPO DE EQUIPO</td>
           <td style="padding:6px 10px;">${f.tipo_equipo || '—'}</td>
         </tr>
         <tr style="border-bottom:1px solid #eef1f7;">
-          <td style="padding:6px 10px;font-weight:700;color:var(aysa-blue);background:#f7f9fc;">ANALÍTICA PUNTUAL</td>
+          <td style="padding:6px 10px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">ANALÍTICA PUNTUAL</td>
           <td style="padding:6px 10px;font-family:monospace;font-size:11px;">${f.analitica_puntual || '—'}</td>
         </tr>
         <tr>
-          <td style="padding:6px 10px;font-weight:700;color:var(aysa-blue);background:#f7f9fc;">ANALÍTICA COMPUESTA</td>
+          <td style="padding:6px 10px;font-weight:700;color:var(--aysa-blue);background:#f7f9fc;">ANALÍTICA COMPUESTA</td>
           <td style="padding:6px 10px;font-family:monospace;font-size:11px;">${f.analitica_compuesta || '—'}</td>
         </tr>
       </table>
@@ -2907,27 +2894,27 @@ function renderFichaPlanta(filas) {
 
   document.getElementById('plantas-ficha-container').innerHTML = `
 
-     ══ HOJA 1 ══ 
-    <div style="background:white;border-radius:var(radius);box-shadow:var(shadow-md);margin-bottom:6px;overflow:hidden;">
+    <!-- ══ HOJA 1 ══ -->
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-md);margin-bottom:6px;overflow:hidden;">
       ${headerInstitucional}
       <div style="padding:12px 14px;">${datosPlantaHTML}</div>
 
-       Datos técnicos 
+      <!-- Datos técnicos -->
       <div style="margin:0 14px 12px;background:#f0f6fb;border-radius:8px;padding:12px;border:1px solid #d8eaf5;">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(aysa-blue);margin-bottom:10px;">⚙ Datos Técnicos de la Planta</div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--aysa-blue);margin-bottom:10px;">⚙ Datos Técnicos de la Planta</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
           <div style="background:white;border-radius:6px;padding:10px 6px;border:1px solid #d8eaf5;">
-            <div style="font-size:9px;color:var(gray-400);margin-bottom:4px;">Q PROMEDIO INGRESO</div>
-            <div style="font-size:18px;font-weight:800;color:var(aysa-blue);">${p.q_promedio || '—'}</div>
-            <div style="font-size:9px;color:var(gray-400);">m³/s</div>
+            <div style="font-size:9px;color:var(--gray-400);margin-bottom:4px;">Q PROMEDIO INGRESO</div>
+            <div style="font-size:18px;font-weight:800;color:var(--aysa-blue);">${p.q_promedio || '—'}</div>
+            <div style="font-size:9px;color:var(--gray-400);">m³/s</div>
           </div>
           <div style="background:white;border-radius:6px;padding:10px 6px;border:1px solid #d8eaf5;">
-            <div style="font-size:9px;color:var(gray-400);margin-bottom:4px;">DBO PROM. EFLUENTE</div>
-            <div style="font-size:18px;font-weight:800;color:var(aysa-teal);">${p.dbo || '—'}</div>
-            <div style="font-size:9px;color:var(gray-400);">mg/L</div>
+            <div style="font-size:9px;color:var(--gray-400);margin-bottom:4px;">DBO PROM. EFLUENTE</div>
+            <div style="font-size:18px;font-weight:800;color:var(--aysa-teal);">${p.dbo || '—'}</div>
+            <div style="font-size:9px;color:var(--gray-400);">mg/L</div>
           </div>
           <div style="background:white;border-radius:6px;padding:10px 6px;border:1px solid #d8eaf5;">
-            <div style="font-size:9px;color:var(gray-400);margin-bottom:4px;">POSEE DIGESTOR</div>
+            <div style="font-size:9px;color:var(--gray-400);margin-bottom:4px;">POSEE DIGESTOR</div>
             <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;">
               ${digestorIcon}
               <span style="font-size:14px;font-weight:800;color:${digestorColor};">${p.posee_digestor || '—'}</span>
@@ -2936,17 +2923,17 @@ function renderFichaPlanta(filas) {
         </div>
       </div>
 
-       DIAGRAMA DE PROCESO 
+      <!-- DIAGRAMA DE PROCESO -->
       <div style="margin:0 14px 10px;">
-        <div style="background:var(aysa-teal);color:white;text-align:center;padding:7px;font-weight:700;font-size:11px;letter-spacing:1px;border-radius:6px 6px 0 0;">DIAGRAMA DE PROCESO</div>
+        <div style="background:var(--aysa-teal);color:white;text-align:center;padding:7px;font-weight:700;font-size:11px;letter-spacing:1px;border-radius:6px 6px 0 0;">DIAGRAMA DE PROCESO</div>
         <div style="border:1px solid #d0eaf0;border-top:none;border-radius:0 0 6px 6px;overflow:hidden;background:#fafbfd;padding:4px;">
           ${imgPlanta(p.foto_df, 'Diagrama de proceso ' + p.nombre)}
         </div>
       </div>
 
-       VISTA DE PLANTA 
+      <!-- VISTA DE PLANTA -->
       <div style="margin:0 14px 14px;">
-        <div style="background:var(aysa-teal);color:white;text-align:center;padding:7px;font-weight:700;font-size:11px;letter-spacing:1px;border-radius:6px 6px 0 0;">VISTA DE PLANTA</div>
+        <div style="background:var(--aysa-teal);color:white;text-align:center;padding:7px;font-weight:700;font-size:11px;letter-spacing:1px;border-radius:6px 6px 0 0;">VISTA DE PLANTA</div>
         <div style="border:1px solid #d0eaf0;border-top:none;border-radius:0 0 6px 6px;overflow:hidden;background:#fafbfd;padding:4px;">
           ${imgPlanta(p.foto_vp, 'Vista de planta ' + p.nombre)}
         </div>
@@ -2955,19 +2942,19 @@ function renderFichaPlanta(filas) {
       ${pie(p.fecha_revision, p.nro_revision)}
     </div>
 
-     SEPARADOR VISUAL ENTRE HOJAS 
+    <!-- SEPARADOR VISUAL ENTRE HOJAS -->
     <div style="display:flex;align-items:center;gap:10px;padding:8px 4px;margin-bottom:6px;">
-      <div style="flex:1;height:1px;background:var(gray-200);"></div>
-      <div style="font-size:10px;font-weight:700;color:var(gray-400);letter-spacing:1px;text-transform:uppercase;">Hoja 2</div>
-      <div style="flex:1;height:1px;background:var(gray-200);"></div>
+      <div style="flex:1;height:1px;background:var(--gray-200);"></div>
+      <div style="font-size:10px;font-weight:700;color:var(--gray-400);letter-spacing:1px;text-transform:uppercase;">Hoja 2</div>
+      <div style="flex:1;height:1px;background:var(--gray-200);"></div>
     </div>
 
-     ══ HOJA 2 ══ 
-    <div style="background:white;border-radius:var(radius);box-shadow:var(shadow-md);margin-bottom:16px;overflow:hidden;">
+    <!-- ══ HOJA 2 ══ -->
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-md);margin-bottom:16px;overflow:hidden;">
       ${headerInstitucional}
 
-       Título sección puntos 
-      <div style="margin:12px 14px 10px;background:var(aysa-blue);color:white;padding:9px 14px;border-radius:6px;font-weight:700;font-size:12px;letter-spacing:0.5px;">
+      <!-- Título sección puntos -->
+      <div style="margin:12px 14px 10px;background:var(--aysa-blue);color:white;padding:9px 14px;border-radius:6px;font-weight:700;font-size:12px;letter-spacing:0.5px;">
         PUNTOS DE MUESTREO — ${p.nombre}
       </div>
 
@@ -2978,12 +2965,12 @@ function renderFichaPlanta(filas) {
       ${pie(p.fecha_revision, p.nro_revision)}
     </div>
 
-     BOTÓN SUGERENCIA + DESCARGAR PDF 
+    <!-- BOTÓN SUGERENCIA + DESCARGAR PDF -->
     <button onclick="openModal()" class="btn-sugerencia" style="width:100%;margin-bottom:10px;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       Reportar información incorrecta
     </button>
-    <button onclick="descargarPDFPlanta()" style="width:100%;padding:14px;background:var(aysa-blue);color:white;border:none;border-radius:var(radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(shadow-md);">
+    <button onclick="descargarPDFPlanta()" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(--shadow-md);">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Descargar ficha PDF
     </button>
@@ -2996,7 +2983,7 @@ function descargarPDFPlanta() {
   if (!filas.length) return;
   const p = filas[0];
   const logoB64 = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
-  const val = v => (v && v !== '-') ? v : '';
+  const val = v => (v && v !== '---') ? v : '';
 
   const digestorStr = val(p.posee_digestor) || '—';
 
@@ -3021,7 +3008,7 @@ function descargarPDFPlanta() {
   document.getElementById('print-area').innerHTML = `
     <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
 
-       ENCABEZADO 
+      <!-- ENCABEZADO -->
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
         <tr>
           <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px 10px;border-right:1px solid #888;">
@@ -3035,7 +3022,7 @@ function descargarPDFPlanta() {
         </tr>
       </table>
 
-       DATOS DE LA PLANTA 
+      <!-- DATOS DE LA PLANTA -->
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
         <tr><td style="width:20%;padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">PLANTA:</td><td style="padding:5px 8px;border-bottom:1px solid #888;font-weight:700;text-align:center;">${val(p.nombre)}</td></tr>
         <tr><td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;background:#e8f4f8;">LOCALIDAD:</td><td style="padding:5px 8px;border-bottom:1px solid #888;text-align:center;">${val(p.localidad)}</td></tr>
@@ -3043,7 +3030,7 @@ function descargarPDFPlanta() {
         <tr><td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;background:#e8f4f8;">COORDENADAS:</td><td style="padding:5px 8px;text-align:center;">${val(p.coord_planta)}</td></tr>
       </table>
 
-       DATOS TÉCNICOS 
+      <!-- DATOS TÉCNICOS -->
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
         <tr>
           <td colspan="6" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;border-bottom:1px solid #888;">DATOS TÉCNICOS</td>
@@ -3058,7 +3045,7 @@ function descargarPDFPlanta() {
         </tr>
       </table>
 
-       DIAGRAMA DE PROCESO 
+      <!-- DIAGRAMA DE PROCESO -->
       <div style="margin-bottom:10px;">
         <div style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;font-size:9pt;">DIAGRAMA DE PROCESO</div>
         <div style="border:2px solid #000;background:white;text-align:center;line-height:0;padding:4px;">
@@ -3066,7 +3053,7 @@ function descargarPDFPlanta() {
         </div>
       </div>
 
-       VISTA DE PLANTA 
+      <!-- VISTA DE PLANTA -->
       <div style="margin-bottom:6px;">
         <div style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:5px;font-size:9pt;">VISTA DE PLANTA</div>
         <div style="border:2px solid #000;background:white;text-align:center;line-height:0;padding:4px;">
@@ -3078,8 +3065,8 @@ function descargarPDFPlanta() {
         Fecha Última Revisión: ${val(p.fecha_revision)} — Revisión Vigente: ${val(p.nro_revision)}
       </div>
 
-       PÁGINA 2: PUNTOS DE MUESTREO 
-       Encabezado repetido 
+      <!-- PÁGINA 2: PUNTOS DE MUESTREO -->
+      <!-- Encabezado repetido -->
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;page-break-before:always;">
         <tr>
           <td style="width:80%;background:#d0d0d0;text-align:center;padding:8px 10px;border-right:1px solid #888;">
@@ -3092,7 +3079,7 @@ function descargarPDFPlanta() {
         </tr>
       </table>
 
-       PUNTOS DE MUESTREO CON FOTOS 
+      <!-- PUNTOS DE MUESTREO CON FOTOS -->
       ${filas.map(f => `
         <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:10px;">
           <tr><td colspan="2" style="background:#00a8b5;color:white;text-align:center;font-weight:700;padding:6px;border-bottom:1px solid #888;">${val(f.tipo_punto)}</td></tr>
@@ -3195,8 +3182,8 @@ function buscarEBC(q) {
     <div style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #eef1f7;font-size:13px;"
       onmousedown="seleccionarEBC(${ebcData.indexOf(e)})"
       onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='white'">
-      <div style="font-weight:700;color:var(aysa-blue);">${e.punto} — ${e.zona}</div>
-      <div style="color:var(gray-400);font-size:11px;">${e.ebc} · ${e.localidad}</div>
+      <div style="font-weight:700;color:var(--aysa-blue);">${e.punto} — ${e.zona}</div>
+      <div style="color:var(--gray-400);font-size:11px;">${e.ebc} · ${e.localidad}</div>
     </div>`).join('');
   list.style.display = 'block';
 }
@@ -3225,7 +3212,7 @@ function imgEBC(nombre) {
 
 function renderFichaEBC(e) {
   const mapsBtn = e.maps
-    ? `<a href="${e.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(aysa-teal);font-size:11px;font-weight:700;text-decoration:none;">
+    ? `<a href="${e.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(--aysa-teal);font-size:11px;font-weight:700;text-decoration:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Ver en Google Maps
       </a>` : '<div style="color:#ccc;font-size:11px;">Sin link Maps</div>';
@@ -3233,20 +3220,20 @@ function renderFichaEBC(e) {
   const logoImg = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
   const logoHTML = logoImg
     ? `<img src="${logoImg}" style="height:40px;width:auto;display:block;margin:auto;">`
-    : `<div style="background:var(aysa-blue);color:white;font-weight:900;font-size:13px;padding:5px 8px;border-radius:4px;">aysa</div>`;
+    : `<div style="background:var(--aysa-blue);color:white;font-weight:900;font-size:13px;padding:5px 8px;border-radius:4px;">aysa</div>`;
 
   const eJson = JSON.stringify(e).replace(/"/g, '&quot;');
 
   document.getElementById('ebc-ficha-container').innerHTML = `
-    <div style="background:white;border-radius:var(radius);box-shadow:var(shadow-md);overflow:hidden;margin-bottom:16px;">
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-md);overflow:hidden;margin-bottom:16px;">
       <div style="background:#d0d0d0;padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #bbb;">
         <div style="flex:1;text-align:center;">
-          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
-          <div style="font-size:10px;color:var(gray-600);margin-top:1px;">Gerencia de Calidad · Ficha EBC</div>
+          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
+          <div style="font-size:10px;color:var(--gray-600);margin-top:1px;">Gerencia de Calidad · Ficha EBC</div>
         </div>
         <div style="flex-shrink:0;">${logoHTML}</div>
       </div>
-      <div style="background:var(aysa-teal);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="background:var(--aysa-teal);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
         <div>
           <div style="color:rgba(255,255,255,0.75);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">EBC</div>
           <div style="color:white;font-size:17px;font-weight:800;margin-top:2px;">${e.ebc || '—'}</div>
@@ -3257,26 +3244,26 @@ function renderFichaEBC(e) {
         </div>
       </div>
       <div style="padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(aysa-blue);">
-          <div style="font-size:9px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;">Punto</div>
-          <div style="font-size:14px;font-weight:800;color:var(aysa-blue);margin-top:3px;">${e.punto || '—'}</div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-blue);">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Punto</div>
+          <div style="font-size:14px;font-weight:800;color:var(--aysa-blue);margin-top:3px;">${e.punto || '—'}</div>
         </div>
-        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(aysa-teal);">
-          <div style="font-size:9px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;">Aprox. habitantes</div>
-          <div style="font-size:14px;font-weight:800;color:var(aysa-teal);margin-top:3px;">${e.hab || '—'}</div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-teal);">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Aprox. habitantes</div>
+          <div style="font-size:14px;font-weight:800;color:var(--aysa-teal);margin-top:3px;">${e.hab || '—'}</div>
         </div>
         <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;grid-column:span 2;">
-          <div style="font-size:9px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;">Dirección</div>
-          <div style="font-size:13px;font-weight:600;color:var(gray-800);margin-top:3px;">${e.direccion || '—'}</div>
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Dirección</div>
+          <div style="font-size:13px;font-weight:600;color:var(--gray-800);margin-top:3px;">${e.direccion || '—'}</div>
         </div>
         <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;">
-          <div style="font-size:9px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;">Localidad</div>
-          <div style="font-size:13px;font-weight:600;color:var(gray-800);margin-top:3px;">${e.localidad || '—'}</div>
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Localidad</div>
+          <div style="font-size:13px;font-weight:600;color:var(--gray-800);margin-top:3px;">${e.localidad || '—'}</div>
         </div>
         <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;display:flex;align-items:center;">${mapsBtn}</div>
       </div>
       <div style="padding:0 14px 14px;">
-        <div style="font-size:10px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Ubicación</div>
+        <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Ubicación</div>
         ${e.coordenadas ? `
         <div style="border-radius:8px;overflow:hidden;margin-bottom:14px;border:1px solid #eef1f7;">
           <iframe
@@ -3284,7 +3271,7 @@ function renderFichaEBC(e) {
             width="100%" height="220" frameborder="0" style="border:0;display:block;" allowfullscreen loading="lazy">
           </iframe>
         </div>` : ''}
-        <div style="font-size:10px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Fotografías</div>
+        <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Fotografías</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:160px 160px;gap:6px;">
           <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto1)}</div>
           <div style="border-radius:8px;overflow:hidden;line-height:0;">${imgEBC(e.foto2)}</div>
@@ -3297,7 +3284,7 @@ function renderFichaEBC(e) {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       Reportar información incorrecta
     </button>
-    <button onclick="descargarPDFEBC(${eJson})" style="width:100%;padding:14px;background:var(aysa-blue);color:white;border:none;border-radius:var(radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(shadow-md);">
+    <button onclick="descargarPDFEBC(${eJson})" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(--shadow-md);">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Descargar ficha PDF
     </button>
@@ -3492,8 +3479,8 @@ function buscarOPS(q) {
     <div style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #eef1f7;font-size:13px;"
       onmousedown="seleccionarOPS('${r.cod}')"
       onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='white'">
-      <div style="font-weight:700;color:var(aysa-blue);">${r.cod}</div>
-      <div style="color:var(gray-400);font-size:11px;">${r.nombre} · ${r.tipo} · ${r.fecha}</div>
+      <div style="font-weight:700;color:var(--aysa-blue);">${r.cod}</div>
+      <div style="color:var(--gray-400);font-size:11px;">${r.nombre} · ${r.tipo} · ${r.fecha}</div>
     </div>`).join('');
   list.style.display = 'block';
 }
@@ -3523,25 +3510,25 @@ function renderFichaOPS(filas) {
   const logoImg = document.querySelector('img[src^="data:image/png;base64"]')?.src || '';
   const logoHTML = logoImg
     ? `<img src="${logoImg}" style="height:40px;width:auto;display:block;margin:auto;">`
-    : `<div style="background:var(aysa-blue);color:white;font-weight:900;font-size:13px;padding:5px 8px;border-radius:4px;">aysa</div>`;
+    : `<div style="background:var(--aysa-blue);color:white;font-weight:900;font-size:13px;padding:5px 8px;border-radius:4px;">aysa</div>`;
 
   // Puntos HTML
   const puntosHTML = filas.map(f => `
     <div style="background:white;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,0.08);margin-bottom:14px;overflow:hidden;border:1px solid #eef1f7;">
-      <div style="background:var(aysa-blue);padding:10px 14px;color:white;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;">
+      <div style="background:var(--aysa-blue);padding:10px 14px;color:white;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="14" height="14"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
         ${f.punto || '—'}
       </div>
       ${f.coordenadas ? `
       <div style="padding:8px 14px 0;display:flex;align-items:center;gap:6px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(gray-400)" stroke-width="2" width="12" height="12"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="12" height="12"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg>
         <a href="https://maps.google.com/?q=${encodeURIComponent(f.coordenadas)}" target="_blank"
-          style="font-size:11px;color:var(aysa-teal);font-weight:600;">${f.coordenadas}</a>
+          style="font-size:11px;color:var(--aysa-teal);font-weight:600;">${f.coordenadas}</a>
       </div>` : ''}
       ${f.obs_punto ? `
       <div style="padding:8px 14px;background:#fffbf0;border-top:1px solid #fef3c7;margin-top:8px;">
         <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Observaciones</div>
-        <div style="font-size:12px;color:var(gray-700);">${f.obs_punto}</div>
+        <div style="font-size:12px;color:var(--gray-700);">${f.obs_punto}</div>
       </div>` : ''}
       <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:140px 140px;gap:4px;padding:8px;">
         <div style="border-radius:6px;overflow:hidden;line-height:0;">${imgOPS(f.foto1)}</div>
@@ -3554,19 +3541,19 @@ function renderFichaOPS(filas) {
   const opsCodJson = JSON.stringify(p.cod).replace(/"/g, '&quot;');
 
   document.getElementById('ops-ficha-container').innerHTML = `
-    <div style="background:white;border-radius:var(radius);box-shadow:var(shadow-md);overflow:hidden;margin-bottom:14px;">
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-md);overflow:hidden;margin-bottom:14px;">
 
-       Header institucional 
+      <!-- Header institucional -->
       <div style="background:#d0d0d0;padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #bbb;">
         <div style="flex:1;text-align:center;">
-          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
-          <div style="font-size:10px;color:var(gray-600);margin-top:1px;">Gerencia de Calidad · Operativo de Muestreo</div>
+          <div style="font-weight:700;font-size:11px;text-transform:uppercase;color:var(--aysa-blue);">Dirección de Medio Ambiente y Calidad</div>
+          <div style="font-size:10px;color:var(--gray-600);margin-top:1px;">Gerencia de Calidad · Operativo de Muestreo</div>
         </div>
         <div style="flex-shrink:0;">${logoHTML}</div>
       </div>
 
-       Banda con código 
-      <div style="background:var(aysa-blue);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <!-- Banda con código -->
+      <div style="background:var(--aysa-blue);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
         <div>
           <div style="color:rgba(255,255,255,0.7);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Operativo</div>
           <div style="color:white;font-size:18px;font-weight:800;margin-top:2px;">${p.cod}</div>
@@ -3577,41 +3564,41 @@ function renderFichaOPS(filas) {
         </div>
       </div>
 
-       Datos encabezado 
+      <!-- Datos encabezado -->
       <div style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(aysa-teal);grid-column:span 2;">
-          <div style="font-size:9px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;">Nombre / Punto asociado</div>
-          <div style="font-size:14px;font-weight:700;color:var(aysa-blue);margin-top:3px;">${p.nombre || '—'}</div>
+        <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-teal);grid-column:span 2;">
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Nombre / Punto asociado</div>
+          <div style="font-size:14px;font-weight:700;color:var(--aysa-blue);margin-top:3px;">${p.nombre || '—'}</div>
         </div>
         <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;">
-          <div style="font-size:9px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;">Tipo</div>
-          <div style="font-size:13px;font-weight:600;color:var(gray-800);margin-top:3px;">${p.tipo || '—'}</div>
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Tipo</div>
+          <div style="font-size:13px;font-weight:600;color:var(--gray-800);margin-top:3px;">${p.tipo || '—'}</div>
         </div>
         <div style="background:#f7f9fc;border-radius:8px;padding:10px 12px;">
-          <div style="font-size:9px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;">Puntos de muestreo</div>
-          <div style="font-size:16px;font-weight:800;color:var(aysa-teal);margin-top:3px;">${filas.length}</div>
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Puntos de muestreo</div>
+          <div style="font-size:16px;font-weight:800;color:var(--aysa-teal);margin-top:3px;">${filas.length}</div>
         </div>
         ${p.descripcion ? `
         <div style="background:#fffbf0;border-radius:8px;padding:10px 12px;border-left:3px solid #f59e0b;grid-column:span 2;">
           <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.5px;">Descripción del Operativo</div>
-          <div style="font-size:12px;color:var(gray-700);margin-top:4px;line-height:1.5;">${p.descripcion}</div>
+          <div style="font-size:12px;color:var(--gray-700);margin-top:4px;line-height:1.5;">${p.descripcion}</div>
         </div>` : ''}
         ${(p.solicitante || p.motivo || p.fecha_sol || p.siseme) ? `
-        <div style="background:#f0f6fb;border-radius:8px;padding:10px 12px;border-left:3px solid var(aysa-blue);grid-column:span 2;">
-          <div style="font-size:9px;font-weight:700;color:var(aysa-blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Origen del Operativo</div>
+        <div style="background:#f0f6fb;border-radius:8px;padding:10px 12px;border-left:3px solid var(--aysa-blue);grid-column:span 2;">
+          <div style="font-size:9px;font-weight:700;color:var(--aysa-blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Origen del Operativo</div>
           <table style="width:100%;border-collapse:collapse;font-size:12px;">
-            ${p.solicitante ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(gray-500);width:40%;">Solicitante</td><td style="padding:4px 6px;">${p.solicitante}</td></tr>` : ''}
-            ${p.motivo ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(gray-500);">Motivo</td><td style="padding:4px 6px;">${p.motivo}</td></tr>` : ''}
-            ${p.fecha_sol ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(gray-500);">Fecha solicitud</td><td style="padding:4px 6px;">${p.fecha_sol}</td></tr>` : ''}
-            ${p.siseme ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(gray-500);">SISEME asociada</td><td style="padding:4px 6px;font-family:monospace;">${p.siseme}</td></tr>` : ''}
+            ${p.solicitante ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);width:40%;">Solicitante</td><td style="padding:4px 6px;">${p.solicitante}</td></tr>` : ''}
+            ${p.motivo ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);">Motivo</td><td style="padding:4px 6px;">${p.motivo}</td></tr>` : ''}
+            ${p.fecha_sol ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);">Fecha solicitud</td><td style="padding:4px 6px;">${p.fecha_sol}</td></tr>` : ''}
+            ${p.siseme ? `<tr><td style="padding:4px 6px;font-weight:700;color:var(--gray-500);">SISEME asociada</td><td style="padding:4px 6px;font-family:monospace;">${p.siseme}</td></tr>` : ''}
           </table>
         </div>` : ''}
       </div>
 
-       Mapa de zona 
+      <!-- Mapa de zona -->
       ${p.foto_mapa ? `
       <div style="padding:0 14px 14px;">
-        <div style="font-size:10px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mapa de zona</div>
+        <div style="font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Mapa de zona</div>
         <div style="border-radius:8px;overflow:hidden;line-height:0;height:220px;">${imgOPS(p.foto_mapa)}</div>
       </div>` : ''}
 
@@ -3620,29 +3607,29 @@ function renderFichaOPS(filas) {
         if (!cron.length) return '';
         return `
         <div style="margin:0 14px 14px;background:#f7f9fc;border-radius:8px;padding:12px;border:1px solid #eef1f7;">
-          <div style="font-size:10px;font-weight:700;color:var(aysa-blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Cronología de intervenciones</div>
+          <div style="font-size:10px;font-weight:700;color:var(--aysa-blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Cronología de intervenciones</div>
           ${cron.map(c => `
             <div style="display:flex;gap:10px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #eef1f7;">
-              <div style="flex-shrink:0;background:var(aysa-teal);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;">${c.fecha}</div>
-              <div style="font-size:12px;color:var(gray-700);line-height:1.5;">${c.resumen}</div>
+              <div style="flex-shrink:0;background:var(--aysa-teal);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;">${c.fecha}</div>
+              <div style="font-size:12px;color:var(--gray-700);line-height:1.5;">${c.resumen}</div>
             </div>`).join('')}
         </div>`;
       })()}
 
     </div>
 
-     Puntos de muestreo 
-    <div style="font-size:11px;font-weight:700;color:var(gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">
+    <!-- Puntos de muestreo -->
+    <div style="font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">
       Puntos de muestreo (${filas.length})
     </div>
     ${puntosHTML}
 
-     Botones 
+    <!-- Botones -->
     <button onclick="openModal()" class="btn-sugerencia" style="width:100%;margin-bottom:10px;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       Reportar información incorrecta
     </button>
-    <button onclick="descargarPDFOPS(${opsCodJson})" style="width:100%;padding:14px;background:var(aysa-blue);color:white;border:none;border-radius:var(radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(shadow-md);">
+    <button onclick="descargarPDFOPS(${opsCodJson})" style="width:100%;padding:14px;background:var(--aysa-blue);color:white;border:none;border-radius:var(--radius);font-family:Barlow,sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;box-shadow:var(--shadow-md);">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Descargar ficha PDF
     </button>
@@ -3803,6 +3790,6 @@ window.addEventListener('load', async () => {
     localStorage.removeItem('aysa_session');
   }
 });
- --><!--/defang_script-->
+</script>
 </body>
 </html>
