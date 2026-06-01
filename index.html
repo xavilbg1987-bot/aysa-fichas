@@ -1154,11 +1154,7 @@
         EBC
         <span class="folder-badge" id="badge-ebc">—</span>
       </a>
-      <a class="sidebar-folder coming-soon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        PMA
-        <span class="sidebar-coming">Próx.</span>
-      </a>
+      
       <a class="sidebar-folder coming-soon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         INDUSTRIAS
@@ -1169,12 +1165,7 @@
         OPERATIVOS
         <span class="folder-badge" id="badge-operativos">—</span>
       </a>
-      <div class="sidebar-divider"></div>
-      <a class="sidebar-folder" id="sidebar-indicadores" onclick="irAIndicadores()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        INDICADORES
-        <span class="folder-badge" style="background:rgba(0,168,181,0.25);color:var(--aysa-teal);">2026</span>
-      </a>
+      
     </aside>
 
     <!-- MAIN PANEL -->
@@ -1524,18 +1515,6 @@
   </div>
 
   <!-- TAB OPERATIVOS -->
-  <!-- TAB INDICADORES -->
-  <div id="tab-indicadores" style="display:none;flex-direction:column;flex:1;min-height:0;background:#0d1117;">
-    <div style="background:#0d1117;padding:10px 16px 8px;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:10px;flex-shrink:0;">
-      <button onclick="irADashboard()" style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:12px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="15 18 9 12 15 6"/></svg>
-        Volver
-      </button>
-      <span style="color:#2ea672;font-size:13px;font-weight:700;letter-spacing:0.5px;">📊 INDICADORES 2026</span>
-    </div>
-    <iframe id="iframe-indicadores" src="" style="flex:1;border:none;width:100%;height:100%;overflow:hidden;" frameborder="0" scrolling="no"></iframe>
-  </div>
-
   <div id="tab-ops" style="display:none;flex-direction:column;flex:1;min-height:0;">
     <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
@@ -2657,20 +2636,10 @@ function ocultarTodos() {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
-  ['tab-plantas','tab-ebc','tab-ops','tab-indicadores'].forEach(id => {
+  ['tab-plantas','tab-ebc','tab-ops'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
-}
-
-function irAIndicadores() {
-  ocultarTodos();
-  document.getElementById('tab-indicadores').style.display = 'flex';
-  setSidebarActive('sidebar-indicadores');
-  const iframe = document.getElementById('iframe-indicadores');
-  if (!iframe.src || iframe.src === window.location.href || iframe.src === '') {
-    iframe.src = 'https://xavilbg1987-bot.github.io/aysa-fichas/indicadores_2026.html';
-  }
 }
 
 function irAPlantas() {
