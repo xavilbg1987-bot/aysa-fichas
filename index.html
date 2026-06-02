@@ -1160,6 +1160,11 @@
         INDUSTRIAS
         <span class="sidebar-coming">Próx.</span>
       </a>
+      <a class="sidebar-folder" id="sidebar-radio" onclick="irARadioAntiguo()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        DESCARGAS RADIO ANTIGUO
+        <span class="folder-badge" id="badge-radio">—</span>
+      </a>
       <a class="sidebar-folder" id="sidebar-operativos" onclick="irAOperativos()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
         OPERATIVOS
@@ -1514,6 +1519,26 @@
     <div id="ebc-ficha-container" style="padding:16px 20px 80px;overflow-y:auto;"></div>
   </div>
 
+  <!-- TAB RADIO ANTIGUO -->
+  <div id="tab-radio" style="display:none;flex-direction:column;flex:1;min-height:0;">
+    <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <button onclick="irADashboard()" style="background:none;border:none;color:white;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Barlow,sans-serif;font-size:13px;opacity:0.8;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </button>
+        <span style="color:white;font-size:15px;font-weight:700;letter-spacing:0.5px;">DESCARGAS RADIO ANTIGUO</span>
+      </div>
+      <div style="position:relative;">
+        <input type="text" id="radio-search" placeholder="Buscar por código..." oninput="buscarRadio(this.value)" onfocus="buscarRadio(this.value)"
+          style="width:100%;padding:11px 40px 11px 14px;border:none;border-radius:var(--radius-sm);font-family:Barlow,sans-serif;font-size:14px;font-weight:600;color:var(--gray-800);background:white;box-sizing:border-box;outline:none;box-shadow:var(--shadow-sm);text-transform:uppercase;letter-spacing:1px;">
+        <svg style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div id="radio-autocomplete" style="background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:none;max-height:320px;overflow-y:auto;position:absolute;left:0;right:0;top:100%;z-index:100;"></div>
+      </div>
+    </div>
+    <div id="radio-result" style="padding:16px 20px 80px;overflow-y:auto;max-width:680px;margin:0 auto;width:100%;"></div>
+  </div>
+
   <!-- TAB OPERATIVOS -->
   <div id="tab-ops" style="display:none;flex-direction:column;flex:1;min-height:0;">
     <div style="background:var(--aysa-blue);padding:12px 20px 14px;">
@@ -1605,6 +1630,11 @@ const EBC_SHEET_ID   = '1Bbo7CYjtjB2u7lEKBL4eqgmauehQXLmR9DYlZDooNUM';
 const EBC_SHEET_NAME = 'LISTADO EBC';
 const EBC_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
 
+// ===== CONFIG RADIO ANTIGUO =====
+const RA_SHEET_ID   = '1xX53Bw8l2r_iOVNbpK4obQ-yXGwPy1iF2RUEcyWJHKg';
+const RA_SHEET_NAME = 'RADIO ANTIGUO';
+const RA_GITHUB_BASE = 'https://raw.githubusercontent.com/xavilbg1987-bot/aysa-fichas/main/';
+
 // ===== CONFIG OPERATIVOS =====
 const OPS_SHEET_ID   = '1ZWycnXszVKcn5fkvXyMDBz6IsjO0DdKoPKUYeH46PnU';
 const OPS_SHEET_NAME = 'DETALLE OPS';
@@ -1615,6 +1645,7 @@ let currentUser = null;
 let currentCodigo = null;
 let sheetData = [];
 let fotosMap = {};
+let radioAntiguoData = [];
 
 // Admin emails (agregá los tuyos acá)
 const ADMIN_EMAILS = ['admin@aysa.com.ar', 'xavilbg1987@gmail.com', 'vaneeee.carbone.87@gmail.com'];
@@ -1742,6 +1773,7 @@ function enterApp(user) {
   loadPlantasData();
   loadEBCData().catch(e => console.warn('EBC no disponible:', e));
   loadOPSData().catch(e => console.warn('OPS no disponible:', e));
+  loadRadioAntiguoData().catch(e => console.warn('Radio Antiguo no disponible:', e));
   loadEBCData();
   irADashboard();
 }
@@ -2636,7 +2668,7 @@ function ocultarTodos() {
     const el = document.getElementById(`tab-${t}`);
     if (el) el.style.display = 'none';
   });
-  ['tab-plantas','tab-ebc','tab-ops'].forEach(id => {
+  ['tab-plantas','tab-ebc','tab-ops','tab-radio'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -3417,6 +3449,224 @@ async function loadOPSData() {
         };
       });
   } catch(e) { console.error('Error cargando OPERATIVOS:', e); }
+}
+
+function irARadioAntiguo() {
+  ocultarTodos();
+  document.getElementById('tab-radio').style.display = 'flex';
+  setSidebarActive('sidebar-radio');
+  if (radioAntiguoData.length === 0) {
+    document.getElementById('radio-result').innerHTML =
+      `<div class="loading"><div class="spinner"></div><p>Cargando datos...</p></div>`;
+    loadRadioAntiguoData().then(() => {
+      document.getElementById('radio-result').innerHTML = '';
+    });
+  }
+}
+
+async function loadRadioAntiguoData() {
+  if (radioAntiguoData.length > 0) return;
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${RA_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(RA_SHEET_NAME)}&_=${Date.now()}`;
+    const res  = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf('(')+1, text.lastIndexOf(')')));
+    const rows = json.table.rows;
+    radioAntiguoData = rows.map(r => ({
+      codigo:       r.c[0]?.v?.toString().trim().toUpperCase() || '',
+      macrocuenca:  r.c[1]?.v?.toString().trim() || '',
+      direccion:    r.c[2]?.v?.toString().trim() || '',
+      maps:         r.c[3]?.v?.toString().trim() || '',
+      coordenadas:  r.c[4]?.v?.toString().trim().replace(/\n/g,'').trim() || '',
+      region:       r.c[5]?.v?.toString().trim() || '',
+      localidad:    r.c[6]?.v?.toString().trim() || '',
+      ubicacion:    r.c[7]?.v?.toString().trim() || '',
+      estado:       r.c[8]?.v?.toString().trim() || '',
+      transito:     r.c[9]?.v?.toString().trim() || '',
+      riesgo:       r.c[10]?.v?.toString().trim() || '',
+      observaciones:r.c[11]?.v?.toString().trim() || '',
+      diametro:     r.c[12]?.v?.toString().trim() || '',
+      intrados:     r.c[13]?.v?.toString().trim() || '',
+      foto:         r.c[14]?.v?.toString().trim() || '',
+    })).filter(r => r.codigo);
+
+    const badge = document.getElementById('badge-radio');
+    if (badge) badge.textContent = radioAntiguoData.length;
+  } catch(e) {
+    console.error('Error cargando Radio Antiguo:', e);
+  }
+}
+
+function buscarRadio(q) {
+  const list = document.getElementById('radio-autocomplete');
+  const qU = (q || '').toUpperCase().trim();
+  if (qU.length < 2) { list.style.display = 'none'; return; }
+  const matches = radioAntiguoData.filter(p => p.codigo.includes(qU)).slice(0, 12);
+  if (!matches.length) { list.style.display = 'none'; return; }
+  list.innerHTML = matches.map(p => `
+    <div style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #eef1f7;font-size:13px;font-weight:600;"
+      onmousedown="seleccionarRadio('${p.codigo}')"
+      onmouseover="this.style.background='#f0f7ff'" onmouseout="this.style.background='white'">
+      ${p.codigo}<span style="display:block;font-size:11px;color:var(--gray-400);font-weight:400;">${p.direccion || ''} ${p.localidad ? '· ' + p.localidad : ''}</span>
+    </div>`).join('');
+  list.style.display = 'block';
+}
+
+function seleccionarRadio(codigo) {
+  document.getElementById('radio-search').value = codigo;
+  document.getElementById('radio-autocomplete').style.display = 'none';
+  const punto = radioAntiguoData.find(p => p.codigo === codigo);
+  if (punto) renderFichaRadio(punto);
+}
+
+function renderFichaRadio(p) {
+  const container = document.getElementById('radio-result');
+  // Reusar exactamente la misma función renderFicha de MI-MAC
+  // pero adaptada a radioAntiguoData
+  const estadoBadge = p.estado.includes('BUENO') ? 'badge-success' : p.estado.includes('REGULAR') ? 'badge-warning' : p.estado.includes('MALO') ? 'badge-danger' : '';
+  const transitoBadge = p.transito === 'ALTO' ? 'badge-alto' : p.transito === 'MEDIO' ? 'badge-medio' : p.transito === 'BAJO' ? 'badge-bajo' : '';
+  const fotoHTML = `<div class="ficha-photo-wrap">${buildFotoHtml(p.codigo, 'ficha-photo')}</div>`;
+  const mapsLink = p.maps && p.maps.startsWith('http')
+    ? `<a href="${p.maps}" target="_blank" class="ficha-maps-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Ver en Google Maps
+      </a>` : '';
+  const coordsClean = p.coordenadas.replace(/\n/g,'').trim();
+  const obs = (p.observaciones && p.observaciones !== '---')
+    ? `<div class="ficha-section-title">Observaciones</div><div class="ficha-obs">${p.observaciones}</div>` : '';
+
+  container.innerHTML = `
+    <div class="ficha-card">
+      <div class="ficha-header">
+        <div class="ficha-header-top">
+          <div class="ficha-codigo">${p.codigo}</div>
+          <div class="ficha-region">${p.region || '—'}</div>
+        </div>
+        <div class="ficha-dir">${p.direccion || '—'}</div>
+        <div class="ficha-localidad">${p.localidad || '—'} ${p.macrocuenca && p.macrocuenca !== '---' ? '· ' + p.macrocuenca : ''}</div>
+      </div>
+      ${fotoHTML}
+      <div class="ficha-body">
+        <div class="ficha-section-title">Ubicación</div>
+        ${mapsLink}
+        <div class="ficha-grid">
+          <div class="ficha-field">
+            <label>Coordenadas</label>
+            <value>${coordsClean ? `<a href="https://maps.google.com/?q=${encodeURIComponent(coordsClean)}" target="_blank" class="coords-link">${coordsClean}</a>` : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Ubicación</label>
+            <value>${p.ubicacion && p.ubicacion !== '---' ? p.ubicacion : '<span class="empty">—</span>'}</value>
+          </div>
+        </div>
+        <div class="ficha-section-title">Estado del punto</div>
+        <div class="ficha-grid">
+          <div class="ficha-field">
+            <label>Estado</label>
+            <value>${p.estado && p.estado !== '---' ? `<span class="badge ${estadoBadge}">${p.estado}</span>` : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Tránsito</label>
+            <value>${p.transito && p.transito !== '---' ? `<span class="badge ${transitoBadge}">${p.transito}</span>` : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Riesgo</label>
+            <value>${p.riesgo && p.riesgo !== '---' ? p.riesgo : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field">
+            <label>Diámetro</label>
+            <value>${p.diametro && p.diametro !== '---' ? p.diametro : '<span class="empty">—</span>'}</value>
+          </div>
+          <div class="ficha-field full">
+            <label>Intradós</label>
+            <value>${p.intrados && p.intrados !== '---' ? p.intrados : '<span class="empty">—</span>'}</value>
+          </div>
+        </div>
+        ${obs}
+        <button class="btn-sugerencia" onclick="openModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Reportar información incorrecta
+        </button>
+        <button class="btn-sugerencia" onclick="descargarPDFRadio('${p.codigo}')" style="margin-top:10px;border-color:var(--aysa-teal);color:var(--aysa-teal)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descargar ficha PDF
+        </button>
+      </div>
+    </div>`;
+}
+
+function descargarPDFRadio(codigo) {
+  const p = radioAntiguoData.find(d => d.codigo === codigo);
+  if (!p) return;
+  const fotoUrl = `${RA_GITHUB_BASE}FOTO${p.codigo}.GIF`;
+  const val = (v) => (v && v !== '---' && v !== '--') ? v : '';
+  document.getElementById('print-area').innerHTML = `
+    <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;">
+        <tr>
+          <td style="background:#d0d0d0;text-align:center;padding:8px 10px;border-bottom:1px solid #888;">
+            <div style="font-weight:700;font-size:14pt;">Ficha de Puntos de Muestreo</div>
+            <div style="font-size:10pt;">Descargas Radio Antiguo</div>
+          </td>
+        </tr>
+      </table>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr><td style="width:20%;padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">DIRECCIÓN:</td><td style="padding:5px 8px;border-bottom:1px solid #888;text-align:center;">${val(p.direccion)}</td></tr>
+        <tr><td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;">COORDENADAS:</td><td style="padding:5px 8px;border-bottom:1px solid #888;text-align:center;">${val(p.coordenadas)}</td></tr>
+        <tr><td style="padding:5px 8px;font-weight:700;border-right:1px solid #888;">REGIÓN:</td>
+          <td style="padding:0;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:5px 8px;width:18%;border-right:1px solid #888;text-align:center;">${val(p.region)}</td>
+                <td style="padding:5px 8px;font-weight:700;width:16%;border-right:1px solid #888;text-align:center;">LOCALIDAD</td>
+                <td style="padding:5px 8px;width:28%;border-right:1px solid #888;text-align:center;">${val(p.localidad)}</td>
+                <td style="padding:5px 8px;font-weight:700;width:14%;border-right:1px solid #888;text-align:center;">CÓDIGO:</td>
+                <td style="padding:5px 8px;font-weight:700;text-align:center;">${val(p.codigo)}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr><td style="background:#d0d0d0;text-align:center;font-weight:700;font-size:10pt;padding:6px;border-bottom:1px solid #888;">FOTOGRAFÍA</td></tr>
+        <tr><td style="padding:0;text-align:center;line-height:0;border-bottom:1px solid #888;">
+          <img src="${fotoUrl}" style="width:100%;max-height:420px;object-fit:contain;" onerror="this.style.display='none'">
+        </td></tr>
+      </table>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;">
+        <tr><td colspan="4" style="background:#d0d0d0;text-align:center;font-weight:700;font-size:10pt;padding:6px;border-bottom:1px solid #888;">BOCA DE REGISTRO</td></tr>
+        <tr>
+          <td style="width:18%;padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;">UBICACIÓN:</td>
+          <td style="width:32%;padding:6px 8px;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;">${val(p.ubicacion)}</td>
+          <td style="width:18%;padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;">TRÁNSITO:</td>
+          <td style="padding:6px 8px;border-bottom:1px solid #888;text-align:center;">${val(p.transito)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;">ESTADO:</td>
+          <td style="padding:6px 8px;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;">${val(p.estado)}</td>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;border-bottom:1px solid #888;text-align:center;">RIESGO:</td>
+          <td style="padding:6px 8px;border-bottom:1px solid #888;text-align:center;">${val(p.riesgo)}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;font-weight:700;border-right:1px solid #888;text-align:center;">OBSERVACIONES:</td>
+          <td colspan="3" style="padding:6px 8px;text-align:center;font-weight:600;">${val(p.observaciones)}</td>
+        </tr>
+      </table>
+    </div>`;
+  const printArea = document.getElementById('print-area');
+  printArea.classList.remove('hidden-print');
+  printArea.style.display = 'block';
+  const imgs = Array.from(printArea.querySelectorAll('img'));
+  Promise.all(imgs.map(img => {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; setTimeout(resolve, 10000); });
+  })).then(() => setTimeout(() => window.print(), 300));
+  window.addEventListener('afterprint', function handler() {
+    printArea.style.display = 'none';
+    printArea.classList.add('hidden-print');
+    printArea.innerHTML = '';
+    window.removeEventListener('afterprint', handler);
+  });
 }
 
 function irAOperativos() {
