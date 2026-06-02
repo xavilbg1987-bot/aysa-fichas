@@ -1861,12 +1861,17 @@ function buildFotoHtml(codigo, imgClass) {
 }
 
 function buildFotoHtmlDirecto(nombre, imgClass) {
-  // Sin prefijo FOTO — usa el nombre tal cual está en el Sheet
   const urls = FOTO_EXTS.map(e => GITHUB_FOTOS_BASE + nombre + '.' + e);
-  const urlsJson = JSON.stringify(urls);
-  return `<img class="${imgClass}" src="${urls[0]}" alt="${nombre}"
-    onclick="openLightbox(this.src)"
-    onerror="if(this._t===undefined)this._t=0;this._t++;var _u=${urlsJson};if(this._t<_u.length){this.src=_u[this._t];}else{this.parentNode.innerHTML='<div class=\'ficha-photo-placeholder\'><span>Foto no disponible</span></div>';}">`;
+  const urlsStr = "['" + urls.join("','") + "']";
+  return '<img class="' + imgClass + '" src="' + urls[0] + '" alt="' + nombre + '" ' +
+    'onclick="openLightbox(this.src)" ' +
+    'onerror="' +
+      'if(this._t===undefined)this._t=0;' +
+      'this._t++;' +
+      'var _u=' + urlsStr + ';' +
+      'if(this._t<_u.length){this.src=_u[this._t];}' +
+      'else{this.parentNode.innerHTML=\'<div class=ficha-photo-placeholder><span>Foto no disponible</span></div>\';}' +
+    '">';
 }
 
 // ===== DASHBOARD NAVIGATION =====
