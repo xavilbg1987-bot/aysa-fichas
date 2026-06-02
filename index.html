@@ -3534,7 +3534,7 @@ function renderFichaRadio(p) {
   // pero adaptada a radioAntiguoData
   const estadoBadge = p.estado.includes('BUENO') ? 'badge-success' : p.estado.includes('REGULAR') ? 'badge-warning' : p.estado.includes('MALO') ? 'badge-danger' : '';
   const transitoBadge = p.transito === 'ALTO' ? 'badge-alto' : p.transito === 'MEDIO' ? 'badge-medio' : p.transito === 'BAJO' ? 'badge-bajo' : '';
-  const fotoHTML = `<div class="ficha-photo-wrap">${buildFotoHtmlDirecto(p.foto || p.codigo, 'ficha-photo')}</div>`;
+  const fotoHTML = `<div class="ficha-photo-wrap">${buildFotoHtmlDirecto(p.codigo, 'ficha-photo')}</div>`;
   const mapsLink = p.maps && p.maps.startsWith('http')
     ? `<a href="${p.maps}" target="_blank" class="ficha-maps-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -3607,8 +3607,7 @@ function renderFichaRadio(p) {
 function descargarPDFRadio(codigo) {
   const p = radioAntiguoData.find(d => d.codigo === codigo);
   if (!p) return;
-  const fotoNombre = p.foto || p.codigo;
-  const fotoUrl = `${RA_GITHUB_BASE}${fotoNombre}.GIF`;
+  const fotoUrl = `${RA_GITHUB_BASE}${p.codigo}.GIF`;
   const val = (v) => (v && v !== '---' && v !== '--') ? v : '';
   document.getElementById('print-area').innerHTML = `
     <div style="font-family:Arial,sans-serif;font-size:9pt;color:#000;width:100%;">
