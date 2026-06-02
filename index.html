@@ -3356,29 +3356,31 @@ async function loadOPSData() {
     opsData = json.table.rows
       .filter(r => r.c[0]?.v)
       .map(r => {
-        const fechaRaw = r.c[2]?.v?.toString().trim() || '';
-        let fecha = fechaRaw;
-        const m = fechaRaw.match(/Date\((\d+),(\d+),(\d+)\)/);
-        if (m) {
-          const d = new Date(parseInt(m[1]), parseInt(m[2]), parseInt(m[3]));
-          fecha = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+        // Registro fotográfico — col C (índice 2)
+        const regFotoRaw = r.c[2]?.v?.toString().trim() || '';
+        let reg_fotografico = regFotoRaw;
+        const mRF = regFotoRaw.match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (mRF) {
+          const dRF = new Date(parseInt(mRF[1]), parseInt(mRF[2]), parseInt(mRF[3]));
+          reg_fotografico = `${String(dRF.getDate()).padStart(2,'0')}/${String(dRF.getMonth()+1).padStart(2,'0')}/${dRF.getFullYear()}`;
         }
         return {
-          cod:         r.c[0]?.v?.toString().trim() || '',
-          nombre:      r.c[1]?.v?.toString().trim() || '',
-          fecha,
-          tipo:        r.c[3]?.v?.toString().trim() || '',
-          descripcion: r.c[4]?.v?.toString().trim() || '',
-          punto:       r.c[5]?.v?.toString().trim() || '',
-          coordenadas: r.c[6]?.v?.toString().trim() || '',
-          foto1:       r.c[7]?.v?.toString().trim() || '',
-          foto2:       r.c[8]?.v?.toString().trim() || '',
-          foto3:       r.c[9]?.v?.toString().trim() || '',
-          foto4:       r.c[10]?.v?.toString().trim() || '',
-          foto_mapa:   r.c[11]?.v?.toString().trim() || '',
-          obs_punto:   r.c[12]?.v?.toString().trim() || '',
-          solicitante: r.c[13]?.v?.toString().trim() || '',
-          motivo:      r.c[14]?.v?.toString().trim() || '',
+          cod:             r.c[0]?.v?.toString().trim() || '',
+          nombre:          r.c[1]?.v?.toString().trim() || '',
+          reg_fotografico,
+          fecha:           reg_fotografico,
+          tipo:            r.c[3]?.v?.toString().trim() || '',
+          descripcion:     r.c[4]?.v?.toString().trim() || '',
+          punto:           r.c[5]?.v?.toString().trim() || '',
+          coordenadas:     r.c[6]?.v?.toString().trim() || '',
+          foto1:           r.c[7]?.v?.toString().trim() || '',
+          foto2:           r.c[8]?.v?.toString().trim() || '',
+          foto3:           r.c[9]?.v?.toString().trim() || '',
+          foto4:           r.c[10]?.v?.toString().trim() || '',
+          foto_mapa:       r.c[11]?.v?.toString().trim() || '',
+          obs_punto:       r.c[12]?.v?.toString().trim() || '',
+          solicitante:     r.c[13]?.v?.toString().trim() || '',
+          motivo:          r.c[14]?.v?.toString().trim() || '',
           fecha_sol:   (() => {
             const raw = r.c[15]?.v?.toString().trim() || '';
             const m2 = raw.match(/Date\((\d+),(\d+),(\d+)\)/);
@@ -3584,6 +3586,15 @@ function renderFichaOPS(filas) {
         </div>`;
       })()}
 
+      ${p.reg_fotografico ? `
+      <div style="margin:0 14px 14px;background:#f0f6fb;border-radius:8px;padding:12px;border:1px solid #d8eaf5;display:flex;align-items:center;gap:10px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--aysa-teal)" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;">Registro Fotográfico</div>
+          <div style="font-size:14px;font-weight:700;color:var(--aysa-blue);margin-top:2px;">${p.reg_fotografico}</div>
+        </div>
+      </div>` : ''}
+
     </div>
 
     <!-- Puntos de muestreo -->
@@ -3702,6 +3713,13 @@ async function descargarPDFOPS(cod) {
         <tr><td style="padding:4px;text-align:center;">
           <img src="${fotoMapa}" style="width:100%;max-height:520px;object-fit:contain;">
         </td></tr>
+      </table>` : ''}
+      ${p.reg_fotografico ? `
+      <table style="width:100%;border-collapse:collapse;border:1px solid #888;margin-top:8px;">
+        <tr>
+          <td style="width:30%;padding:6px 8px;font-weight:700;background:#e8f4f8;border-right:1px solid #888;">REGISTRO FOTOGRÁFICO:</td>
+          <td style="padding:6px 8px;font-weight:700;">${val(p.reg_fotografico)}</td>
+        </tr>
       </table>` : ''}
       ${(p.solicitante || p.motivo || p.fecha_sol || p.siseme) ? `
       <table style="width:100%;border-collapse:collapse;border:1px solid #888;border-top:none;margin-top:8px;">
